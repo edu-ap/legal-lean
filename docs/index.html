@@ -6,7 +6,7 @@
     <title>LegalLean - Verified Legal Reasoning in Lean 4</title>
     <meta name="description" content="Making laws machine-checkable so that when a computer says 'you owe tax' or 'you qualify for a visa', you can verify exactly why." />
     <meta property="og:title" content="LegalLean" />
-    <meta property="og:description" content="Verified legal reasoning in Lean 4. 44 theorems, 0 sorry, 3 case studies." />
+    <meta property="og:description" content="Verified legal reasoning in Lean 4. 80 theorems, generic solver, typed IR pipeline, 3 case studies." />
     <meta property="og:type" content="website" />
     <meta name="theme-color" content="#0b1020" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -454,6 +454,7 @@
         <nav class="nav">
           <a href="#problem">Problem</a>
           <a href="#how">How it works</a>
+          <a href="#architecture">Architecture</a>
           <a href="#healthcare">Healthcare</a>
           <a href="#verify">Verify</a>
           <a href="paper.html">Paper</a>
@@ -475,23 +476,23 @@
         <div class="hero-card">
           <div class="orb"></div>
           <h2>Status</h2>
-          <p>Framework complete. Paper targeting RuleML+RR 2026 / JURIX 2026. Open core: framework MIT-licensed.</p>
+          <p>Framework complete with generic solver, typed IR pipeline, and factorial hardening programme. Paper targeting RuleML+RR 2026 / JURIX 2026. Open core: MIT-licensed.</p>
           <div class="stat-grid">
             <div class="stat">
-              <strong>44</strong>
+              <strong>80</strong>
               <span>Verified theorems</span>
-            </div>
-            <div class="stat">
-              <strong>0</strong>
-              <span>Unproven claims</span>
             </div>
             <div class="stat">
               <strong>3</strong>
               <span>Case studies</span>
             </div>
             <div class="stat">
-              <strong>15s</strong>
-              <span>To verify all</span>
+              <strong>3</strong>
+              <span>AI reviews</span>
+            </div>
+            <div class="stat">
+              <strong>10</strong>
+              <span>Release gate KPIs</span>
             </div>
           </div>
         </div>
@@ -536,9 +537,35 @@
           </li>
           <li>
             <h3>Anyone can verify the result</h3>
-            <p>The entire system can be independently checked in 15 seconds. No trust required. Run <code>lake build</code> and the Lean 4 type checker verifies all 44 theorems from scratch.</p>
+            <p>The entire system can be independently checked by running <code>lake build</code>. The Lean 4 type checker verifies all 80 theorems from scratch. No trust required.</p>
           </li>
         </ol>
+      </section>
+
+      <!-- Architecture -->
+      <section id="architecture">
+        <h2 class="section-title">Under the Hood</h2>
+        <p class="section-desc">
+          LegalLean is not just a collection of proofs. It includes a generic defeasibility solver, a typed intermediate representation for legal language, and a systematic hardening programme.
+        </p>
+        <div class="card-grid">
+          <div class="card accent">
+            <h3>Generic Solver</h3>
+            <p>An applicability-aware defeat resolution engine. Given a set of legal rules and facts, it filters applicable rules, resolves defeats by priority, and returns a <code>FormalisationBoundary</code> result. Six solver-property theorems prove monotonicity, determinism, and soundness.</p>
+          </div>
+          <div class="card accent">
+            <h3>Typed Legal IR</h3>
+            <p>A three-stage pipeline: English &#8594; Typed Legal Semantic IR &#8594; Lean 4. The IR captures eight factors (voice, modality, negation, exceptions, temporal, thresholds, definitions, cross-references) as Lean 4 inductive types, with idempotent normalisation passes and total lowering to LegalLean types.</p>
+          </div>
+          <div class="card accent">
+            <h3>Solver-Soundness Bridge</h3>
+            <p>Theorems proving the generic solver agrees with hand-coded case study functions on defeat structure, auto-rejection cases, and output kind. Exposes genuine architectural boundaries: where the solver can and cannot replicate manual encoding.</p>
+          </div>
+          <div class="card accent">
+            <h3>Factorial Hardening</h3>
+            <p>A five-phase programme testing whether controlled variations in English surface form produce semantically stable Lean 4 outputs. Covering arrays across eight factors, variation family tests (5/5 passing), and ten release-gate KPIs including false precision rate and equivalence proof success.</p>
+          </div>
+        </div>
       </section>
 
       <!-- Example -->
@@ -597,7 +624,7 @@
           <div class="benefit">
             <div class="icon">&#127979;</div>
             <strong>Academics</strong>
-            <p>A new framework for studying the boundary between formalisable and non-formalisable law. 44 theorems, typed open texture.</p>
+            <p>A new framework for studying the boundary between formalisable and non-formalisable law. 80 theorems, typed IR pipeline, factorial hardening.</p>
           </div>
           <div class="benefit">
             <div class="icon">&#127758;</div>
@@ -635,7 +662,7 @@
       <section>
         <h2 class="section-title">Hardening the Translation Layer</h2>
         <p class="section-desc">
-          Proving a legal rule is correctly formalised is necessary but not sufficient. The harder question: does the same rule, phrased differently, produce an equivalent formalisation?
+          Proving a legal rule is correctly formalised is necessary but not sufficient. The harder question: does the same rule, phrased differently, produce an equivalent formalisation? LegalLean's hardening programme is now implemented and passing.
         </p>
         <div class="card-grid">
           <div class="card accent">
@@ -708,8 +735,8 @@
             <span>Run <code>docker build .</code> to verify in a completely clean environment from a blank Ubuntu installation.</span>
           </div>
           <div class="roadmap-item">
-            <strong>Ask an AI</strong>
-            <span>Give any frontier AI the source code and ask it to find errors. Three AI reviews are published in the repo.</span>
+            <strong>3-model adversarial review</strong>
+            <span>Gemini, Codex (GPT), and Claude independently reviewed the paper and code. A <a href="https://github.com/edu-ap/legal-lean/blob/main/adversarial-review/synthesis.md" style="color: var(--accent);">cross-model synthesis</a> identifies consensus findings.</span>
           </div>
           <div class="roadmap-item">
             <strong>Automated theorem proving</strong>
@@ -722,7 +749,7 @@
       <section id="cta" class="cta">
         <h2>The Source Code is Open</h2>
         <p>
-          LegalLean is open source under the MIT licence. The academic paper, all 44 theorems, the verification protocol, and the adversarial AI reviews are all published.
+          LegalLean is open source under the MIT licence. The academic paper, all 80 theorems, the verification protocol, the generic solver, the typed IR pipeline, and the three-model adversarial review are all published.
         </p>
         <div class="hero-actions">
           <a class="button" href="https://github.com/edu-ap/legal-lean" target="_blank" rel="noopener">View on GitHub</a>
