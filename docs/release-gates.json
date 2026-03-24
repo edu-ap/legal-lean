@@ -1,0 +1,387 @@
+{
+  "version": "1.0",
+  "description": "Release gate KPIs for the LegalLean factorial hardening programme (REQ-016, Phase 4). These thresholds must be met before any public release. They measure quality of the NL->IR->Lean 4 translation pipeline across the 8 factors in the factorial coverage matrix.",
+  "schema_version": "2026-03-24",
+  "programme_context": {
+    "requirement": "REQ-016",
+    "phase": "Phase 4 - Release Gates and Formal Test Adequacy",
+    "predecessor_phases": [
+      "Phase 0 - Factor coverage matrix (REQ-012)",
+      "Phase 1 - Typed IR (REQ-013)",
+      "Phase 2 - Factorial test suite with Lean oracle (REQ-014)",
+      "Phase 3 - Quotient types for extensional equivalence (REQ-015)"
+    ],
+    "factors_under_test": [
+      "voice",
+      "modality",
+      "negation",
+      "exception_structure",
+      "temporal",
+      "thresholds",
+      "definitions",
+      "cross_references"
+    ]
+  },
+  "kpis": [
+    {
+      "id": "KPI-001",
+      "name": "False Precision Rate",
+      "description": "Ratio of genuinely vague inputs (those that should produce VaguenessMarker.vague, .discretionary, or .ambiguous) that instead produce VaguenessMarker.precise, yielding a crisp LowerResult.rule when a FormalisationBoundary annotation is warranted. A silent over-commitment: the output type-checks but misrepresents the open texture of the source clause. Grounded in the monograph's false precision metric (Section 7.2).",
+      "metric": "false_precision_count / (false_precision_count + correct_boundary_count)",
+      "threshold": "<= 0.05",
+      "measurement": "Run the covering-array test suite (KPI-009). For each row tagged as 'genuine open texture' in the test oracle, inspect LowerResult: any .rule output is a false precision. Divide by total genuine-open-texture rows.",
+      "lean_connection": "LegalLean.IR.Lower.lowerClause: the match on VaguenessMarker must emit .boundary or .mixed for vague/discretionary/ambiguous inputs. False precision = .rule emitted instead.",
+      "severity": "blocking",
+      "references": ["monograph Section 7.2", "LegalLean/IR/Lower.lean:lowerClause", "arguments/factor-coverage-matrix.json"]
+    },
+    {
+      "id": "KPI-002",
+      "name": "Equivalence Proof Success Rate",
+      "description": "Rate at which the Lean 4 T1<->T2 equivalence oracle successfully proves bidirectional equivalence for synonym pairs. Synonym pairs are English renderings that differ only in surface form (e.g. 'shall deduct' vs 'is required to deduct') and are declared semantically equivalent in the test oracle. A failed proof signals a systematic mistranslation across the paraphrase boundary. Grounded in the Lean equivalence oracle described in monograph Section 7.2.",
+      "metric": "proved_equivalent_pairs / total_synonym_pairs",
+      "threshold": ">= 0.90",
+      "measurement": "For each synonym pair in the Phase 2 test suite, run the T1<->T2 Lean oracle. Count pairs where `T1 <-> T2` type-checks (or is proved by the Aristotle prover). Divide by total synonym pairs.",
+      "lean_connection": "The T1<->T2 oracle is a Lean 4 theorem of the form: `theorem equiv_pair_N : T1 <-> T2`. Success means the theorem has no `sorry` placeholder.",
+      "severity": "blocking",
+      "references": ["monograph Section 7.2", "REQ-014 acceptance criteria", "scripts/aristotle_prover.py"]
+    },
+    {
+      "id": "KPI-003",
+      "name": "Abstention Quality",
+      "description": "Precision of the system's FormalisationBoundary decisions: when the pipeline emits .boundary or .mixed (abstains from full formalisation), the source clause is genuinely vague or discretionary. The complement of KPI-001: this measures false abstentions (system says 'boundary' for clauses that are actually fully formalisable). High abstention quality means the system does not over-hedge on clear cases.",
+      "metric": "true_boundaries / (true_boundaries + false_boundaries)",
+      "threshold": ">= 0.85",
+      "measurement": "For each test row where LowerResult is .boundary or .mixed, check whether the source clause was labelled genuinely vague in the oracle. True boundary = label is genuinely vague. False boundary = label says formalisable but system abstained. Divide true by total boundaries.",
+      "lean_connection": "LegalLean.IR.Lower.lowerClause VaguenessMarker cases. False boundary occurs when a .precise input produces .boundary due to a conservative but incorrect authority lookup.",
+      "severity": "blocking",
+      "references": ["LegalLean/IR/Lower.lean:lowerClause", "LegalLean/IR/Legal.lean:VaguenessMarker"]
+    },
+    {
+      "id": "KPI-004",
+      "name": "Semantic Stability Under Paraphrase",
+      "description": "Rate at which active-voice and passive-voice renderings of the same clause produce identical normalised IR clauses. Because Normalise.normaliseVoice rewrites all voice to Voice.active, the post-normalisation clause should be identical regardless of whether the input was active, passive, or impersonal. A failure signals that the LLM transducer encodes voice-specific semantic differences that survive normalisation.",
+      "metric": "stable_paraphrase_pairs / total_active_passive_pairs",
+      "threshold": ">= 0.95",
+      "measurement": "For each (active-voice, passive-voice) pair in the covering array, normalise both IR outputs and compare field-by-field using IR.Clause structural equality (excluding the voice field, which is canonicalised). A pair is stable if all fields except voice are identical after normalisation.",
+      "lean_connection": "LegalLean.IR.Normalise.normaliseVoice_idempotent and normalise_idempotent theorems guarantee normalisation is stable; this KPI measures whether the transducer's upstream output feeds those guarantees correctly.",
+      "severity": "blocking",
+      "references": ["LegalLean/IR/Normalise.lean:normaliseVoice", "arguments/factor-coverage-matrix.json:voice factor"]
+    },
+    {
+      "id": "KPI-005",
+      "name": "Proof Stability Under Wording Changes",
+      "description": "Rate at which minor wording variations (that do not change legal meaning) produce Lean 4 theorems that still compile and are provable. Specifically: for pairs declared surface-only variants in the Phase 2 failure classification, both IR outputs must lower to the same LegalRule structure and any associated theorems must compile without new `sorry` placeholders introduced. Wording changes covered: synonym substitution (shall/must), threshold rephrasing, and temporal clause reordering.",
+      "metric": "stable_wording_pairs / total_surface_variant_pairs",
+      "threshold": ">= 0.90",
+      "measurement": "For each pair classified as 'surface-only' variant in the Phase 2 bucket analysis, compile both outputs and run existing theorem suite against each. A pair is stable if: (a) both compile, (b) theorem count is equal, (c) no new `sorry` introduced relative to baseline. Divide stable pairs by total surface-variant pairs.",
+      "lean_connection": "LegalLean.IR.Lower.lowerClause: the description field embeds threshold and temporal text; minor wording changes should not change the Deontic, defeatedBy, or priority fields.",
+      "severity": "blocking",
+      "references": ["LegalLean/IR/Lower.lean", "REQ-014 acceptance criteria: 5-bucket classification"]
+    },
+    {
+      "id": "KPI-006",
+      "name": "Provenance Completeness",
+      "description": "Every IR.Clause output must carry a non-empty sourceText field and a non-null sourceRef (or explicit null annotation explaining why no statute citation is available). Every LowerResult must be traceable to the IR.Clause that produced it via the clauseId field. No output may be unattributed. This is the audit chain requirement: if a legal conclusion is machine-verified, the chain back to the input statute must be complete.",
+      "metric": "clauses_with_complete_provenance / total_clauses",
+      "threshold": "== 1.00",
+      "measurement": "For every IR.Clause in every test document: assert sourceText is non-empty, and either sourceRef is non-null or a provenance_note field is set. For every LowerResult, assert the clauseId matches a clause in the source IRDocument. Any violation is a provenance gap.",
+      "lean_connection": "LegalLean.IR.Legal.Clause fields: sourceText (String) and sourceRef (Option String). The Option type permits explicit null but requires annotation. LegalLean.IR.Lower.LowerResult.boundary and .rule both carry clauseId.",
+      "severity": "blocking",
+      "references": ["LegalLean/IR/Legal.lean:Clause", "LegalLean/IR/Lower.lean:LowerResult"]
+    },
+    {
+      "id": "KPI-007",
+      "name": "IR Normalisation Idempotence",
+      "description": "The full normalisation pass (N1 voice canonicalisation, N2 double-negative elimination, N3 exception flattening, N4 cross-reference sorting) must be idempotent [applying it twice gives the same result as applying it once]: normalise(normalise(c)) == normalise(c) for all test clauses. This property is proved in Normalise.lean but two sub-proofs carry `sorry` (flattenExceptions_idempotent and normaliseCrossRefs_idempotent). KPI-007 requires that the empirical test confirms idempotence for 100% of test cases even while the formal proof is pending completion.",
+      "metric": "idempotent_clauses / total_test_clauses",
+      "threshold": "== 1.00",
+      "measurement": "For each clause in the covering-array test suite, run normalise twice and compare outputs using structural equality on all Clause fields. Any mismatch is a failure. Note: the Lean theorem normalise_idempotent currently carries `sorry`; this KPI measures the empirical property independently of the formal proof.",
+      "lean_connection": "LegalLean.IR.Normalise.normalise and normalise_idempotent. The sorry in flattenExceptions_idempotent (line 82) and normaliseCrossRefs_idempotent (line 108) are the known gaps; closing them is a separate work item.",
+      "severity": "blocking",
+      "notes": "The formal idempotence proof has two `sorry` placeholders pending List.mergeSort_idem. The empirical check in this KPI is necessary but not sufficient: it cannot substitute for closing the formal proof. Track sorry elimination separately.",
+      "references": ["LegalLean/IR/Normalise.lean:normalise_idempotent", "LegalLean/IR/Normalise.lean:flattenExceptions_idempotent"]
+    },
+    {
+      "id": "KPI-008",
+      "name": "Build Compilation Success",
+      "description": "All Lean 4 source files in the LegalLean package must compile against Lean 4 v4.24.0 (the Aristotle release) without errors. No file may introduce new `error` diagnostics. `sorry` usage is tracked separately (KPI-010) but does not constitute a compilation failure. This is the baseline gate: a release that does not compile is not a release.",
+      "metric": "files_compiling_cleanly / total_lean_files",
+      "threshold": "== 1.00",
+      "measurement": "Run `lake build` in the repo root. Parse the output for `error:` lines (not `warning:` lines). Count files with zero errors. Compilation warnings are permitted but must not increase release-over-release.",
+      "lean_connection": "lakefile.lean defines the package. All .lean files under LegalLean/ must contribute zero errors to `lake build` output.",
+      "severity": "blocking",
+      "references": ["lakefile.lean", "lean-toolchain"]
+    },
+    {
+      "id": "KPI-009",
+      "name": "Covering Array Coverage",
+      "description": "The test suite must cover at least 80% of all 3-way (t=3) interaction tuples across the 8 factors in the factorial hardening matrix. A 3-way interaction tuple is a specific combination of levels for 3 chosen factors (e.g. voice=passive, modality=shall, negation=double_negative). The 8 factors have between 3 and 5 levels each, yielding a large but finite interaction space. 80% 3-way coverage ensures that systematic mistranslations affecting any triple of factor values are exposed with high probability.",
+      "metric": "covered_3way_tuples / total_3way_tuples",
+      "threshold": ">= 0.80",
+      "measurement": "Enumerate all C(8,3) = 56 factor triples. For each triple, enumerate all level combinations (3-5 per factor). For each combination, check whether at least one test case in the suite instantiates that triple. Divide covered triples by total triples. Use ACTS or PICT output to verify the covering array design property.",
+      "lean_connection": "The covering array is to be encoded as a Lean 4 structure with a t-way coverage proof (separate REQ-016 acceptance criterion). This KPI measures the empirical property; the Lean proof verifies it formally.",
+      "severity": "blocking",
+      "references": ["arguments/factor-coverage-matrix.json", "REQ-014", "REQ-016 acceptance criteria: covering array Lean encoding"]
+    },
+    {
+      "id": "KPI-010",
+      "name": "Theorem Regression Rate",
+      "description": "Zero existing theorems may regress between releases. A regression is defined as: a theorem that compiled and was provable (no `sorry`) in the previous release that now fails to compile, introduces a new `sorry`, or changes proof status from proved to admitted. New theorems introduced in a release may carry `sorry` (tracked separately) but must not break existing proved theorems. The sorry count may not increase release-over-release for theorems that were previously sorry-free.",
+      "metric": "regressed_theorems / total_theorems_in_previous_release",
+      "threshold": "== 0.00",
+      "measurement": "Maintain a theorem manifest (list of theorem names, files, line numbers, sorry status) from the previous release. On each candidate release, diff the manifest. Any theorem whose sorry status moved from false to true, or whose compilation status moved from success to error, is a regression. The covering matrix JSON (arguments/factor-coverage-matrix.json) with 44 theorems is the baseline manifest for Phase 4.",
+      "lean_connection": "The 44 theorems in factor-coverage-matrix.json are the current baseline. The theorem manifest is the extensional [output-judged] record of what is proved. LegalLean/TypeclassConstraint.lean, LegalLean/CaseStudies/IRC163h/Theorems.lean, and IR/Normalise.lean contain the primary theorem inventory.",
+      "severity": "blocking",
+      "references": ["arguments/factor-coverage-matrix.json", "LegalLean/IR/Normalise.lean", "VERIFICATION.md"]
+    }
+  ],
+  "release_levels": [
+    {
+      "level": "alpha",
+      "label": "Internal / Research Preview",
+      "description": "Suitable for internal use by the LegalLean authors and close collaborators. Correctness properties are being established; some KPIs are relaxed to allow exploration of threshold calibration. Not for external distribution or use in legal advice.",
+      "required_kpis": [
+        {
+          "kpi_id": "KPI-001",
+          "threshold_override": "<= 0.10",
+          "rationale": "Phase 2 baselines not yet established; 10% false precision is acceptable for calibration."
+        },
+        {
+          "kpi_id": "KPI-002",
+          "threshold_override": ">= 0.75",
+          "rationale": "Equivalence oracle may have gaps before quotient types (REQ-015) are applied."
+        },
+        {
+          "kpi_id": "KPI-003",
+          "threshold_override": ">= 0.70",
+          "rationale": "Abstention calibration is iterative; 70% precision acceptable at alpha."
+        },
+        {
+          "kpi_id": "KPI-004",
+          "threshold_override": ">= 0.85",
+          "rationale": "Voice normalisation is structurally proved but transducer calibration is in progress."
+        },
+        {
+          "kpi_id": "KPI-005",
+          "threshold_override": ">= 0.80",
+          "rationale": "Wording-change stability is the hardest to achieve before covering array is complete."
+        },
+        {
+          "kpi_id": "KPI-006",
+          "threshold_override": "== 1.00",
+          "rationale": "Provenance completeness is non-negotiable even at alpha; the audit chain is architectural."
+        },
+        {
+          "kpi_id": "KPI-007",
+          "threshold_override": "== 1.00",
+          "rationale": "Idempotence is empirically checkable; any failure indicates a normalisation bug, not a calibration issue."
+        },
+        {
+          "kpi_id": "KPI-008",
+          "threshold_override": "== 1.00",
+          "rationale": "Compilation is the minimum bar; non-compiling code is not a release."
+        },
+        {
+          "kpi_id": "KPI-009",
+          "threshold_override": ">= 0.60",
+          "rationale": "60% 3-way coverage is sufficient to identify systematic factor-level failures during internal review."
+        },
+        {
+          "kpi_id": "KPI-010",
+          "threshold_override": "== 0.00",
+          "rationale": "Zero regressions is mandatory at all release levels; regressing a proved theorem is always blocking."
+        }
+      ],
+      "additional_gates": [
+        "At least 3 of the 8 factors have been exercised end-to-end (NL input -> IR output -> Lean compilation)",
+        "The IR (Legal.lean, Normalise.lean, Lower.lean) compiles with zero errors",
+        "factor-coverage-matrix.json is up to date and reflects the current theorem inventory"
+      ]
+    },
+    {
+      "level": "beta",
+      "label": "External Preview / Partner Evaluation",
+      "description": "Suitable for evaluation by external legal technology partners, academic collaborators, and pilot customers. The pipeline is stable enough for structured feedback. Not for use in production legal workflows or client-facing advice.",
+      "required_kpis": [
+        {
+          "kpi_id": "KPI-001",
+          "threshold_override": "<= 0.07",
+          "rationale": "Tightened from alpha but allowing margin while covering array is still being expanded."
+        },
+        {
+          "kpi_id": "KPI-002",
+          "threshold_override": ">= 0.85",
+          "rationale": "Equivalence oracle should be reliable for the tested synonym set."
+        },
+        {
+          "kpi_id": "KPI-003",
+          "threshold_override": ">= 0.80",
+          "rationale": "Abstention quality is improving; 80% acceptable for partner evaluation."
+        },
+        {
+          "kpi_id": "KPI-004",
+          "threshold_override": ">= 0.90",
+          "rationale": "Voice paraphrase stability should be near-perfect given structural normalisation."
+        },
+        {
+          "kpi_id": "KPI-005",
+          "threshold_override": ">= 0.85",
+          "rationale": "Surface-variant stability is measurable once Phase 2 buckets are populated."
+        },
+        {
+          "kpi_id": "KPI-006",
+          "threshold_override": "== 1.00",
+          "rationale": "Non-negotiable at all levels."
+        },
+        {
+          "kpi_id": "KPI-007",
+          "threshold_override": "== 1.00",
+          "rationale": "Non-negotiable at all levels."
+        },
+        {
+          "kpi_id": "KPI-008",
+          "threshold_override": "== 1.00",
+          "rationale": "Non-negotiable at all levels."
+        },
+        {
+          "kpi_id": "KPI-009",
+          "threshold_override": ">= 0.70",
+          "rationale": "70% 3-way coverage catches most systematic factor interactions. 80% is the stable gate."
+        },
+        {
+          "kpi_id": "KPI-010",
+          "threshold_override": "== 0.00",
+          "rationale": "Non-negotiable at all levels."
+        }
+      ],
+      "additional_gates": [
+        "All 8 factors exercised end-to-end",
+        "At least one case study (IRC 163(h) or O-1A) fully lowers with zero boundary leakage on well-defined clauses",
+        "The sorry count in Normalise.lean has not increased relative to the previous release",
+        "Theorem manifest is committed and diff against previous release shows zero regressions",
+        "QUALITY-CHECKLIST.md passes all items"
+      ]
+    },
+    {
+      "level": "stable",
+      "label": "Production / Publication-Ready",
+      "description": "Suitable for use in production legal technology workflows, external publication (arXiv, JURIX, ICAIL), and client-facing demonstrations. All KPIs meet their canonical thresholds. The pipeline is hardened against the 8-factor interaction space to the 80% 3-way coverage standard.",
+      "required_kpis": [
+        {
+          "kpi_id": "KPI-001",
+          "threshold_override": null,
+          "rationale": "Canonical threshold (<= 0.05) applies."
+        },
+        {
+          "kpi_id": "KPI-002",
+          "threshold_override": null,
+          "rationale": "Canonical threshold (>= 0.90) applies."
+        },
+        {
+          "kpi_id": "KPI-003",
+          "threshold_override": null,
+          "rationale": "Canonical threshold (>= 0.85) applies."
+        },
+        {
+          "kpi_id": "KPI-004",
+          "threshold_override": null,
+          "rationale": "Canonical threshold (>= 0.95) applies."
+        },
+        {
+          "kpi_id": "KPI-005",
+          "threshold_override": null,
+          "rationale": "Canonical threshold (>= 0.90) applies."
+        },
+        {
+          "kpi_id": "KPI-006",
+          "threshold_override": null,
+          "rationale": "Canonical threshold (== 1.00) applies."
+        },
+        {
+          "kpi_id": "KPI-007",
+          "threshold_override": null,
+          "rationale": "Canonical threshold (== 1.00) applies."
+        },
+        {
+          "kpi_id": "KPI-008",
+          "threshold_override": null,
+          "rationale": "Canonical threshold (== 1.00) applies."
+        },
+        {
+          "kpi_id": "KPI-009",
+          "threshold_override": null,
+          "rationale": "Canonical threshold (>= 0.80) applies."
+        },
+        {
+          "kpi_id": "KPI-010",
+          "threshold_override": null,
+          "rationale": "Canonical threshold (== 0.00) applies."
+        }
+      ],
+      "additional_gates": [
+        "All `sorry` placeholders in Normalise.lean (flattenExceptions_idempotent, normaliseCrossRefs_idempotent, normalise_idempotent) are either closed or formally replaced by Aristotle-generated proofs with Mathlib tactics",
+        "The covering array is encoded as a Lean 4 structure with a machine-checked t-way coverage proof (REQ-016 acceptance criterion)",
+        "Theorem manifest shows zero regressions against beta release baseline",
+        "VERIFICATION.md is updated to reflect all KPI measurements and their evidence",
+        "The monograph (verified-legal-reasoning.md) cites the KPI results in a new empirical evaluation section",
+        "No new `sorry` introduced in any file that was sorry-free in the beta release",
+        "The factor-coverage-matrix.json theorem inventory has >= 44 entries (current baseline) with all entries compiling cleanly"
+      ]
+    }
+  ],
+  "measurement_protocol": {
+    "description": "How to measure KPIs at each candidate release point.",
+    "steps": [
+      {
+        "step": 1,
+        "action": "Run `lake build` and capture output. Fail immediately on any `error:` line (KPI-008)."
+      },
+      {
+        "step": 2,
+        "action": "Diff theorem manifest against previous release baseline. Any regression blocks the release (KPI-010)."
+      },
+      {
+        "step": 3,
+        "action": "Run the covering-array test suite against the current IR pipeline. Compute KPI-001, KPI-002, KPI-003, KPI-004, KPI-005 from the oracle-labelled outputs."
+      },
+      {
+        "step": 4,
+        "action": "For each test clause, run normalise twice and assert structural equality (KPI-007)."
+      },
+      {
+        "step": 5,
+        "action": "Check provenance fields on every Clause and every LowerResult in the test suite (KPI-006)."
+      },
+      {
+        "step": 6,
+        "action": "Compute 3-way tuple coverage from the covering array design (KPI-009)."
+      },
+      {
+        "step": 7,
+        "action": "Record all KPI values, thresholds, and pass/fail status in VERIFICATION.md as the release evidence record."
+      }
+    ]
+  },
+  "open_items": [
+    {
+      "item": "KPI-002 equivalence oracle",
+      "status": "pending Phase 2 completion (REQ-014)",
+      "note": "The T1<->T2 oracle is described in monograph Section 7.2 and REQ-014 but is not yet implemented. KPI-002 cannot be measured until the oracle exists."
+    },
+    {
+      "item": "KPI-007 formal proof gaps",
+      "status": "two `sorry` placeholders in Normalise.lean (lines 82, 108)",
+      "note": "flattenExceptions_idempotent and normaliseCrossRefs_idempotent both rely on List.mergeSort_idem which is not in Lean 4 core. Closing these requires Mathlib or a custom proof. Tracked separately from the empirical KPI-007 check."
+    },
+    {
+      "item": "KPI-009 Lean encoding of covering array",
+      "status": "pending REQ-016 acceptance criterion",
+      "note": "The empirical coverage check (this KPI) is separable from the formal Lean proof of coverage. The formal proof is a separate REQ-016 deliverable."
+    },
+    {
+      "item": "Baseline measurement",
+      "status": "pending Phase 2 completion (REQ-014)",
+      "note": "Most KPIs require the Phase 2 test suite as input. Until REQ-014 is complete, KPI values can only be estimated on the existing 44-theorem corpus. The first measurable release is alpha, after REQ-014 delivers the covering array."
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "dimension": "open texture encoding",
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Compare how the following legal formalisation systems handle\nopen texture encoding. Return a JSON object:\n\n{\n  \"dimension\": \"open texture encoding\",\n  \"systems\": [\n    {\n      \"name\": \"string — system name\",\n      \"approach\": \"string — how it handles this dimension\",\n      \"strengths\": [\"string\"],\n      \"limitations\": [\"string\"],\n      \"key_paper\": \"string — citation\",\n      \"expressiveness_score\": \"1-5 (1=absent, 5=fully native)\"\n    }\n  ],\n  \"legallean_advantage\": \"string — where dependent types in Lean 4 add value\",\n  \"legallean_limitation\": \"string — honest assessment of gaps\"\n}\n\nSystems to compare: DDL (Governatori), Catala (Merigoux), L4L (Hou et al.),\nLegalRuleML (Palmirani), LegalLean (our system — Lean 4 dependent types with\nFormalisationBoundary for open texture).\n\nDimension: open texture encoding\nContext: How each system handles vague legal terms (e.g. 'reasonable', 'extraordinary'). Include: Hart's core/penumbra distinction."
+  },
+  "results": {
+    "models_queried": [
+      "sonar-pro"
+    ],
+    "responses": [
+      {
+        "model": "sonar-pro",
+        "answer_raw": "```json\n{\n  \"dimension\": \"open texture encoding\",\n  \"systems\": [\n    {\n      \"name\": \"DDL (Governatori)\",\n      \"approach\": \"Defeasible logic with defeaters and strict rules to model Hart's core/penumbra distinction; vague predicates handled via underdeterminism and proof standards (e.g., preponderance), allowing multiple applicable rules with preference-based resolution for borderline cases.\",\n      \"strengths\": [\n        \"Native non-monotonic reasoning captures penumbral ambiguity without forcing binary decisions.\",\n        \"Proof standards encode evidential burdens for 'reasonable' terms.\"\n      ],\n      \"limitations\": [\n        \"Requires manual encoding of defeaters for each vague term, scaling poorly.\",\n        \"No explicit core/penumbra separation; relies on rule priorities rather than semantic boundaries.\"\n      ],\n      \"key_paper\": \"Governatori, G. (2005). 'Defeasible Logic: A Robust and Expressive Legal Reasoning System'. In ICAIL.\",\n      \"expressiveness_score\": \"4\"\n    },\n    {\n      \"name\": \"Catala (Merigoux)\",\n      \"approach\": \"Structured programming language with explicit scope hierarchies and exception clauses; open texture handled through programmable defaults and conditionals that implement judicial discretion points, but vague terms must be operationalized into crisp tests.\",\n      \"strengths\": [\n        \"Reproducible computations for core cases via scope resolution.\",\n        \"Handles exceptions hierarchically, approximating penumbra via layered conditions.\"\n      ],\n      \"limitations\": [\n        \"Forces premature disambiguation of vague terms into code, losing penumbral uncertainty.\",\n        \"No native support for Hart's distinction; penumbra becomes explicit branching rather than inherent vagueness.\",\n        \"Poor for non-numerical vagueness like 'extraordinary' without external oracles.\"\n      ],\n      \"key_paper\": \"Merigoux, D., et al. (2021). 'Catala: A Domain-Specific Language for Implementing Reference Tax Codes'. PLDI.\",\n      \"expressiveness_score\": \"2\"\n    },\n    {\n      \"name\": \"L4L (Hou et al.)\",\n      \"approach\": \"Higher-order logic (HOL) encoding with parametric predicates for vagueness; open texture via uninterpreted functions or sorites-style predicates that defer classification to proof context, implementing core via definitional extensions and penumbra via undecidability.\",\n      \"strengths\": [\n        \"HOL expressiveness allows meta-level reasoning about vagueness predicates.\",\n        \"Can encode Hart's distinction using proof obligations that fail in penumbra.\"\n      ],\n      \"limitations\": [\n        \"Vague terms become HOL constants requiring instantiation, not dynamically open.\",\n        \"Penumbra handling requires custom tactics, not language-native.\",\n        \"Scalability issues for large rulebases with embedded vagueness.\"\n      ],\n      \"key_paper\": \"Hou, Z., et al. (2023). 'L4L: A Higher-Order Logic Framework for Legal Reasoning'. arXiv preprint.\",\n      \"expressiveness_score\": \"3\"\n    },\n    {\n      \"name\": \"LegalRuleML (Palmirani)\",\n      \"approach\": \"XML-based markup with <Annotations> and <PrescriptiveStatement> elements linking vague terms to external goal models or DCR graphs; core encoded in XML rules, penumbra deferred to layered models (normative → process → goal) with traceability links.\",\n      \"strengths\": [\n        \"Explicit annotation structure preserves vagueness while linking to disambiguation models.\",\n        \"Traceability supports Hart's distinction by mapping XML to measurable goal decompositions.\"\n      ],\n      \"limitations\": [\n        \"Vagueness not computationally native; requires external tools (i* goals, DCR) for resolution.\",\n        \"XML verbosity hinders formal verification; penumbra resolution is model-external.\",\n        \"No machine-checkable semantics for interpretive discretion.\"\n      ],\n      \"key_paper\": \"Palmirani, M. (2017). 'LegalRuleML: Design Principles and Foundations'. In RuleML.\",\n      \"expressiveness_score\": \"2\"\n    },\n    {\n      \"name\": \"LegalLean (Lean 4 dependent types)\",\n      \"approach\": \"Dependent types with FormalisationBoundary proposition; vague terms encoded as type families indexed by evidence contexts (e.g., Reasonable : evidence → Prop); core decidable via typecheckers, penumbra explicit as boundary cases requiring proof search or oracles, with sorites chains machine-checked.\",\n      \"strengths\": [\n        \"Native dependent types quantify over interpretive discretion.\",\n        \"FormalisationBoundary enforces Hart's core/penumbra as type-level distinctions with proof obligations.\",\n        \"Machine-checked monotonic extensions prevent sorites paradoxes.\"\n      ],\n      \"limitations\": [\n        \"Requires Lean expertise for boundary proofs.\",\n        \"Penumbra cases remain semi-decidable without external oracles.\"\n      ],\n      \"key_paper\": \"LegalLean Consortium (2026). 'Dependent Types for Open Texture: FormalisationBoundary in Lean 4'. ICAIL 2026.\",\n      \"expressiveness_score\": \"5\"\n    }\n  ],\n  \"legallean_advantage\": \"Dependent types make Hart's core/penumbra distinction *type-native*: core cases typecheck automatically, penumbra requires explicit proofs (encoding judicial discretion), and FormalisationBoundary prevents invalid sorites inferences while preserving undecidability where required.\",\n  \"legallean_limitation\": \"Proof engineering overhead for complex penumbra cases; no built-in oracles for empirical vagueness ('reasonable time' requires external data integration); Lean 4 elaboration can obscure interpretive choices from non-expert stakeholders.\"\n}\n```",
+        "answer_parsed": {
+          "dimension": "open texture encoding",
+          "systems": [
+            {
+              "name": "DDL (Governatori)",
+              "approach": "Defeasible logic with defeaters and strict rules to model Hart's core/penumbra distinction; vague predicates handled via underdeterminism and proof standards (e.g., preponderance), allowing multiple applicable rules with preference-based resolution for borderline cases.",
+              "strengths": [
+                "Native non-monotonic reasoning captures penumbral ambiguity without forcing binary decisions.",
+                "Proof standards encode evidential burdens for 'reasonable' terms."
+              ],
+              "limitations": [
+                "Requires manual encoding of defeaters for each vague term, scaling poorly.",
+                "No explicit core/penumbra separation; relies on rule priorities rather than semantic boundaries."
+              ],
+              "key_paper": "Governatori, G. (2005). 'Defeasible Logic: A Robust and Expressive Legal Reasoning System'. In ICAIL.",
+              "expressiveness_score": "4"
+            },
+            {
+              "name": "Catala (Merigoux)",
+              "approach": "Structured programming language with explicit scope hierarchies and exception clauses; open texture handled through programmable defaults and conditionals that implement judicial discretion points, but vague terms must be operationalized into crisp tests.",
+              "strengths": [
+                "Reproducible computations for core cases via scope resolution.",
+                "Handles exceptions hierarchically, approximating penumbra via layered conditions."
+              ],
+              "limitations": [
+                "Forces premature disambiguation of vague terms into code, losing penumbral uncertainty.",
+                "No native support for Hart's distinction; penumbra becomes explicit branching rather than inherent vagueness.",
+                "Poor for non-numerical vagueness like 'extraordinary' without external oracles."
+              ],
+              "key_paper": "Merigoux, D., et al. (2021). 'Catala: A Domain-Specific Language for Implementing Reference Tax Codes'. PLDI.",
+              "expressiveness_score": "2"
+            },
+            {
+              "name": "L4L (Hou et al.)",
+              "approach": "Higher-order logic (HOL) encoding with parametric predicates for vagueness; open texture via uninterpreted functions or sorites-style predicates that defer classification to proof context, implementing core via definitional extensions and penumbra via undecidability.",
+              "strengths": [
+                "HOL expressiveness allows meta-level reasoning about vagueness predicates.",
+                "Can encode Hart's distinction using proof obligations that fail in penumbra."
+              ],
+              "limitations": [
+                "Vague terms become HOL constants requiring instantiation, not dynamically open.",
+                "Penumbra handling requires custom tactics, not language-native.",
+                "Scalability issues for large rulebases with embedded vagueness."
+              ],
+              "key_paper": "Hou, Z., et al. (2023). 'L4L: A Higher-Order Logic Framework for Legal Reasoning'. arXiv preprint.",
+              "expressiveness_score": "3"
+            },
+            {
+              "name": "LegalRuleML (Palmirani)",
+              "approach": "XML-based markup with <Annotations> and <PrescriptiveStatement> elements linking vague terms to external goal models or DCR graphs; core encoded in XML rules, penumbra deferred to layered models (normative → process → goal) with traceability links.",
+              "strengths": [
+                "Explicit annotation structure preserves vagueness while linking to disambiguation models.",
+                "Traceability supports Hart's distinction by mapping XML to measurable goal decompositions."
+              ],
+              "limitations": [
+                "Vagueness not computationally native; requires external tools (i* goals, DCR) for resolution.",
+                "XML verbosity hinders formal verification; penumbra resolution is model-external.",
+                "No machine-checkable semantics for interpretive discretion."
+              ],
+              "key_paper": "Palmirani, M. (2017). 'LegalRuleML: Design Principles and Foundations'. In RuleML.",
+              "expressiveness_score": "2"
+            },
+            {
+              "name": "LegalLean (Lean 4 dependent types)",
+              "approach": "Dependent types with FormalisationBoundary proposition; vague terms encoded as type families indexed by evidence contexts (e.g., Reasonable : evidence → Prop); core decidable via typecheckers, penumbra explicit as boundary cases requiring proof search or oracles, with sorites chains machine-checked.",
+              "strengths": [
+                "Native dependent types quantify over interpretive discretion.",
+                "FormalisationBoundary enforces Hart's core/penumbra as type-level distinctions with proof obligations.",
+                "Machine-checked monotonic extensions prevent sorites paradoxes."
+              ],
+              "limitations": [
+                "Requires Lean expertise for boundary proofs.",
+                "Penumbra cases remain semi-decidable without external oracles."
+              ],
+              "key_paper": "LegalLean Consortium (2026). 'Dependent Types for Open Texture: FormalisationBoundary in Lean 4'. ICAIL 2026.",
+              "expressiveness_score": "5"
+            }
+          ],
+          "legallean_advantage": "Dependent types make Hart's core/penumbra distinction *type-native*: core cases typecheck automatically, penumbra requires explicit proofs (encoding judicial discretion), and FormalisationBoundary prevents invalid sorites inferences while preserving undecidability where required.",
+          "legallean_limitation": "Proof engineering overhead for complex penumbra cases; no built-in oracles for empirical vagueness ('reasonable time' requires external data integration); Lean 4 elaboration can obscure interpretive choices from non-expert stakeholders."
+        },
+        "citations": [
+          "https://bpb-us-e1.wpmucdn.com/sites.northwestern.edu/dist/c/8101/files/2025/06/ICAIL25_DC_Juanita-Caballero-Villalobos_final.pdf",
+          "https://www.csc.liv.ac.uk/~tbc/publications/bcvisser97.pdf",
+          "https://www.alexandria.unisg.ch/entities/publication/1de8c4c7-a27e-4f1e-aa9f-334932cafca3",
+          "https://orbilu.uni.lu/bitstream/10993/53302/1/Extraamas_2022.pdf",
+          "https://pmc.ncbi.nlm.nih.gov/articles/PMC10172645/",
+          "https://arxiv.org/html/2509.00141v1"
+        ],
+        "usage": {
+          "prompt_tokens": 357,
+          "completion_tokens": 1213,
+          "total_tokens": 1570,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00107,
+            "output_tokens_cost": 0.01819,
+            "request_cost": 0.006,
+            "total_cost": 0.02527
+          }
+        }
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 1,
+      "total_models": 1,
+      "all_citations": [
+        "https://orbilu.uni.lu/bitstream/10993/53302/1/Extraamas_2022.pdf",
+        "https://www.csc.liv.ac.uk/~tbc/publications/bcvisser97.pdf",
+        "https://arxiv.org/html/2509.00141v1",
+        "https://www.alexandria.unisg.ch/entities/publication/1de8c4c7-a27e-4f1e-aa9f-334932cafca3",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC10172645/",
+        "https://bpb-us-e1.wpmucdn.com/sites.northwestern.edu/dist/c/8101/files/2025/06/ICAIL25_DC_Juanita-Caballero-Villalobos_final.pdf"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:39:55Z"
+}

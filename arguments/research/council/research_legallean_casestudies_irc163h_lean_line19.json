@@ -1,0 +1,621 @@
+{
+  "stub": {
+    "file": "LegalLean/CaseStudies/IRC163h.lean",
+    "line": 19,
+    "context": "  4. Demonstrates defeasibility (exceptions to the deduction)\n\n  Reference: Lawsky, \"A Logic for Statutes\", Florida Tax Review (2017).\n-/\n\nimport LegalLean.Core\nimport LegalLean.Defeasible\n\nnamespace LegalLean.CaseStudies.IRC163h\n\n-- TODO: Formalise IRC §163(h) mortgage interest deduction\n-- This is the first case study to implement.\n-- Scope: qualified residence interest, acquisition indebtedness limits,\n-- home equity indebtedness, and the TCJA modifications.\n",
+    "namespace": "LegalLean.CaseStudies.IRC163h",
+    "description": "Formalise IRC §163(h) mortgage interest deduction",
+    "case_study": "IRC §163(h) Mortgage Interest Deduction",
+    "target_types": [
+      "DefeasiblyHolds"
+    ]
+  },
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Analyse the following legal provision and return a JSON object\nwith this exact structure:\n\n{\n  \"provision\": {\n    \"id\": \"string — official citation\",\n    \"title\": \"string — short name\",\n    \"jurisdiction\": \"string\",\n    \"source_url\": \"string — authoritative source URL\"\n  },\n  \"rules\": [\n    {\n      \"id\": \"string — unique rule identifier\",\n      \"description\": \"string — what this rule establishes\",\n      \"modality\": \"permitted | prohibited | obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"string\",\n          \"description\": \"string — natural language condition\",\n          \"formalisable\": true/false,\n          \"if_not_formalisable\": \"string — why (vague term? discretionary?)\"\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"string\",\n          \"description\": \"string — what defeats this rule\",\n          \"priority\": \"string — why this exception wins (lex specialis, lex posterior, etc.)\",\n          \"source\": \"string — statutory reference for the exception\"\n        }\n      ],\n      \"definitions\": [\n        {\n          \"term\": \"string — defined term\",\n          \"definition\": \"string — statutory definition\",\n          \"has_open_texture\": true/false,\n          \"core_meaning\": \"string — settled, uncontested meaning\",\n          \"penumbra\": \"string — contested, unclear boundary cases\"\n        }\n      ]\n    }\n  ],\n  \"defeat_relations\": [\n    {\n      \"defeater_rule\": \"string — rule ID that defeats\",\n      \"defeated_rule\": \"string — rule ID that is defeated\",\n      \"reason\": \"string — why (lex specialis, lex posterior, lex superior, etc.)\",\n      \"strict\": true/false\n    }\n  ],\n  \"discretionary_checkpoints\": [\n    {\n      \"id\": \"string\",\n      \"authority\": \"string — who decides\",\n      \"decision\": \"string — what they decide\",\n      \"constraints\": [\"string — limits on their discretion\"],\n      \"gated_rule\": \"string — which rule this gates\"\n    }\n  ],\n  \"open_texture_terms\": [\n    {\n      \"term\": \"string\",\n      \"type\": \"vague | discretionary\",\n      \"core\": \"string — clear cases\",\n      \"penumbra\": \"string — unclear cases\",\n      \"authority\": \"string — who resolves ambiguity\",\n      \"case_law\": [\"string — key cases interpreting this term\"]\n    }\n  ],\n  \"key_references\": [\n    {\n      \"author\": \"string\",\n      \"title\": \"string\",\n      \"year\": \"number\",\n      \"relevance\": \"string\",\n      \"url\": \"string\"\n    }\n  ]\n}\n\nLegal provision to analyse:\nIRC §163(h) Mortgage Interest Deduction\n\nAdditional context:\nThis is for the LegalLean monograph. We need to formalise this provision in Lean 4 dependent type theory.\n\nThe stub is in LegalLean/CaseStudies/IRC163h.lean at line 19.\nTarget LegalLean types: DefeasiblyHolds.\n\nCode context:\n  4. Demonstrates defeasibility (exceptions to the deduction)\n\n  Reference: Lawsky, \"A Logic for Statutes\", Florida Tax Review (2017).\n-/\n\nimport LegalLean.Core\nimport LegalLean.Defeasible\n\nnamespace LegalLean.CaseStudies.IRC163h\n\n-- TODO: Formalise IRC §163(h) mortgage interest deduction\n-- This is the first case study to implement.\n-- Scope: qualified residence interest, acquisition indebtedness limits,\n-- home equity indebtedness, and the TCJA modifications.\n\n\nBe especially thorough about:\n1. Every condition and sub-condition for the rule to apply\n2. Every exception that can defeat the rule\n3. Every term with open texture (vagueness or discretion)\n4. The defeat priority ordering between rules\n5. Who has discretion and what constrains it"
+  },
+  "results": {
+    "models_queried": [
+      "sonar",
+      "sonar-pro",
+      "sonar-reasoning"
+    ],
+    "responses": [
+      {
+        "model": "sonar",
+        "answer_raw": "```json\n{\n  \"provision\": {\n    \"id\": \"26 U.S.C. § 163(h)\",\n    \"title\": \"Mortgage Interest Deduction\",\n    \"jurisdiction\": \"United States (Federal Tax Code)\",\n    \"source_url\": \"https://www.law.cornell.edu/uscode/text/26/163\"\n  },\n  \"rules\": [\n    {\n      \"id\": \"R1\",\n      \"description\": \"General prohibition on deduction of personal interest\",\n      \"modality\": \"prohibited\",\n      \"conditions\": [\n        {\n          \"id\": \"C1.1\",\n          \"description\": \"Interest paid or accrued during taxable year is personal interest\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"Requires classification of interest type per §163(d) cross-reference\"\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"E1.1\",\n          \"description\": \"Qualified residence interest is deductible\",\n          \"priority\": \"statutory exception (lex specialis)\",\n          \"source\": \"§163(h)(2)(D), §163(h)(3), §163(h)(4)\"\n        },\n        {\n          \"id\": \"E1.2\", \n          \"description\": \"Investment interest allowed under §163(d)\",\n          \"priority\": \"statutory exception (lex specialis)\",\n          \"source\": \"§163(h)(2)(B)\"\n        }\n      ],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"R2\", \n      \"description\": \"Deduction permitted for qualified residence interest\",\n      \"modality\": \"permitted\",\n      \"conditions\": [\n        {\n          \"id\": \"C2.1\",\n          \"description\": \"Interest is paid or accrued on indebtedness with respect to qualified residence\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'qualified residence' has open texture\"\n        },\n        {\n          \"id\": \"C2.2\",\n          \"description\": \"Indebtedness is acquisition indebtedness (≤$1M) OR home equity indebtedness (≤$100K)\",\n          \"formalisable\": true,\n          \"if_not_formalisable\": \"\"\n        },\n        {\n          \"id\": \"C2.3\",\n          \"description\": \"Taxpayer itemizes deductions on Schedule A\",\n          \"formalisable\": true,\n          \"if_not_formalisable\": \"\"\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"E2.1\",\n          \"description\": \"Post-TCJA (2018+): home equity interest not deductible unless used to buy/build/substantially improve qualified residence\",\n          \"priority\": \"lex posterior (TCJA amendment)\",\n          \"source\": \"§163(h)(4)(C) as amended by TCJA §11045\"\n        }\n      ],\n      \"definitions\": [\n        {\n          \"term\": \"qualified residence\",\n          \"definition\": \"Main home + 1 other residence used personally during year (or nearby vacant land)\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Primary residence + clearly personal second home used >14 days\",\n          \"penumbra\": \"Timeshares, boats, mobile homes, land not demonstrably intended for residence\"\n        },\n        {\n          \"term\": \"acquisition indebtedness\", \n          \"definition\": \"Debt secured by qualified residence, incurred to acquire/build/improve property (≤$1M/$500K MFJ)\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Purchase money mortgages, construction loans\",\n          \"penumbra\": \"Refinancing exceeding original principal, home equity lines for non-improvement\"\n        },\n        {\n          \"term\": \"home equity indebtedness\",\n          \"definition\": \"Other debt secured by qualified residence (≤$100K), pre-TCJA\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"HELOCs/cash-out refis for any purpose (pre-2018)\",\n          \"penumbra\": \"Post-TCJA: only if proceeds used for home improvement\"\n        }\n      ]\n    },\n    {\n      \"id\": \"R3\",\n      \"description\": \"Acquisition indebtedness limit ($1M/$500K MFJ)\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"C3.1\",\n          \"description\": \"Aggregate acquisition indebtedness exceeds $1M ($500K MFJ)\",\n          \"formalisable\": true,\n          \"if_not_formalisable\": \"\"\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    }\n  ],\n  \"defeat_relations\": [\n    {\n      \"defeater_rule\": \"R2\",\n      \"defeated_rule\": \"R1\", \n      \"reason\": \"lex specialis - qualified residence interest explicitly excepted from personal interest disallowance\",\n      \"strict\": true\n    },\n    {\n      \"defeater_rule\": \"E2.1\",\n      \"defeated_rule\": \"R2\",\n      \"reason\": \"lex posterior - TCJA §11045 suspended home equity deduction 2018-2025\",\n      \"strict\": true\n    }\n  ],\n  \"discretionary_checkpoints\": [\n    {\n      \"id\": \"D1\",\n      \"authority\": \"IRS/Tax Court\",\n      \"decision\": \"Whether property qualifies as 'qualified residence'\",\n      \"constraints\": [\"Taxpayer must demonstrate personal use\", \"Cannot be primarily rental property\"],\n      \"gated_rule\": \"R2\"\n    },\n    {\n      \"id\": \"D2\",\n      \"authority\": \"IRS/Tax Court\", \n      \"decision\": \"Whether debt proceeds were used to 'substantially improve' qualified residence (post-TCJA)\",\n      \"constraints\": [\"Must materially add to value or prolong useful life\", \"Routine maintenance excluded\"],\n      \"gated_rule\": \"R2\"\n    }\n  ],\n  \"open_texture_terms\": [\n    {\n      \"term\": \"qualified residence\",\n      \"type\": \"vague\",\n      \"core\": \"Single-family home, condo, co-op apartment used personally\",\n      \"penumbra\": \"Houseboats, RVs, timeshares, raw land, properties used <14 days\",\n      \"authority\": \"IRS/Tax Court\",\n      \"case_law\": [\"Glicksman v. Commissioner (T.C. Memo 1997)\", \"Bolton v. Commissioner (T.C. Memo 2000)\"]\n    },\n    {\n      \"term\": \"substantially improve\",\n      \"type\": \"vague\",\n      \"core\": \"Additions, major renovations increasing value/useful life\",\n      \"penumbra\": \"Repainting, minor repairs, cosmetic upgrades\",\n      \"authority\": \"IRS/Tax Court\", \n      \"case_law\": [\"Post-TCJA guidance needed; analogous to capitalization rules §263A\"]\n    },\n    {\n      \"term\": \"secured debt\",\n      \"type\": \"vague\",\n      \"core\": \"First/second mortgages with recorded security interest\",\n      \"penumbra\": \"Unperfected security interests, unsecured loans repaid from home equity\",\n      \"authority\": \"IRS/Tax Court\",\n      \"case_law\": [\"Robinson v. Commissioner, 69 T.C. 822 (1978)\", \"Rev. Rul. 87-22\"]\n    }\n  ],\n  \"key_references\": [\n    {\n      \"author\": \"Sarah B. Lawsky\",\n      \"title\": \"A Logic for Statutes\",\n      \"year\": 2017,\n      \"relevance\": \"Formal methods framework for defeasible statutory reasoning (LegalLean target)\",\n      \"url\": \"https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2913699\"\n    },\n    {\n      \"author\": \"IRS\",\n      \"title\": \"Publication 936: Home Mortgage Interest Deduction\",\n      \"year\": 2025,\n      \"relevance\": \"Current administrative guidance on §163(h) conditions/exceptions\",\n      \"url\": \"https://www.irs.gov/publications/p936\"\n    },\n    {\n      \"author\": \"Tax Cuts and Jobs Act\",\n      \"title\": \"§11045 - Suspension of Home Equity Loan Interest Deduction\",\n      \"year\": 2017,\n      \"relevance\": \"Key amendment defeating pre-existing home equity rule\",\n      \"url\": \"https://www.congress.gov/bill/115th-congress/house-bill/1/text\"\n    }\n  ]\n}\n```\n\n**Formalization Notes for LegalLean/IRC163h.lean:**\n\n```lean\n-- Target: DefeasiblyHolds (R2, qualified_residence_interest)\n-- Defeaters: E2.1 (TCJA suspension), D1/D2 (IRS discretion)\n-- Key challenge: open_texture \"qualified_residence\" requires parametric predicates\ndef QualifiedResidence (prop : Property) : Prop := \n  -- Core: primary residence ∨ (secondary ∧ personal_use ≥ 14_days)\n  -- Penumbra: timeshares, boats, vacant land (IRS discretion)\n  ∃ (taxpayer : Taxpayer), PrimaryResidence taxpayer prop ∨ \n                          (SecondaryResidence taxpayer prop ∧ PersonalUseDays ≥ 14)\n\n-- TCJA defeat relation (2018 ≤ tax_year ≤ 2025)\ndef TCJAHomeEquityDefeat (debt : HomeEquityDebt) : Defeater R2 := \n  TaxYear ∈ [2018, 2025] ∧ ¬(ProceedsUsedForImprovement debt)\n```\n\nThis structure exposes all defeasibility points for `DefeasiblyHolds` encoding per Lawsky (2017).",
+        "answer_parsed": {
+          "provision": {
+            "id": "26 U.S.C. § 163(h)",
+            "title": "Mortgage Interest Deduction",
+            "jurisdiction": "United States (Federal Tax Code)",
+            "source_url": "https://www.law.cornell.edu/uscode/text/26/163"
+          },
+          "rules": [
+            {
+              "id": "R1",
+              "description": "General prohibition on deduction of personal interest",
+              "modality": "prohibited",
+              "conditions": [
+                {
+                  "id": "C1.1",
+                  "description": "Interest paid or accrued during taxable year is personal interest",
+                  "formalisable": false,
+                  "if_not_formalisable": "Requires classification of interest type per §163(d) cross-reference"
+                }
+              ],
+              "exceptions": [
+                {
+                  "id": "E1.1",
+                  "description": "Qualified residence interest is deductible",
+                  "priority": "statutory exception (lex specialis)",
+                  "source": "§163(h)(2)(D), §163(h)(3), §163(h)(4)"
+                },
+                {
+                  "id": "E1.2",
+                  "description": "Investment interest allowed under §163(d)",
+                  "priority": "statutory exception (lex specialis)",
+                  "source": "§163(h)(2)(B)"
+                }
+              ],
+              "definitions": []
+            },
+            {
+              "id": "R2",
+              "description": "Deduction permitted for qualified residence interest",
+              "modality": "permitted",
+              "conditions": [
+                {
+                  "id": "C2.1",
+                  "description": "Interest is paid or accrued on indebtedness with respect to qualified residence",
+                  "formalisable": false,
+                  "if_not_formalisable": "'qualified residence' has open texture"
+                },
+                {
+                  "id": "C2.2",
+                  "description": "Indebtedness is acquisition indebtedness (≤$1M) OR home equity indebtedness (≤$100K)",
+                  "formalisable": true,
+                  "if_not_formalisable": ""
+                },
+                {
+                  "id": "C2.3",
+                  "description": "Taxpayer itemizes deductions on Schedule A",
+                  "formalisable": true,
+                  "if_not_formalisable": ""
+                }
+              ],
+              "exceptions": [
+                {
+                  "id": "E2.1",
+                  "description": "Post-TCJA (2018+): home equity interest not deductible unless used to buy/build/substantially improve qualified residence",
+                  "priority": "lex posterior (TCJA amendment)",
+                  "source": "§163(h)(4)(C) as amended by TCJA §11045"
+                }
+              ],
+              "definitions": [
+                {
+                  "term": "qualified residence",
+                  "definition": "Main home + 1 other residence used personally during year (or nearby vacant land)",
+                  "has_open_texture": true,
+                  "core_meaning": "Primary residence + clearly personal second home used >14 days",
+                  "penumbra": "Timeshares, boats, mobile homes, land not demonstrably intended for residence"
+                },
+                {
+                  "term": "acquisition indebtedness",
+                  "definition": "Debt secured by qualified residence, incurred to acquire/build/improve property (≤$1M/$500K MFJ)",
+                  "has_open_texture": true,
+                  "core_meaning": "Purchase money mortgages, construction loans",
+                  "penumbra": "Refinancing exceeding original principal, home equity lines for non-improvement"
+                },
+                {
+                  "term": "home equity indebtedness",
+                  "definition": "Other debt secured by qualified residence (≤$100K), pre-TCJA",
+                  "has_open_texture": true,
+                  "core_meaning": "HELOCs/cash-out refis for any purpose (pre-2018)",
+                  "penumbra": "Post-TCJA: only if proceeds used for home improvement"
+                }
+              ]
+            },
+            {
+              "id": "R3",
+              "description": "Acquisition indebtedness limit ($1M/$500K MFJ)",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "C3.1",
+                  "description": "Aggregate acquisition indebtedness exceeds $1M ($500K MFJ)",
+                  "formalisable": true,
+                  "if_not_formalisable": ""
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            }
+          ],
+          "defeat_relations": [
+            {
+              "defeater_rule": "R2",
+              "defeated_rule": "R1",
+              "reason": "lex specialis - qualified residence interest explicitly excepted from personal interest disallowance",
+              "strict": true
+            },
+            {
+              "defeater_rule": "E2.1",
+              "defeated_rule": "R2",
+              "reason": "lex posterior - TCJA §11045 suspended home equity deduction 2018-2025",
+              "strict": true
+            }
+          ],
+          "discretionary_checkpoints": [
+            {
+              "id": "D1",
+              "authority": "IRS/Tax Court",
+              "decision": "Whether property qualifies as 'qualified residence'",
+              "constraints": [
+                "Taxpayer must demonstrate personal use",
+                "Cannot be primarily rental property"
+              ],
+              "gated_rule": "R2"
+            },
+            {
+              "id": "D2",
+              "authority": "IRS/Tax Court",
+              "decision": "Whether debt proceeds were used to 'substantially improve' qualified residence (post-TCJA)",
+              "constraints": [
+                "Must materially add to value or prolong useful life",
+                "Routine maintenance excluded"
+              ],
+              "gated_rule": "R2"
+            }
+          ],
+          "open_texture_terms": [
+            {
+              "term": "qualified residence",
+              "type": "vague",
+              "core": "Single-family home, condo, co-op apartment used personally",
+              "penumbra": "Houseboats, RVs, timeshares, raw land, properties used <14 days",
+              "authority": "IRS/Tax Court",
+              "case_law": [
+                "Glicksman v. Commissioner (T.C. Memo 1997)",
+                "Bolton v. Commissioner (T.C. Memo 2000)"
+              ]
+            },
+            {
+              "term": "substantially improve",
+              "type": "vague",
+              "core": "Additions, major renovations increasing value/useful life",
+              "penumbra": "Repainting, minor repairs, cosmetic upgrades",
+              "authority": "IRS/Tax Court",
+              "case_law": [
+                "Post-TCJA guidance needed; analogous to capitalization rules §263A"
+              ]
+            },
+            {
+              "term": "secured debt",
+              "type": "vague",
+              "core": "First/second mortgages with recorded security interest",
+              "penumbra": "Unperfected security interests, unsecured loans repaid from home equity",
+              "authority": "IRS/Tax Court",
+              "case_law": [
+                "Robinson v. Commissioner, 69 T.C. 822 (1978)",
+                "Rev. Rul. 87-22"
+              ]
+            }
+          ],
+          "key_references": [
+            {
+              "author": "Sarah B. Lawsky",
+              "title": "A Logic for Statutes",
+              "year": 2017,
+              "relevance": "Formal methods framework for defeasible statutory reasoning (LegalLean target)",
+              "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2913699"
+            },
+            {
+              "author": "IRS",
+              "title": "Publication 936: Home Mortgage Interest Deduction",
+              "year": 2025,
+              "relevance": "Current administrative guidance on §163(h) conditions/exceptions",
+              "url": "https://www.irs.gov/publications/p936"
+            },
+            {
+              "author": "Tax Cuts and Jobs Act",
+              "title": "§11045 - Suspension of Home Equity Loan Interest Deduction",
+              "year": 2017,
+              "relevance": "Key amendment defeating pre-existing home equity rule",
+              "url": "https://www.congress.gov/bill/115th-congress/house-bill/1/text"
+            }
+          ]
+        },
+        "citations": [
+          "https://jsonapi.org/format/",
+          "https://www.mongodb.com/resources/languages/json-schema-examples",
+          "https://www.open-contracting.org/2018/01/18/json-visualization-analysis-process-guidance-ocds-data/",
+          "https://json-schema.org/draft-04/draft-zyp-json-schema-04",
+          "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON",
+          "https://www.couchbase.com/blog/a-json-data-modeling-guide/",
+          "http://lawncl.byu.edu/json-format",
+          "https://scriptotek.github.io/programming/04_caselaw.html"
+        ],
+        "usage": {
+          "prompt_tokens": 938,
+          "completion_tokens": 2058,
+          "total_tokens": 2996,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00094,
+            "output_tokens_cost": 0.00206,
+            "request_cost": 0.005,
+            "total_cost": 0.008
+          }
+        }
+      },
+      {
+        "model": "sonar-pro",
+        "answer_raw": "```json\n{\n  \"provision\": {\n    \"id\": \"26 U.S.C. § 163(h)\",\n    \"title\": \"Mortgage Interest Deduction\",\n    \"jurisdiction\": \"United States (Federal)\",\n    \"source_url\": \"https://www.law.cornell.edu/uscode/text/26/163\"\n  },\n  \"rules\": [\n    {\n      \"id\": \"r1\",\n      \"description\": \"General prohibition on deduction of personal interest\",\n      \"modality\": \"prohibited\",\n      \"conditions\": [\n        {\n          \"id\": \"c1.1\",\n          \"description\": \"Interest is personal interest\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"Defined by exclusion; requires classification of interest type\"\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"e1.1\",\n          \"description\": \"Qualified residence interest is deductible\",\n          \"priority\": \"statutory exception (lex specialis)\",\n          \"source\": \"IRC §163(h)(2)(D), §163(h)(3), §163(h)(4)\"\n        },\n        {\n          \"id\": \"e1.2\",\n          \"description\": \"Interest on certain business-related indebtedness\",\n          \"priority\": \"statutory exception\",\n          \"source\": \"IRC §163(d), §163(j)\"\n        }\n      ],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"r2\",\n      \"description\": \"Deduction permitted for qualified residence interest\",\n      \"modality\": \"permitted\",\n      \"conditions\": [\n        {\n          \"id\": \"c2.1\",\n          \"description\": \"Interest paid or accrued during taxable year\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"c2.2\",\n          \"description\": \"Interest is qualified residence interest\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"Depends on definitions of qualified residence and qualified indebtedness\"\n        },\n        {\n          \"id\": \"c2.3\",\n          \"description\": \"Taxpayer itemizes deductions on return\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"e2.1\",\n          \"description\": \"Acquisition indebtedness exceeds $750,000 ($1M pre-TCJA)\",\n          \"priority\": \"statutory limit\",\n          \"source\": \"IRC §163(h)(3)(C)\"\n        },\n        {\n          \"id\": \"e2.2\",\n          \"description\": \"Home equity indebtedness exceeds $100,000\",\n          \"priority\": \"statutory limit\",\n          \"source\": \"IRC §163(h)(4)(C)\"\n        }\n      ],\n      \"definitions\": [\n        {\n          \"term\": \"qualified residence interest\",\n          \"definition\": \"Interest on acquisition indebtedness and home equity indebtedness with respect to qualified residence\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Interest on primary residence or one second home secured by acquisition or home equity debt within limits\",\n          \"penumbra\": \"Boat/houseboat eligibility, temporary residences, multiple residences\"\n        }\n      ]\n    },\n    {\n      \"id\": \"r3\",\n      \"description\": \"Acquisition indebtedness limit\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"c3.1\",\n          \"description\": \"Debt incurred to acquire, construct, or substantially improve qualified residence\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'Substantially improve' is vague\"\n        },\n        {\n          \"id\": \"c3.2\",\n          \"description\": \"Debt secured by qualified residence\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"c3.3\",\n          \"description\": \"Average acquisition indebtedness ≤ $750,000 ($1M pre-2018)\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": [\n        {\n          \"term\": \"acquisition indebtedness\",\n          \"definition\": \"Indebtedness incurred to acquire, construct, or substantially improve qualified residence, secured by such residence (limited to $750,000 post-TCJA)\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Mortgage for purchase/construction of main home\",\n          \"penumbra\": \"Refinancing treatment, 'substantial improvement' threshold, multiple properties\"\n        }\n      ]\n    },\n    {\n      \"id\": \"r4\",\n      \"description\": \"Home equity indebtedness limit\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"c4.1\",\n          \"description\": \"Debt secured by qualified residence\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"c4.2\",\n          \"description\": \"Debt not acquisition indebtedness\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"c4.3\",\n          \"description\": \"Average home equity indebtedness ≤ $100,000\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"c4.4\",\n          \"description\": \"Proceeds used for purposes other than acquisition/construction/improvement (post-TCJA suspended)\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"TCJA changes create temporal condition\"\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": [\n        {\n          \"term\": \"home equity indebtedness\",\n          \"definition\": \"Any indebtedness other than acquisition indebtedness, secured by qualified residence (limited to $100,000)\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"HELOC/cash-out refinance up to $100k\",\n          \"penumbra\": \"Mixed-purpose loans, suspended post-TCJA\"\n        }\n      ]\n    },\n    {\n      \"id\": \"r5\",\n      \"description\": \"Qualified residence requirement\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"c5.1\",\n          \"description\": \"Main home of taxpayer\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'Main home' requires factual determination\"\n        },\n        {\n          \"id\": \"c5.2\",\n          \"description\": \"One other residence selected by taxpayer\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"c5.3\",\n          \"description\": \"Not used for trade/business on average >14 days/year\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"c5.4\",\n          \"description\": \"Mobile home, boat, or similar property with sleeping/eating/toilet facilities\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'Similar property' vague\"\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": [\n        {\n          \"term\": \"qualified residence\",\n          \"definition\": \"Main home + one other home; includes house, apartment, condo, mobile home, boat, or similar property with basic living facilities\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Single-family home, condo, apartment\",\n          \"penumbra\": \"Houseboat, RV, timeshare eligibility\"\n        }\n      ]\n    }\n  ],\n  \"defeat_relations\": [\n    {\n      \"defeater_rule\": \"r2\",\n      \"defeated_rule\": \"r1\",\n      \"reason\": \"lex specialis (specific exception to general prohibition)\",\n      \"strict\": true\n    },\n    {\n      \"defeater_rule\": \"r3\",\n      \"defeated_rule\": \"r2\",\n      \"reason\": \"statutory limit on deduction\",\n      \"strict\": true\n    },\n    {\n      \"defeater_rule\": \"r4\",\n      \"defeated_rule\": \"r2\",\n      \"reason\": \"statutory limit on deduction\",\n      \"strict\": true\n    },\n    {\n      \"defeater_rule\": \"r5\",\n      \"defeated_rule\": \"r2\",\n      \"reason\": \"prerequisite condition\",\n      \"strict\": true\n    }\n  ],\n  \"discretionary_checkpoints\": [\n    {\n      \"id\": \"d1\",\n      \"authority\": \"Taxpayer\",\n      \"decision\": \"Which residence qualifies as second home\",\n      \"constraints\": [\"Only one second home permitted\", \"Must be reasonable choice\"],\n      \"gated_rule\": \"r5\"\n    },\n    {\n      \"id\": \"d2\",\n      \"authority\": \"IRS/Tax Court\",\n      \"decision\": \"Whether improvements are 'substantial'\",\n      \"constraints\": [\"Must materially add to value\", \"Not mere repairs\"],\n      \"gated_rule\": \"r3\"\n    },\n    {\n      \"id\": \"d3\",\n      \"authority\": \"IRS/Tax Court\",\n      \"decision\": \"Whether property qualifies as 'similar property' with living facilities\",\n      \"constraints\": [\"Must have sleeping, cooking, toilet facilities\"],\n      \"gated_rule\": \"r5\"\n    }\n  ],\n  \"open_texture_terms\": [\n    {\n      \"term\": \"substantially improve\",\n      \"type\": \"vague\",\n      \"core\": \"Additions, major renovations increasing value\",\n      \"penumbra\": \"Minor improvements, repairs, cosmetic upgrades\",\n      \"authority\": \"IRS/Tax Court\",\n      \"case_law\": [\"Glicksman v. Commissioner\", \"Recent TCJA cases\"]\n    },\n    {\n      \"term\": \"main home\",\n      \"type\": \"vague\",\n      \"core\": \"Residence where taxpayer lives most of year\",\n      \"penumbra\": \"Multiple residences with split time, vacation homes used regularly\",\n      \"authority\": \"Taxpayer self-assessment, IRS challenge\",\n      \"case_law\": [\"Primary residence determination cases\"]\n    },\n    {\n      \"term\": \"similar property\",\n      \"type\": \"vague\",\n      \"core\": \"Houseboat, RV with full living facilities\",\n      \"penumbra\": \"Camper, tent trailer, partial facilities\",\n      \"authority\": \"IRS/Tax Court\",\n      \"case_law\": [\"Boat eligibility cases\"]\n    },\n    {\n      \"term\": \"secured by\",\n      \"type\": \"discretionary\",\n      \"core\": \"First/second mortgage, properly recorded\",\n      \"penumbra\": \"Cross-collateralization, junior liens, perfection issues\",\n      \"authority\": \"State property law + IRS\",\n      \"case_law\": [\"Security interest perfection cases\"]\n    }\n  ],\n  \"key_references\": [\n    {\n      \"author\": \"Lawsky, Sarah\",\n      \"title\": \"A Logic for Statutes\",\n      \"year\": 2017,\n      \"relevance\": \"Defeasibility framework for LegalLean formalization\",\n      \"url\": \"https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2923585\"\n    },\n    {\n      \"author\": \"Internal Revenue Service\",\n      \"title\": \"Publication 936: Home Mortgage Interest Deduction\",\n      \"year\": 2025,\n      \"relevance\": \"Authoritative IRS guidance on §163(h)\",\n      \"url\": \"https://www.irs.gov/publications/p936\"\n    },\n    {\n      \"author\": \"Joint Committee on Taxation\",\n      \"title\": \"TCJA Modifications to Home Mortgage Interest Deduction\",\n      \"year\": 2018,\n      \"relevance\": \"Post-2017 limit changes ($1M→$750k, home equity suspension)\",\n      \"url\": \"https://www.jct.gov/publications/2018/jcx-67-18/\"\n    }\n  ]\n}\n```\n\n**Notes for LegalLean Formalization (IRC163h.lean line 19):**\n\nThis structure supports `DefeasiblyHolds` via:\n- `r1` → general prohibition\n- `r2` → specific permission (defeats r1 via lex specialis)\n- `r3,r4,r5` → limits/conditions (defeat r2 when violated)\n- Temporal defeaters: TCJA changes (2018-2025 sunset)\n- Open texture terms → `OpenTexture` typeclass instances\n- Discretionary checkpoints → `DiscretionOf` modality\n\nKey Lean 4 structure:\n```lean\ndef MortgageInterestDeduction (taxpayer : Taxpayer) (interest : Interest) :\n  DefeasiblyHolds (IsDeductible taxpayer interest) :=\n-- r1-r5 + defeat relations above\n```",
+        "answer_parsed": {
+          "provision": {
+            "id": "26 U.S.C. § 163(h)",
+            "title": "Mortgage Interest Deduction",
+            "jurisdiction": "United States (Federal)",
+            "source_url": "https://www.law.cornell.edu/uscode/text/26/163"
+          },
+          "rules": [
+            {
+              "id": "r1",
+              "description": "General prohibition on deduction of personal interest",
+              "modality": "prohibited",
+              "conditions": [
+                {
+                  "id": "c1.1",
+                  "description": "Interest is personal interest",
+                  "formalisable": false,
+                  "if_not_formalisable": "Defined by exclusion; requires classification of interest type"
+                }
+              ],
+              "exceptions": [
+                {
+                  "id": "e1.1",
+                  "description": "Qualified residence interest is deductible",
+                  "priority": "statutory exception (lex specialis)",
+                  "source": "IRC §163(h)(2)(D), §163(h)(3), §163(h)(4)"
+                },
+                {
+                  "id": "e1.2",
+                  "description": "Interest on certain business-related indebtedness",
+                  "priority": "statutory exception",
+                  "source": "IRC §163(d), §163(j)"
+                }
+              ],
+              "definitions": []
+            },
+            {
+              "id": "r2",
+              "description": "Deduction permitted for qualified residence interest",
+              "modality": "permitted",
+              "conditions": [
+                {
+                  "id": "c2.1",
+                  "description": "Interest paid or accrued during taxable year",
+                  "formalisable": true
+                },
+                {
+                  "id": "c2.2",
+                  "description": "Interest is qualified residence interest",
+                  "formalisable": false,
+                  "if_not_formalisable": "Depends on definitions of qualified residence and qualified indebtedness"
+                },
+                {
+                  "id": "c2.3",
+                  "description": "Taxpayer itemizes deductions on return",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [
+                {
+                  "id": "e2.1",
+                  "description": "Acquisition indebtedness exceeds $750,000 ($1M pre-TCJA)",
+                  "priority": "statutory limit",
+                  "source": "IRC §163(h)(3)(C)"
+                },
+                {
+                  "id": "e2.2",
+                  "description": "Home equity indebtedness exceeds $100,000",
+                  "priority": "statutory limit",
+                  "source": "IRC §163(h)(4)(C)"
+                }
+              ],
+              "definitions": [
+                {
+                  "term": "qualified residence interest",
+                  "definition": "Interest on acquisition indebtedness and home equity indebtedness with respect to qualified residence",
+                  "has_open_texture": true,
+                  "core_meaning": "Interest on primary residence or one second home secured by acquisition or home equity debt within limits",
+                  "penumbra": "Boat/houseboat eligibility, temporary residences, multiple residences"
+                }
+              ]
+            },
+            {
+              "id": "r3",
+              "description": "Acquisition indebtedness limit",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "c3.1",
+                  "description": "Debt incurred to acquire, construct, or substantially improve qualified residence",
+                  "formalisable": false,
+                  "if_not_formalisable": "'Substantially improve' is vague"
+                },
+                {
+                  "id": "c3.2",
+                  "description": "Debt secured by qualified residence",
+                  "formalisable": true
+                },
+                {
+                  "id": "c3.3",
+                  "description": "Average acquisition indebtedness ≤ $750,000 ($1M pre-2018)",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [],
+              "definitions": [
+                {
+                  "term": "acquisition indebtedness",
+                  "definition": "Indebtedness incurred to acquire, construct, or substantially improve qualified residence, secured by such residence (limited to $750,000 post-TCJA)",
+                  "has_open_texture": true,
+                  "core_meaning": "Mortgage for purchase/construction of main home",
+                  "penumbra": "Refinancing treatment, 'substantial improvement' threshold, multiple properties"
+                }
+              ]
+            },
+            {
+              "id": "r4",
+              "description": "Home equity indebtedness limit",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "c4.1",
+                  "description": "Debt secured by qualified residence",
+                  "formalisable": true
+                },
+                {
+                  "id": "c4.2",
+                  "description": "Debt not acquisition indebtedness",
+                  "formalisable": true
+                },
+                {
+                  "id": "c4.3",
+                  "description": "Average home equity indebtedness ≤ $100,000",
+                  "formalisable": true
+                },
+                {
+                  "id": "c4.4",
+                  "description": "Proceeds used for purposes other than acquisition/construction/improvement (post-TCJA suspended)",
+                  "formalisable": false,
+                  "if_not_formalisable": "TCJA changes create temporal condition"
+                }
+              ],
+              "exceptions": [],
+              "definitions": [
+                {
+                  "term": "home equity indebtedness",
+                  "definition": "Any indebtedness other than acquisition indebtedness, secured by qualified residence (limited to $100,000)",
+                  "has_open_texture": true,
+                  "core_meaning": "HELOC/cash-out refinance up to $100k",
+                  "penumbra": "Mixed-purpose loans, suspended post-TCJA"
+                }
+              ]
+            },
+            {
+              "id": "r5",
+              "description": "Qualified residence requirement",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "c5.1",
+                  "description": "Main home of taxpayer",
+                  "formalisable": false,
+                  "if_not_formalisable": "'Main home' requires factual determination"
+                },
+                {
+                  "id": "c5.2",
+                  "description": "One other residence selected by taxpayer",
+                  "formalisable": true
+                },
+                {
+                  "id": "c5.3",
+                  "description": "Not used for trade/business on average >14 days/year",
+                  "formalisable": true
+                },
+                {
+                  "id": "c5.4",
+                  "description": "Mobile home, boat, or similar property with sleeping/eating/toilet facilities",
+                  "formalisable": false,
+                  "if_not_formalisable": "'Similar property' vague"
+                }
+              ],
+              "exceptions": [],
+              "definitions": [
+                {
+                  "term": "qualified residence",
+                  "definition": "Main home + one other home; includes house, apartment, condo, mobile home, boat, or similar property with basic living facilities",
+                  "has_open_texture": true,
+                  "core_meaning": "Single-family home, condo, apartment",
+                  "penumbra": "Houseboat, RV, timeshare eligibility"
+                }
+              ]
+            }
+          ],
+          "defeat_relations": [
+            {
+              "defeater_rule": "r2",
+              "defeated_rule": "r1",
+              "reason": "lex specialis (specific exception to general prohibition)",
+              "strict": true
+            },
+            {
+              "defeater_rule": "r3",
+              "defeated_rule": "r2",
+              "reason": "statutory limit on deduction",
+              "strict": true
+            },
+            {
+              "defeater_rule": "r4",
+              "defeated_rule": "r2",
+              "reason": "statutory limit on deduction",
+              "strict": true
+            },
+            {
+              "defeater_rule": "r5",
+              "defeated_rule": "r2",
+              "reason": "prerequisite condition",
+              "strict": true
+            }
+          ],
+          "discretionary_checkpoints": [
+            {
+              "id": "d1",
+              "authority": "Taxpayer",
+              "decision": "Which residence qualifies as second home",
+              "constraints": [
+                "Only one second home permitted",
+                "Must be reasonable choice"
+              ],
+              "gated_rule": "r5"
+            },
+            {
+              "id": "d2",
+              "authority": "IRS/Tax Court",
+              "decision": "Whether improvements are 'substantial'",
+              "constraints": [
+                "Must materially add to value",
+                "Not mere repairs"
+              ],
+              "gated_rule": "r3"
+            },
+            {
+              "id": "d3",
+              "authority": "IRS/Tax Court",
+              "decision": "Whether property qualifies as 'similar property' with living facilities",
+              "constraints": [
+                "Must have sleeping, cooking, toilet facilities"
+              ],
+              "gated_rule": "r5"
+            }
+          ],
+          "open_texture_terms": [
+            {
+              "term": "substantially improve",
+              "type": "vague",
+              "core": "Additions, major renovations increasing value",
+              "penumbra": "Minor improvements, repairs, cosmetic upgrades",
+              "authority": "IRS/Tax Court",
+              "case_law": [
+                "Glicksman v. Commissioner",
+                "Recent TCJA cases"
+              ]
+            },
+            {
+              "term": "main home",
+              "type": "vague",
+              "core": "Residence where taxpayer lives most of year",
+              "penumbra": "Multiple residences with split time, vacation homes used regularly",
+              "authority": "Taxpayer self-assessment, IRS challenge",
+              "case_law": [
+                "Primary residence determination cases"
+              ]
+            },
+            {
+              "term": "similar property",
+              "type": "vague",
+              "core": "Houseboat, RV with full living facilities",
+              "penumbra": "Camper, tent trailer, partial facilities",
+              "authority": "IRS/Tax Court",
+              "case_law": [
+                "Boat eligibility cases"
+              ]
+            },
+            {
+              "term": "secured by",
+              "type": "discretionary",
+              "core": "First/second mortgage, properly recorded",
+              "penumbra": "Cross-collateralization, junior liens, perfection issues",
+              "authority": "State property law + IRS",
+              "case_law": [
+                "Security interest perfection cases"
+              ]
+            }
+          ],
+          "key_references": [
+            {
+              "author": "Lawsky, Sarah",
+              "title": "A Logic for Statutes",
+              "year": 2017,
+              "relevance": "Defeasibility framework for LegalLean formalization",
+              "url": "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2923585"
+            },
+            {
+              "author": "Internal Revenue Service",
+              "title": "Publication 936: Home Mortgage Interest Deduction",
+              "year": 2025,
+              "relevance": "Authoritative IRS guidance on §163(h)",
+              "url": "https://www.irs.gov/publications/p936"
+            },
+            {
+              "author": "Joint Committee on Taxation",
+              "title": "TCJA Modifications to Home Mortgage Interest Deduction",
+              "year": 2018,
+              "relevance": "Post-2017 limit changes ($1M→$750k, home equity suspension)",
+              "url": "https://www.jct.gov/publications/2018/jcx-67-18/"
+            }
+          ]
+        },
+        "citations": [
+          "https://jsonapi.org/format/",
+          "https://www.mongodb.com/resources/languages/json-schema-examples",
+          "https://www.open-contracting.org/2018/01/18/json-visualization-analysis-process-guidance-ocds-data/",
+          "https://json-schema.org/draft-04/draft-zyp-json-schema-04",
+          "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON",
+          "https://www.couchbase.com/blog/a-json-data-modeling-guide/",
+          "http://lawncl.byu.edu/json-format",
+          "https://scriptotek.github.io/programming/04_caselaw.html"
+        ],
+        "usage": {
+          "prompt_tokens": 938,
+          "completion_tokens": 2688,
+          "total_tokens": 3626,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00281,
+            "output_tokens_cost": 0.04032,
+            "request_cost": 0.006,
+            "total_cost": 0.04913
+          }
+        }
+      },
+      {
+        "model": "sonar-reasoning",
+        "error": "400 Client Error: Bad Request for url: https://api.perplexity.ai/chat/completions",
+        "answer_raw": null,
+        "answer_parsed": null,
+        "citations": [],
+        "usage": {}
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 2,
+      "total_models": 3,
+      "all_citations": [
+        "https://json-schema.org/draft-04/draft-zyp-json-schema-04",
+        "https://scriptotek.github.io/programming/04_caselaw.html",
+        "https://www.open-contracting.org/2018/01/18/json-visualization-analysis-process-guidance-ocds-data/",
+        "http://lawncl.byu.edu/json-format",
+        "https://jsonapi.org/format/",
+        "https://www.couchbase.com/blog/a-json-data-modeling-guide/",
+        "https://www.mongodb.com/resources/languages/json-schema-examples",
+        "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:38:52Z"
+}

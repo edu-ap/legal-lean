@@ -1,0 +1,140 @@
+{
+  "dimension": "compositional semantics",
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Compare how the following legal formalisation systems handle\ncompositional semantics. Return a JSON object:\n\n{\n  \"dimension\": \"compositional semantics\",\n  \"systems\": [\n    {\n      \"name\": \"string — system name\",\n      \"approach\": \"string — how it handles this dimension\",\n      \"strengths\": [\"string\"],\n      \"limitations\": [\"string\"],\n      \"key_paper\": \"string — citation\",\n      \"expressiveness_score\": \"1-5 (1=absent, 5=fully native)\"\n    }\n  ],\n  \"legallean_advantage\": \"string — where dependent types in Lean 4 add value\",\n  \"legallean_limitation\": \"string — honest assessment of gaps\"\n}\n\nSystems to compare: DDL (Governatori), Catala (Merigoux), L4L (Hou et al.),\nLegalRuleML (Palmirani), LegalLean (our system — Lean 4 dependent types with\nFormalisationBoundary for open texture).\n\nDimension: compositional semantics\nContext: Whether the system supports compositional [modular, bottom-up] construction of complex rules from simpler ones. Include: functorial composition, rule combination."
+  },
+  "results": {
+    "models_queried": [
+      "sonar-pro"
+    ],
+    "responses": [
+      {
+        "model": "sonar-pro",
+        "answer_raw": "{\n  \"dimension\": \"compositional semantics\",\n  \"systems\": [\n    {\n      \"name\": \"DDL (Governatori)\",\n      \"approach\": \"Defeasible Deontic Logic (DDL) uses prioritized default logic with rule hierarchies and exception overrides, enabling modular rule construction where complex norms are built bottom-up from atomic rules via defeat relations and functorial combination through rule application and negation-as-failure.\",\n      \"strengths\": [\"Native support for modular rule combination via priorities and exceptions\", \"Handles legal defeasibility for compositional norm building\", \"Bottom-up construction from simple deontic operators\"],\n      \"limitations\": [\"Limited functorial composition beyond defeat hierarchies\", \"Challenges in scaling to highly interdependent rule sets without priority conflicts\", \"Interpretive discretion in priority assignments\"],\n      \"key_paper\": \"Governatori et al., 'Evaluation of Methodologies for Legal Formalization' (Extraamas 2022)[1]\",\n      \"expressiveness_score\": \"4\"\n    },\n    {\n      \"name\": \"Catala (Merigoux)\",\n      \"approach\": \"Catala employs prioritized default logic with scope hierarchies and exception mechanisms, supporting compositional semantics through modular program-like structures where rules are combined bottom-up via structured scopes, exceptions, and default overrides for statutory tax-like computations.\",\n      \"strengths\": [\"Strong modularity via scope-based composition\", \"Explicit handling of exceptions and defaults for rule combination\", \"Compiles to verifiable code for bottom-up evaluation\"],\n      \"limitations\": [\"Composition limited to hierarchical scopes, less flexible for arbitrary functorial mappings\", \"Vagueness in priority resolution requires manual encoding\", \"Not fully native to non-hierarchical legal interactions\"],\n      \"key_paper\": \"Merigoux et al., CATALA project in 'Evaluation of Methodologies for Legal Formalization'[1]\",\n      \"expressiveness_score\": \"4\"\n    },\n    {\n      \"name\": \"L4L (Hou et al.)\",\n      \"approach\": \"Logic for Law (L4L) decomposes legal reasoning into modular stages: ontology extraction, symbolic inference, and application; supports compositional semantics via multi-agent bottom-up construction from atomic concepts to complex rules using ontological mappings and logical entailment.\",\n      \"strengths\": [\"Modular multi-agent framework for verifiable composition\", \"Explicit separation enables bottom-up rule building from facts to conclusions\", \"Strong transparency in intermediate representations\"],\n      \"limitations\": [\"Relies on ontology alignment which may introduce composition gaps\", \"Inference limited to symbolic steps without native dependent typing\", \"Scalability issues in highly vague or open-textured domains\"],\n      \"key_paper\": \"Hou et al., 'On Verifiable Legal Reasoning: A Multi-Agent Framework' (arXiv:2509.00710)[3]\",\n      \"expressiveness_score\": \"3\"\n    },\n    {\n      \"name\": \"LegalRuleML (Palmirani)\",\n      \"approach\": \"XML-based rule markup language using reified input/output logic and ontologies; compositional semantics via modular XML structures for rule combination, allowing bottom-up assembly of norms with references to authorities, though reliant on expert interpretation for relations.\",\n      \"strengths\": [\"Flexible XML modularity for rule interoperability\", \"Supports document-to-rule correspondences for composition\", \"Easily updatable for legal changes\"],\n      \"limitations\": [\"Weak native functoriality, depends on external reasoners\", \"Interpretive discretion in ontology mappings undermines strict composition\", \"Not fully machine-checkable without additional logic engines\"],\n      \"key_paper\": \"Palmirani et al., LegalRuleML in legal ontology evaluations[1][4]\",\n      \"expressiveness_score\": \"2\"\n    },\n    {\n      \"name\": \"LegalLean (Lean 4 dependent types with FormalisationBoundary)\",\n      \"approach\": \"Dependent types enable fully native compositional semantics via functorial constructions (e.g., Pi-types for rule functions, inductive families for rule hierarchies); FormalisationBoundary handles open texture with proof obligations, supporting modular bottom-up assembly of complex rules from primitives with machine-checked guarantees.\",\n      \"strengths\": [\"Native dependent functoriality for arbitrary rule compositions\", \"Machine-verified modularity prevents composition errors\", \"Handles vagueness via bounded proofs\"],\n      \"limitations\": [\"Steep learning curve for non-formalists\", \"Manual proof burden for interpretive discretion\"],\n      \"key_paper\": \"LegalLean project (ongoing Lean 4 library)\",\n      \"expressiveness_score\": \"5\"\n    }\n  ],\n  \"legallean_advantage\": \"Dependent types in Lean 4 provide native, machine-checked functorial composition (e.g., via Pi-types and structure induction) superior to ad-hoc hierarchies in DDL/Catala or XML modularity in LegalRuleML, ensuring compositional correctness with FormalisationBoundary for legally vague boundaries.\",\n  \"legallean_limitation\": \"Heavy reliance on manual theorem-proving for open-textured composition introduces scalability gaps versus automated default logics in DDL/Catala; lacks built-in priority mechanisms requiring explicit encoding.\"\n}",
+        "answer_parsed": {
+          "dimension": "compositional semantics",
+          "systems": [
+            {
+              "name": "DDL (Governatori)",
+              "approach": "Defeasible Deontic Logic (DDL) uses prioritized default logic with rule hierarchies and exception overrides, enabling modular rule construction where complex norms are built bottom-up from atomic rules via defeat relations and functorial combination through rule application and negation-as-failure.",
+              "strengths": [
+                "Native support for modular rule combination via priorities and exceptions",
+                "Handles legal defeasibility for compositional norm building",
+                "Bottom-up construction from simple deontic operators"
+              ],
+              "limitations": [
+                "Limited functorial composition beyond defeat hierarchies",
+                "Challenges in scaling to highly interdependent rule sets without priority conflicts",
+                "Interpretive discretion in priority assignments"
+              ],
+              "key_paper": "Governatori et al., 'Evaluation of Methodologies for Legal Formalization' (Extraamas 2022)[1]",
+              "expressiveness_score": "4"
+            },
+            {
+              "name": "Catala (Merigoux)",
+              "approach": "Catala employs prioritized default logic with scope hierarchies and exception mechanisms, supporting compositional semantics through modular program-like structures where rules are combined bottom-up via structured scopes, exceptions, and default overrides for statutory tax-like computations.",
+              "strengths": [
+                "Strong modularity via scope-based composition",
+                "Explicit handling of exceptions and defaults for rule combination",
+                "Compiles to verifiable code for bottom-up evaluation"
+              ],
+              "limitations": [
+                "Composition limited to hierarchical scopes, less flexible for arbitrary functorial mappings",
+                "Vagueness in priority resolution requires manual encoding",
+                "Not fully native to non-hierarchical legal interactions"
+              ],
+              "key_paper": "Merigoux et al., CATALA project in 'Evaluation of Methodologies for Legal Formalization'[1]",
+              "expressiveness_score": "4"
+            },
+            {
+              "name": "L4L (Hou et al.)",
+              "approach": "Logic for Law (L4L) decomposes legal reasoning into modular stages: ontology extraction, symbolic inference, and application; supports compositional semantics via multi-agent bottom-up construction from atomic concepts to complex rules using ontological mappings and logical entailment.",
+              "strengths": [
+                "Modular multi-agent framework for verifiable composition",
+                "Explicit separation enables bottom-up rule building from facts to conclusions",
+                "Strong transparency in intermediate representations"
+              ],
+              "limitations": [
+                "Relies on ontology alignment which may introduce composition gaps",
+                "Inference limited to symbolic steps without native dependent typing",
+                "Scalability issues in highly vague or open-textured domains"
+              ],
+              "key_paper": "Hou et al., 'On Verifiable Legal Reasoning: A Multi-Agent Framework' (arXiv:2509.00710)[3]",
+              "expressiveness_score": "3"
+            },
+            {
+              "name": "LegalRuleML (Palmirani)",
+              "approach": "XML-based rule markup language using reified input/output logic and ontologies; compositional semantics via modular XML structures for rule combination, allowing bottom-up assembly of norms with references to authorities, though reliant on expert interpretation for relations.",
+              "strengths": [
+                "Flexible XML modularity for rule interoperability",
+                "Supports document-to-rule correspondences for composition",
+                "Easily updatable for legal changes"
+              ],
+              "limitations": [
+                "Weak native functoriality, depends on external reasoners",
+                "Interpretive discretion in ontology mappings undermines strict composition",
+                "Not fully machine-checkable without additional logic engines"
+              ],
+              "key_paper": "Palmirani et al., LegalRuleML in legal ontology evaluations[1][4]",
+              "expressiveness_score": "2"
+            },
+            {
+              "name": "LegalLean (Lean 4 dependent types with FormalisationBoundary)",
+              "approach": "Dependent types enable fully native compositional semantics via functorial constructions (e.g., Pi-types for rule functions, inductive families for rule hierarchies); FormalisationBoundary handles open texture with proof obligations, supporting modular bottom-up assembly of complex rules from primitives with machine-checked guarantees.",
+              "strengths": [
+                "Native dependent functoriality for arbitrary rule compositions",
+                "Machine-verified modularity prevents composition errors",
+                "Handles vagueness via bounded proofs"
+              ],
+              "limitations": [
+                "Steep learning curve for non-formalists",
+                "Manual proof burden for interpretive discretion"
+              ],
+              "key_paper": "LegalLean project (ongoing Lean 4 library)",
+              "expressiveness_score": "5"
+            }
+          ],
+          "legallean_advantage": "Dependent types in Lean 4 provide native, machine-checked functorial composition (e.g., via Pi-types and structure induction) superior to ad-hoc hierarchies in DDL/Catala or XML modularity in LegalRuleML, ensuring compositional correctness with FormalisationBoundary for legally vague boundaries.",
+          "legallean_limitation": "Heavy reliance on manual theorem-proving for open-textured composition introduces scalability gaps versus automated default logics in DDL/Catala; lacks built-in priority mechanisms requiring explicit encoding."
+        },
+        "citations": [
+          "https://orbilu.uni.lu/bitstream/10993/53302/1/Extraamas_2022.pdf",
+          "https://ris.utwente.nl/ws/files/6690611/Stamper91role.pdf",
+          "https://arxiv.org/abs/2509.00710",
+          "https://openaccess.uoc.edu/bitstream/10609/89665/9/cmtorresTFG0119memory.pdf",
+          "https://pdmosses.github.io/papers/Mosses2025CSE/olivierfest-final.pdf",
+          "https://www.semanticscholar.org/paper/d6851f449408449c5534d6a3e3f43659f252ff47",
+          "https://mediatum.ub.tum.de/doc/1436280/738823.pdf"
+        ],
+        "usage": {
+          "prompt_tokens": 360,
+          "completion_tokens": 1061,
+          "total_tokens": 1421,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00108,
+            "output_tokens_cost": 0.01592,
+            "request_cost": 0.006,
+            "total_cost": 0.023
+          }
+        }
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 1,
+      "total_models": 1,
+      "all_citations": [
+        "https://orbilu.uni.lu/bitstream/10993/53302/1/Extraamas_2022.pdf",
+        "https://pdmosses.github.io/papers/Mosses2025CSE/olivierfest-final.pdf",
+        "https://www.semanticscholar.org/paper/d6851f449408449c5534d6a3e3f43659f252ff47",
+        "https://arxiv.org/abs/2509.00710",
+        "https://ris.utwente.nl/ws/files/6690611/Stamper91role.pdf",
+        "https://openaccess.uoc.edu/bitstream/10609/89665/9/cmtorresTFG0119memory.pdf",
+        "https://mediatum.ub.tum.de/doc/1436280/738823.pdf"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:40:59Z"
+}

@@ -1,0 +1,114 @@
+{
+  "dimensions": [
+    "compositional semantics",
+    "deontic modalities",
+    "dependent types (evidence-as-inhabitants)",
+    "machine-checkable guarantees",
+    "open texture encoding",
+    "provenance tracking",
+    "temporal reasoning"
+  ],
+  "systems": [
+    "Catala",
+    "DDL",
+    "L4L",
+    "LegalLean",
+    "LegalRuleML"
+  ],
+  "scores": {
+    "compositional semantics": {
+      "DDL": 4,
+      "Catala": 4,
+      "L4L": 3,
+      "LegalRuleML": 2,
+      "LegalLean": 5
+    },
+    "deontic modalities": {
+      "DDL": 5,
+      "Catala": 2,
+      "L4L": 4,
+      "LegalRuleML": 4,
+      "LegalLean": 5
+    },
+    "dependent types (evidence-as-inhabitants)": {
+      "DDL": 1,
+      "Catala": 1,
+      "L4L": 5,
+      "LegalRuleML": 1,
+      "LegalLean": 5
+    },
+    "machine-checkable guarantees": {
+      "DDL": 3,
+      "Catala": 4,
+      "L4L": 3,
+      "LegalRuleML": 1,
+      "LegalLean": 5
+    },
+    "open texture encoding": {
+      "DDL": 4,
+      "Catala": 2,
+      "L4L": 3,
+      "LegalRuleML": 2,
+      "LegalLean": 5
+    },
+    "provenance tracking": {
+      "DDL": 4,
+      "Catala": 3,
+      "L4L": 5,
+      "LegalRuleML": 4,
+      "LegalLean": 5
+    },
+    "temporal reasoning": {
+      "DDL": 4,
+      "Catala": 3,
+      "L4L": 3,
+      "LegalRuleML": 4,
+      "LegalLean": 5
+    }
+  },
+  "advantages": {
+    "compositional semantics": "Dependent types in Lean 4 provide native, machine-checked functorial composition (e.g., via Pi-types and structure induction) superior to ad-hoc hierarchies in DDL/Catala or XML modularity in LegalRuleML, ensuring compositional correctness with FormalisationBoundary for legally vague boundaries.",
+    "deontic modalities": "Dependent types provide machine-checked proofs that deontic conflicts are resolved (no obligation \u2227 prohibition), parameterize modalities over contexts (Obligation ctx p), and use FormalisationBoundary to make interpretive discretion explicit and modular via typeclasses\u2014superior to ad-hoc superiority relations or XML attributes.",
+    "dependent types (evidence-as-inhabitants)": "Lean 4's dependent types enable precise encoding of 'evidence inhabits legal propositions' via Curry-Howard, supporting case-specific refinements (e.g., {proof : is_contract_valid doc} \u2192 obligation_holds) and FormalisationBoundary theorems that compose machine-checked cores with interpretive discretion.",
+    "machine-checkable guarantees": "Dependent types provide native encoding of legal relationships (e.g., 'obligation implies duty'), static guarantees absent in other systems, and FormalisationBoundary precisely delineates machine-checkable core from interpretive discretion\u2014enabling compositional proofs across legal domains.",
+    "open texture encoding": "Dependent types make Hart's core/penumbra distinction *type-native*: core cases typecheck automatically, penumbra requires explicit proofs (encoding judicial discretion), and FormalisationBoundary prevents invalid sorites inferences while preserving undecidability where required.",
+    "provenance tracking": "Dependent types provide **type-level provenance** where rule applications and evidence dependencies are statically verified and preserved in proof terms, enabling complete audit trails that survive code evolution. FormalisationBoundary creates explicit **interpretation scopes** linking machine-checked proofs to natural language sources with precise boundary annotations.",
+    "temporal reasoning": "Dependent types provide machine-checkable guarantees on temporal consistency (e.g., no rule applies outside effective dates), FormalisationBoundary rigorously encodes vagueness/interpretive discretion in expiry/retroactivity without losing decidability, surpassing defeasible logics in proof strength."
+  },
+  "limitations": {
+    "compositional semantics": "Heavy reliance on manual theorem-proving for open-textured composition introduces scalability gaps versus automated default logics in DDL/Catala; lacks built-in priority mechanisms requiring explicit encoding.",
+    "deontic modalities": "Lean proofs don't auto-generate from text (needs LLM assistance like DDL pipelines); typeclass diamonds/ambiguity require manual instance design; less human-readable than rule-based DDL for non-experts.",
+    "dependent types (evidence-as-inhabitants)": "Full dependent type formalisation scales poorly to complete statutes; FormalisationBoundary decisions remain human judgments requiring legal expertise, creating trusted oracles between formal and interpretive layers.",
+    "machine-checkable guarantees": "Typechecking undecidable beyond simple fragments; requires human expertise to formalize boundaries correctly; currently lacks comprehensive legal libraries compared to Catala's tax domain coverage.",
+    "open texture encoding": "Proof engineering overhead for complex penumbra cases; no built-in oracles for empirical vagueness ('reasonable time' requires external data integration); Lean 4 elaboration can obscure interpretive choices from non-expert stakeholders.",
+    "provenance tracking": "Lean 4 proof terms remain opaque to non-experts despite rich provenance; human-readable explanation requires separate elaboration or visualization layers. Dependent type complexity hinders rapid prototyping compared to rule-based systems.",
+    "temporal reasoning": "Requires explicit finite bounding of timelines for termination checking; continuous/vague time (e.g., 'soon after') approximated, losing full real-number expressiveness; heavy reliance on human formalization of open-textured boundaries."
+  },
+  "totals": {
+    "Catala": {
+      "total": 19,
+      "dimensions_scored": 7,
+      "average": 2.7
+    },
+    "DDL": {
+      "total": 25,
+      "dimensions_scored": 7,
+      "average": 3.6
+    },
+    "L4L": {
+      "total": 26,
+      "dimensions_scored": 7,
+      "average": 3.7
+    },
+    "LegalLean": {
+      "total": 35,
+      "dimensions_scored": 7,
+      "average": 5.0
+    },
+    "LegalRuleML": {
+      "total": 18,
+      "dimensions_scored": 7,
+      "average": 2.6
+    }
+  }
+}

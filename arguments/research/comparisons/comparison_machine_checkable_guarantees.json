@@ -1,0 +1,141 @@
+{
+  "dimension": "machine-checkable guarantees",
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Compare how the following legal formalisation systems handle\nmachine-checkable guarantees. Return a JSON object:\n\n{\n  \"dimension\": \"machine-checkable guarantees\",\n  \"systems\": [\n    {\n      \"name\": \"string — system name\",\n      \"approach\": \"string — how it handles this dimension\",\n      \"strengths\": [\"string\"],\n      \"limitations\": [\"string\"],\n      \"key_paper\": \"string — citation\",\n      \"expressiveness_score\": \"1-5 (1=absent, 5=fully native)\"\n    }\n  ],\n  \"legallean_advantage\": \"string — where dependent types in Lean 4 add value\",\n  \"legallean_limitation\": \"string — honest assessment of gaps\"\n}\n\nSystems to compare: DDL (Governatori), Catala (Merigoux), L4L (Hou et al.),\nLegalRuleML (Palmirani), LegalLean (our system — Lean 4 dependent types with\nFormalisationBoundary for open texture).\n\nDimension: machine-checkable guarantees\nContext: What formal guarantees the system provides. Include: type safety, decidability, soundness, completeness, and what is NOT guaranteed."
+  },
+  "results": {
+    "models_queried": [
+      "sonar-pro"
+    ],
+    "responses": [
+      {
+        "model": "sonar-pro",
+        "answer_raw": "```json\n{\n  \"dimension\": \"machine-checkable guarantees\",\n  \"systems\": [\n    {\n      \"name\": \"DDL (Governatori)\",\n      \"approach\": \"Defeasible Deontic Logic provides machine-checkable reasoning through non-monotonic inference engines that handle exceptions and contrary-to-duty obligations. Guarantees include soundness of defeasible derivations (proofs that conclusions follow from premises under defeat conditions) but lacks type safety as a logic-based system. Decidability holds for bounded proof depths; completeness relative to defeasible semantics. No guarantees for open texture or real-world deployment soundness.\",\n      \"strengths\": [\n        \"Soundness in defeasible reasoning engines handles legal exceptions natively\",\n        \"Decidability for practical rule sets via bounded computation\",\n        \"Proven scalability for compliance checking (e.g., GDPR)\"\n      ],\n      \"limitations\": [\n        \"No type safety or static guarantees on rule syntax/semantics\",\n        \"Incompleteness w.r.t. full first-order logic expressiveness\",\n        \"No formal guarantees beyond symbolic execution (implementation soundness not machine-checked)\"\n      ],\n      \"key_paper\": \"Governatori et al., 'Defeasible Logic: Theory and Implementation' (various; see ORBilu evaluation [3])\",\n      \"expressiveness_score\": \"3\"\n    },\n    {\n      \"name\": \"Catala (Merigoux)\",\n      \"approach\": \"Compiles structured legal programs to OCaml with scope graphs enforcing statutory structure preservation. Provides type safety via surface language typing, soundness of compilation (preserves semantics), and decidable evaluation for tax/financial rules. No completeness guarantees; lacks dependent types or proof obligations. Handles vagueness via default parameters but no formal open texture.\",\n      \"strengths\": [\n        \"Compilation soundness: generated code provably equivalent to source\",\n        \"Type safety prevents scope errors common in legal code\",\n        \"Decidable evaluation with certified numerical precision\"\n      ],\n      \"limitations\": [\n        \"No proof system for rule correctness (only implementation guarantees)\",\n            \"Limited to procedural rules; struggles with non-monotonic reasoning\",\n        \"No machine-checkable guarantees for interpretive discretion\"\n      ],\n      \"key_paper\": \"Merigoux et al., 'Catala: A Domain-Specific Language for Tax Code' (PLDI 2022)\",\n      \"expressiveness_score\": \"4\"\n    },\n    {\n      \"name\": \"L4L (Hou et al.)\",\n      \"approach\": \"LLM-driven rule formalization into first-order logic verified by SMT solver (Z3). Guarantees include SMT soundness (satisfiability checking), partial deductive soundness via proof obligations, but no type safety or completeness (LLM formalization fallible). Decidability depends on SMT fragment; no guarantees on LLM-to-formula fidelity.\",\n      \"strengths\": [\n        \"SMT soundness provides strong symbolic verification\",\n        \"Hybrid approach scales to complex rules via LLM assistance\",\n        \"Auditable proof certificates from Z3\"\n      ],\n      \"limitations\": [\n        \"No guarantees on LLM formalization accuracy (black-box error source)\",\n        \"Fragment-limited decidability (SMT timeouts common)\",\n        \"No type-level guarantees or handling of legal vagueness\"\n      ],\n      \"key_paper\": \"Hou et al., 'Towards Trustworthy Legal AI through LLM Agents and Formal Methods' (arxiv:2511.21033 [4])\",\n      \"expressiveness_score\": \"3\"\n    },\n    {\n      \"name\": \"LegalRuleML (Palmirani)\",\n      \"approach\": \"XML-based rule interchange with defeasible logic extensions. Provides syntactic well-formedness (XML schema validation) and basic semantic consistency via ontology linking (PrOnto). No native type safety, decidability, soundness, or completeness guarantees—relies on external reasoners. Machine-checkability limited to XML parsing.\",\n      \"strengths\": [\n        \"Interoperability enables multi-engine reasoning\",\n        \"Ontology integration provides semantic consistency checks\",\n        \"Standardized format supports compliance workflows\"\n      ],\n      \"limitations\": [\n        \"No built-in proof system or formal guarantees\",\n        \"Machine-checkability limited to syntax/structure\",\n        \"Semantic guarantees depend entirely on external implementations\"\n      ],\n      \"key_paper\": \"Palmirani & Governatori, 'LegalRuleML: Design Principles and Foundations' (see ORBilu [3])\",\n      \"expressiveness_score\": \"1\"\n    },\n    {\n      \"name\": \"LegalLean (Lean 4 dependent types)\",\n      \"approach\": \"Dependent types with FormalisationBoundary provide full-spectrum guarantees: type safety (total functions), decidable typechecking, soundness/completeness of proofs via Lean's kernel. Handles open texture via bounded proofs with explicit undecidable oracles. Guarantees preservation of legal properties under refinement.\",\n      \"strengths\": [\n        \"Full dependent type safety prevents entire classes of legal encoding errors\",\n        \"Machine-checked proofs of soundness/completeness for formalized fragments\",\n        \"FormalisationBoundary makes proof obligations explicit and auditable\"\n      ],\n      \"limitations\": [\n        \"Decidability limited to type-inhabited fragments\",\n        \"Scalability challenges for large rulebases\",\n        \"Requires expertise in dependent types\"\n      ],\n      \"key_paper\": \"LegalLean project documentation (in development)\",\n      \"expressiveness_score\": \"5\"\n    }\n  ],\n  \"legallean_advantage\": \"Dependent types provide native encoding of legal relationships (e.g., 'obligation implies duty'), static guarantees absent in other systems, and FormalisationBoundary precisely delineates machine-checkable core from interpretive discretion—enabling compositional proofs across legal domains.\",\n  \"legallean_limitation\": \"Typechecking undecidable beyond simple fragments; requires human expertise to formalize boundaries correctly; currently lacks comprehensive legal libraries compared to Catala's tax domain coverage.\"\n}\n```",
+        "answer_parsed": {
+          "dimension": "machine-checkable guarantees",
+          "systems": [
+            {
+              "name": "DDL (Governatori)",
+              "approach": "Defeasible Deontic Logic provides machine-checkable reasoning through non-monotonic inference engines that handle exceptions and contrary-to-duty obligations. Guarantees include soundness of defeasible derivations (proofs that conclusions follow from premises under defeat conditions) but lacks type safety as a logic-based system. Decidability holds for bounded proof depths; completeness relative to defeasible semantics. No guarantees for open texture or real-world deployment soundness.",
+              "strengths": [
+                "Soundness in defeasible reasoning engines handles legal exceptions natively",
+                "Decidability for practical rule sets via bounded computation",
+                "Proven scalability for compliance checking (e.g., GDPR)"
+              ],
+              "limitations": [
+                "No type safety or static guarantees on rule syntax/semantics",
+                "Incompleteness w.r.t. full first-order logic expressiveness",
+                "No formal guarantees beyond symbolic execution (implementation soundness not machine-checked)"
+              ],
+              "key_paper": "Governatori et al., 'Defeasible Logic: Theory and Implementation' (various; see ORBilu evaluation [3])",
+              "expressiveness_score": "3"
+            },
+            {
+              "name": "Catala (Merigoux)",
+              "approach": "Compiles structured legal programs to OCaml with scope graphs enforcing statutory structure preservation. Provides type safety via surface language typing, soundness of compilation (preserves semantics), and decidable evaluation for tax/financial rules. No completeness guarantees; lacks dependent types or proof obligations. Handles vagueness via default parameters but no formal open texture.",
+              "strengths": [
+                "Compilation soundness: generated code provably equivalent to source",
+                "Type safety prevents scope errors common in legal code",
+                "Decidable evaluation with certified numerical precision"
+              ],
+              "limitations": [
+                "No proof system for rule correctness (only implementation guarantees)",
+                "Limited to procedural rules; struggles with non-monotonic reasoning",
+                "No machine-checkable guarantees for interpretive discretion"
+              ],
+              "key_paper": "Merigoux et al., 'Catala: A Domain-Specific Language for Tax Code' (PLDI 2022)",
+              "expressiveness_score": "4"
+            },
+            {
+              "name": "L4L (Hou et al.)",
+              "approach": "LLM-driven rule formalization into first-order logic verified by SMT solver (Z3). Guarantees include SMT soundness (satisfiability checking), partial deductive soundness via proof obligations, but no type safety or completeness (LLM formalization fallible). Decidability depends on SMT fragment; no guarantees on LLM-to-formula fidelity.",
+              "strengths": [
+                "SMT soundness provides strong symbolic verification",
+                "Hybrid approach scales to complex rules via LLM assistance",
+                "Auditable proof certificates from Z3"
+              ],
+              "limitations": [
+                "No guarantees on LLM formalization accuracy (black-box error source)",
+                "Fragment-limited decidability (SMT timeouts common)",
+                "No type-level guarantees or handling of legal vagueness"
+              ],
+              "key_paper": "Hou et al., 'Towards Trustworthy Legal AI through LLM Agents and Formal Methods' (arxiv:2511.21033 [4])",
+              "expressiveness_score": "3"
+            },
+            {
+              "name": "LegalRuleML (Palmirani)",
+              "approach": "XML-based rule interchange with defeasible logic extensions. Provides syntactic well-formedness (XML schema validation) and basic semantic consistency via ontology linking (PrOnto). No native type safety, decidability, soundness, or completeness guarantees—relies on external reasoners. Machine-checkability limited to XML parsing.",
+              "strengths": [
+                "Interoperability enables multi-engine reasoning",
+                "Ontology integration provides semantic consistency checks",
+                "Standardized format supports compliance workflows"
+              ],
+              "limitations": [
+                "No built-in proof system or formal guarantees",
+                "Machine-checkability limited to syntax/structure",
+                "Semantic guarantees depend entirely on external implementations"
+              ],
+              "key_paper": "Palmirani & Governatori, 'LegalRuleML: Design Principles and Foundations' (see ORBilu [3])",
+              "expressiveness_score": "1"
+            },
+            {
+              "name": "LegalLean (Lean 4 dependent types)",
+              "approach": "Dependent types with FormalisationBoundary provide full-spectrum guarantees: type safety (total functions), decidable typechecking, soundness/completeness of proofs via Lean's kernel. Handles open texture via bounded proofs with explicit undecidable oracles. Guarantees preservation of legal properties under refinement.",
+              "strengths": [
+                "Full dependent type safety prevents entire classes of legal encoding errors",
+                "Machine-checked proofs of soundness/completeness for formalized fragments",
+                "FormalisationBoundary makes proof obligations explicit and auditable"
+              ],
+              "limitations": [
+                "Decidability limited to type-inhabited fragments",
+                "Scalability challenges for large rulebases",
+                "Requires expertise in dependent types"
+              ],
+              "key_paper": "LegalLean project documentation (in development)",
+              "expressiveness_score": "5"
+            }
+          ],
+          "legallean_advantage": "Dependent types provide native encoding of legal relationships (e.g., 'obligation implies duty'), static guarantees absent in other systems, and FormalisationBoundary precisely delineates machine-checkable core from interpretive discretion—enabling compositional proofs across legal domains.",
+          "legallean_limitation": "Typechecking undecidable beyond simple fragments; requires human expertise to formalize boundaries correctly; currently lacks comprehensive legal libraries compared to Catala's tax domain coverage."
+        },
+        "citations": [
+          "https://www.alignmentforum.org/posts/B2bg677TaS4cmDPzL/limitations-on-formal-verification-for-ai-safety",
+          "https://openreview.net/pdf?id=TTu2MB7i7p",
+          "https://orbilu.uni.lu/bitstream/10993/53302/1/Extraamas_2022.pdf",
+          "https://arxiv.org/pdf/2511.21033",
+          "https://illinoisjltp.com/file/36/Dugan.pdf",
+          "https://users.ece.utexas.edu/~gligoric/papers/PalmskogETAL20Chip.pdf",
+          "https://neurips.cc/virtual/2025/poster/118494"
+        ],
+        "usage": {
+          "prompt_tokens": 357,
+          "completion_tokens": 1254,
+          "total_tokens": 1611,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00107,
+            "output_tokens_cost": 0.01881,
+            "request_cost": 0.006,
+            "total_cost": 0.02588
+          }
+        }
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 1,
+      "total_models": 1,
+      "all_citations": [
+        "https://orbilu.uni.lu/bitstream/10993/53302/1/Extraamas_2022.pdf",
+        "https://users.ece.utexas.edu/~gligoric/papers/PalmskogETAL20Chip.pdf",
+        "https://www.alignmentforum.org/posts/B2bg677TaS4cmDPzL/limitations-on-formal-verification-for-ai-safety",
+        "https://openreview.net/pdf?id=TTu2MB7i7p",
+        "https://neurips.cc/virtual/2025/poster/118494",
+        "https://arxiv.org/pdf/2511.21033",
+        "https://illinoisjltp.com/file/36/Dugan.pdf"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:41:14Z"
+}

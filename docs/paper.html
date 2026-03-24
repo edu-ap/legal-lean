@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verified Legal Reasoning: From Natural Language to Formal Proof &mdash; LegalLean</title>
+  <meta name="description" content="LegalLean: a framework for verifying the internal consistency of legal encodings, built on Lean 4 dependent types. Presents the FormalisationBoundary type and RequiresHumanDetermination typeclass encoding Hart's open texture.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* =====================================================
+       RESET & ROOT
+    ===================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --serif: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+      --mono: 'JetBrains Mono', 'Courier New', Courier, monospace;
+      --text: #1a1a1a;
+      --muted: #444;
+      --light: #666;
+      --border: #ccc;
+      --border-light: #ddd;
+      --bg-code: #f5f5f5;
+      --bg-abstract: #fafafa;
+      --link: #1a4a8a;
+      --link-hover: #0d2e5a;
+      --nav-bg: #1a2a4a;
+      --nav-text: #e8edf5;
+      --nav-link: #a8c4e8;
+      --nav-link-hover: #ffffff;
+    }
+
+    /* =====================================================
+       TYPOGRAPHY BASE
+    ===================================================== */
+    html {
+      font-size: 16px; /* 16px = roughly 12pt; body uses 0.9375em ≈ 15px ≈ 11pt */
+    }
+
+    body {
+      font-family: var(--serif);
+      font-size: 0.9375rem; /* ~15px, ≈ 11pt */
+      line-height: 1.6;
+      color: var(--text);
+      background: #ffffff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* =====================================================
+       NAVIGATION BAR
+    ===================================================== */
+    nav.site-nav {
+      background: var(--nav-bg);
+      border-bottom: 2px solid #0d2030;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav.site-nav .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    nav.site-nav a {
+      color: var(--nav-link);
+      text-decoration: none;
+      font-family: var(--serif);
+      font-size: 0.8125rem;
+      padding: 0.65rem 1rem;
+      display: inline-block;
+      transition: color 0.15s, background 0.15s;
+      letter-spacing: 0.01em;
+    }
+
+    nav.site-nav a:hover,
+    nav.site-nav a[aria-current="page"] {
+      color: var(--nav-link-hover);
+      background: rgba(255,255,255,0.07);
+    }
+
+    nav.site-nav a[aria-current="page"] {
+      border-bottom: 2px solid #6da0d8;
+      margin-bottom: -2px;
+    }
+
+    nav.site-nav .nav-sep {
+      color: #3a5070;
+      padding: 0 0.1rem;
+      font-size: 0.75rem;
+      user-select: none;
+    }
+
+    /* =====================================================
+       PAGE WRAPPER
+    ===================================================== */
+    .page-wrapper {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    /* =====================================================
+       TITLE BLOCK
+    ===================================================== */
+    .paper-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .paper-title {
+      font-family: var(--serif);
+      font-size: 1.65rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: #0d1a30;
+      margin-bottom: 1.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    .paper-authors {
+      margin-bottom: 1rem;
+    }
+
+    .author-name {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+
+    .author-affil {
+      font-family: var(--serif);
+      font-size: 0.8125rem;
+      color: var(--muted);
+      font-style: italic;
+      display: block;
+      line-height: 1.5;
+      margin-bottom: 0.15rem;
+    }
+
+    .author-email {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--light);
+      display: inline-block;
+      margin: 0.2rem 0.4rem 0 0;
+    }
+
+    .author-email a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    .author-email a:hover {
+      text-decoration: underline;
+    }
+
+    /* =====================================================
+       ABSTRACT
+    ===================================================== */
+    .abstract-box {
+      border: 1px solid var(--border);
+      background: var(--bg-abstract);
+      padding: 1.4rem 1.6rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .abstract-box .abstract-label {
+      font-family: var(--serif);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      text-align: center;
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    .abstract-box p {
+      font-size: 0.875rem;
+      line-height: 1.65;
+      color: var(--text);
+      text-align: justify;
+      hyphens: auto;
+    }
+
+    /* =====================================================
+       SECTION HEADINGS WITH CSS COUNTERS
+    ===================================================== */
+    .paper-body {
+      counter-reset: section;
+    }
+
+    h2.section-heading {
+      font-family: var(--serif);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #0d1a30;
+      margin-top: 2.5rem;
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 1px solid var(--border-light);
+      counter-increment: section;
+      counter-reset: subsection;
+    }
+
+    h2.section-heading::before {
+      content: counter(section) ". ";
+    }
+
+    /* Section headings that already have numbers in the text -- skip counter display */
+    h2.section-heading.no-counter::before {
+      content: "";
+    }
+
+    h3.subsection-heading {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 1.6rem;
+      margin-bottom: 0.6rem;
+      counter-increment: subsection;
+      counter-reset: subsubsection;
+    }
+
+    h3.subsection-heading::before {
+      content: counter(section) "." counter(subsection) " ";
+    }
+
+    h4.subsubsection-heading {
+      font-family: var(--serif);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 1.3rem;
+      margin-bottom: 0.5rem;
+      font-style: italic;
+      counter-increment: subsubsection;
+    }
+
+    h4.subsubsection-heading::before {
+      content: counter(section) "." counter(subsection) "." counter(subsubsection) " ";
+      font-style: normal;
+    }
+
+    /* =====================================================
+       BODY TEXT
+    ===================================================== */
+    p {
+      margin-bottom: 0.85rem;
+      text-align: justify;
+      hyphens: auto;
+      line-height: 1.65;
+    }
+
+    p + p {
+      text-indent: 1.2em;
+    }
+
+    /* After headings, lists, code blocks: no indent */
+    h2 + p,
+    h3 + p,
+    h4 + p,
+    .abstract-box + p,
+    ul + p,
+    ol + p,
+    pre + p,
+    blockquote + p,
+    .theorem-block + p {
+      text-indent: 0;
+    }
+
+    /* =====================================================
+       LISTS
+    ===================================================== */
+    ul, ol {
+      margin: 0.75rem 0 0.9rem 1.8rem;
+      line-height: 1.6;
+    }
+
+    li {
+      margin-bottom: 0.35rem;
+    }
+
+    li p {
+      margin-bottom: 0.3rem;
+      text-indent: 0 !important;
+    }
+
+    /* Numbered contributions list */
+    ol.contributions {
+      margin-left: 1.5rem;
+    }
+
+    ol.contributions li {
+      margin-bottom: 0.6rem;
+      line-height: 1.6;
+    }
+
+    /* =====================================================
+       CODE BLOCKS
+    ===================================================== */
+    pre {
+      background: var(--bg-code);
+      border: 1px solid var(--border-light);
+      border-left: 3px solid #6da0d8;
+      padding: 1rem 1.1rem;
+      margin: 1rem 0 1.1rem;
+      overflow-x: auto;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      line-height: 1.55;
+      color: #1a1a1a;
+      tab-size: 2;
+    }
+
+    code {
+      font-family: var(--mono);
+      font-size: 0.82em;
+      background: #f0f0f0;
+      padding: 0.1em 0.3em;
+      border-radius: 2px;
+      color: #1a1a1a;
+    }
+
+    pre code {
+      background: none;
+      padding: 0;
+      font-size: inherit;
+      border-radius: 0;
+    }
+
+    /* Lean 4 syntax highlighting -- lightweight, no JS */
+    .kw  { color: #0033aa; font-weight: 600; }  /* keywords */
+    .ty  { color: #006666; }                     /* types */
+    .ct  { color: #880044; }                     /* constructors */
+    .st  { color: #aa4400; }                     /* strings */
+    .cm  { color: #666; font-style: italic; }    /* comments */
+    .nm  { color: #333; }                        /* names/idents */
+    .op  { color: #444; }                        /* operators */
+    .tac { color: #005500; font-weight: 600; }   /* tactics */
+
+    /* DDL / pseudo-code blocks */
+    pre.ddl {
+      border-left-color: #c0a060;
+      background: #fdf8f0;
+    }
+
+    /* =====================================================
+       THEOREM / DEFINITION BLOCKS
+    ===================================================== */
+    .theorem-block {
+      border: 1px solid var(--border);
+      padding: 0.9rem 1.1rem;
+      margin: 1.1rem 0;
+      background: #fafafa;
+    }
+
+    .theorem-block .theorem-label {
+      font-family: var(--serif);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+    }
+
+    /* =====================================================
+       BLOCKQUOTE (used for notable passages)
+    ===================================================== */
+    blockquote {
+      border-left: 3px solid var(--border);
+      padding: 0.5rem 1rem;
+      margin: 1rem 0 1rem 0.5rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    blockquote p {
+      margin-bottom: 0;
+    }
+
+    /* =====================================================
+       HORIZONTAL RULE
+    ===================================================== */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border-light);
+      margin: 2.5rem 0;
+    }
+
+    /* =====================================================
+       INLINE FORMATTING
+    ===================================================== */
+    strong { font-weight: 700; }
+    em { font-style: italic; }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+      color: var(--link-hover);
+    }
+
+    /* =====================================================
+       REFERENCES SECTION
+    ===================================================== */
+    .references-list {
+      list-style: none;
+      margin: 0.5rem 0 0 0;
+      padding: 0;
+    }
+
+    .references-list li {
+      padding-left: 2.5rem;
+      text-indent: -2.5rem;
+      margin-bottom: 0.6rem;
+      font-size: 0.875rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+
+    .ref-num {
+      font-family: var(--serif);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* =====================================================
+       SECTION DIVIDERS (from --- in markdown)
+    ===================================================== */
+    .section-rule {
+      margin: 2.5rem 0;
+      border: none;
+      border-top: 1px solid var(--border-light);
+    }
+
+    /* =====================================================
+       PRINT STYLES
+    ===================================================== */
+    @media print {
+      nav.site-nav { display: none; }
+
+      body {
+        font-size: 11pt;
+        color: #000;
+      }
+
+      .page-wrapper {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+      }
+
+      pre {
+        font-size: 8pt;
+        border-left-width: 2pt;
+        page-break-inside: avoid;
+      }
+
+      h2.section-heading,
+      h3.subsection-heading {
+        page-break-after: avoid;
+      }
+
+      .abstract-box {
+        border: 1pt solid #888;
+        page-break-inside: avoid;
+      }
+
+      a {
+        color: #000;
+        text-decoration: none;
+      }
+
+      a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 8pt;
+        color: #555;
+      }
+
+      nav.site-nav a::after {
+        content: "";
+      }
+    }
+
+    /* =====================================================
+       RESPONSIVE
+    ===================================================== */
+    @media (max-width: 640px) {
+      html { font-size: 15px; }
+
+      .page-wrapper { padding: 1.5rem 1rem 3rem; }
+
+      .paper-title { font-size: 1.35rem; }
+
+      pre { font-size: 0.72rem; padding: 0.75rem 0.75rem; }
+
+      nav.site-nav .nav-inner { padding: 0 0.5rem; }
+
+      nav.site-nav a { padding: 0.6rem 0.5rem; font-size: 0.75rem; }
+
+      h2.section-heading { font-size: 1.05rem; }
+    }
+
+    /* =====================================================
+       ACCESSIBILITY
+    ===================================================== */
+    :focus-visible {
+      outline: 2px solid var(--link);
+      outline-offset: 2px;
+    }
+
+    /* =====================================================
+       FOOTNOTES / CITATION LINKS
+    ===================================================== */
+    sup.cite {
+      font-size: 0.7em;
+      vertical-align: super;
+      line-height: 0;
+    }
+
+    sup.cite a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    sup.cite a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+<nav class="site-nav" role="navigation" aria-label="Site navigation">
+  <div class="nav-inner">
+    <a href="/">Home</a>
+    <span class="nav-sep">|</span>
+    <a href="/paper.html" aria-current="page">Paper</a>
+    <span class="nav-sep">|</span>
+    <a href="https://github.com/edu-ap/legal-lean" rel="noopener noreferrer">GitHub</a>
+    <span class="nav-sep">|</span>
+    <a href="/legal-lean.pdf">PDF Download</a>
+  </div>
+</nav>
+
+<!-- =====================================================
+     MAIN CONTENT
+===================================================== -->
+<main class="page-wrapper" role="main">
+
+  <!-- TITLE BLOCK -->
+  <header class="paper-header">
+    <h1 class="paper-title">Verified Legal Reasoning: From Natural Language to Formal Proof</h1>
+
+    <div class="paper-authors">
+      <span class="author-name">Eduardo Aguilar Pelaez</span>
+      <span class="author-affil">Legal Engine Ltd, London, UK</span>
+      <span class="author-affil">Department of Surgery &amp; Cancer, Faculty of Medicine, Imperial College London</span>
+      <span class="author-email"><a href="mailto:edu@legalengine.co.uk">edu@legalengine.co.uk</a></span>
+    </div>
+  </header>
+
+  <!-- ABSTRACT -->
+  <section aria-labelledby="abstract-label">
+    <div class="abstract-box">
+      <span class="abstract-label" id="abstract-label">Abstract</span>
+      <p>Legal AI systems increasingly serve as transducers &mdash; converting unstructured statutory text into structured representations &mdash; but they lack a verification layer capable of distinguishing what the type checker can certify from what requires human judgment. This paper presents LegalLean, a framework for verifying the internal consistency of legal encodings, built on Lean&nbsp;4 dependent types. The central contribution is the <code>FormalisationBoundary</code> type and the <code>RequiresHumanDetermination</code> typeclass, which together encode Hart&rsquo;s &ldquo;open texture&rdquo; distinction as a first-class object in the type system rather than an external limitation on formalisation. We demonstrate the framework across three case studies: IRC&nbsp;&sect;163(h) mortgage interest deduction, the O-1A extraordinary ability visa (8&nbsp;CFR&nbsp;&sect;204.5(h)), and the Australian Telecommunications Consumer Protections Code (C628:2012). The system produces machine-verified theorems about the structural properties of these encodings, with zero unresolved <code>sorry</code> placeholders. The headline result is <code>monotonicity_break_general</code>: a proof that the encoding of the Tax Cuts and Jobs Act 2017 exhibits a non-monotonic property &mdash; the same factual input yields different legal outcomes before and after the statutory change, for all payments satisfying the preconditions. We stress that LegalLean verifies the encoding, not the statute itself; whether the encoding faithfully represents the law requires independent legal audit. We compare LegalLean against four prior systems (DDL, Catala, L4L, LegalRuleML) and discuss honest limitations.</p>
+    </div>
+  </section>
+
+  <!-- PAPER BODY -->
+  <article class="paper-body">
+
+    <!-- ===== SECTION 1: INTRODUCTION ===== -->
+    <h2 class="section-heading" id="s1">Introduction</h2>
+
+    <p>Google DeepMind&rsquo;s description of its language model as a &ldquo;transducer and verifier&rdquo; articulates a productive division of labour: the language model converts messy natural-language input into structured form, while a separate verification layer checks the logic. This framing, applied to law, identifies exactly what is missing from current legal AI systems. Systems that extract rules from statutes, answer legal queries, or assess compliance are, in this terminology, transducers. They produce structured representations. None of them includes a verifier in the formal sense: a component that provides machine-checkable guarantees about the reasoning it performs.</p>
+
+    <p>The gap matters because legal reasoning has a well-understood failure mode. Hart&rsquo;s analysis in <em>The Concept of Law</em> <sup class="cite"><a href="#ref11">[11]</a></sup> identified that legal concepts have a core of settled meaning and a penumbra of uncertainty. A formalisation that does not distinguish these zones does not merely lack nuance &mdash; it silently misrepresents where its own confidence ends. When a compliance system returns &ldquo;non-compliant&rdquo;, the user cannot tell whether that verdict rests on a formally verifiable ground (the payment was not made by an individual) or a contestable judgment (the property may not qualify as a &ldquo;qualified residence&rdquo;). Both appear as outputs; only one is machine-checkable.</p>
+
+    <p>Existing approaches address parts of this problem but not the whole. Catala <sup class="cite"><a href="#ref14">[14]</a></sup> is a functional programming language designed for statutes: it computes legal outcomes deterministically but has no mechanism for representing open texture &mdash; the code either handles a case or raises a runtime error. Governatori&rsquo;s Defeasible Deontic Logic (DDL) <sup class="cite"><a href="#ref9">[9]</a><a href="#ref10">, 10</a></sup> encodes legal rules as defeasible clauses with priority relations, handling non-monotonicity well but providing no machine-checkable proofs and treating vague predicates as ordinary literals. L4L (Logic for Law) <sup class="cite"><a href="#ref12">[12]</a></sup> uses dependent types in a style close to ours and produces SMT-backed proofs, but the SMT layer is not fully transparent: the proof obligations are discharged by a solver whose output is not an auditable term. LegalRuleML <sup class="cite"><a href="#ref16">[16]</a></sup> is a rich XML vocabulary for regulatory knowledge but provides no automated reasoning whatsoever. None of these systems makes the formalisation boundary itself a typed, auditable object.</p>
+
+    <p>LegalLean takes a different approach. It uses Lean&nbsp;4 <sup class="cite"><a href="#ref7">[7]</a></sup> dependent types, where the Curry-Howard correspondence <sup class="cite"><a href="#ref5">[5]</a><a href="#ref6">, 6</a></sup> establishes that propositions are types and proofs are terms. A legal conclusion &mdash; &ldquo;this interest payment is not deductible&rdquo; &mdash; is a type. A proof of that conclusion is a term of that type. If the term type-checks, the conclusion is verified; if it does not, the error is explicit and localised. Crucially, when a legal condition requires human determination (because the underlying predicate is vague or discretionary), LegalLean does not attempt to discharge it. Instead, it wraps the proposition in a <code>FormalisationBoundary</code> value that carries machine-readable metadata about which institution must determine it and why.</p>
+
+    <p>An important architectural distinction: LegalLean is a verification layer, not an inference engine. The case study functions (such as <code>isDeductible</code> for IRC&nbsp;&sect;163(h)) are formalisations of statutory logic written by a human or language model. They are programs to be verified, not derivations from a rule base. The value of Lean&nbsp;4 is not that it replaces the formaliser but that it catches errors in the formalisation: if the encoded logic is inconsistent with the declared types, the type checker rejects it. A generic defeasible reasoning solver (in the style of DDL&rsquo;s proof theory) would be a valuable complement but serves a different role. DDL computes which conclusions follow from a set of rules; LegalLean verifies that a specific encoding of those rules is internally consistent and correctly typed. The two are complementary, not competitive.</p>
+
+    <p>The contributions of this paper are:</p>
+
+    <ol class="contributions">
+      <li>The <code>FormalisationBoundary</code> inductive type and the <code>RequiresHumanDetermination</code> typeclass (with <code>Vague</code> and <code>Discretionary</code> subclasses), providing the first formal treatment of Hart&rsquo;s open texture as a machine-checkable type-level distinction.</li>
+      <li>A verified encoding of IRC&nbsp;&sect;163(h) including <code>monotonicity_break_general</code>, a machine-checked proof that the TCJA 2017 constitutes a non-monotonic statutory change: for every home equity payment satisfying the pre-TCJA conditions, the legal outcome transitions from <code>boundary</code> (human determination required) to <code>formal False</code> (machine-verified rejection).</li>
+      <li>A dependent-type encoding of the O-1A visa &ldquo;3 of 8&rdquo; threshold using <code>AllDistinct</code> lists with length constraints, together with a <code>mixed</code> formalisation of the Kazarian two-part test.</li>
+      <li>A structured comparison of LegalLean against DDL <sup class="cite"><a href="#ref9">[9]</a></sup>, Catala <sup class="cite"><a href="#ref14">[14]</a></sup>, L4L <sup class="cite"><a href="#ref12">[12]</a></sup>, and LegalRuleML <sup class="cite"><a href="#ref16">[16]</a></sup> across seven dimensions.</li>
+    </ol>
+
+    <p>All source code is available and compiles against Lean&nbsp;4 v4.24.0 (the Aristotle release) with no Mathlib dependency.</p>
+
+    <hr class="section-rule">
+
+    <!-- ===== SECTION 2: BACKGROUND ===== -->
+    <h2 class="section-heading" id="s2">Background</h2>
+
+    <h3 class="subsection-heading" id="s2-1">Hart&rsquo;s Open Texture</h3>
+
+    <p>In <em>The Concept of Law</em> (1961), H.L.A. Hart <sup class="cite"><a href="#ref11">[11]</a></sup> observed that legal concepts have a &ldquo;core of settled meaning&rdquo; and a &ldquo;penumbra of uncertainty&rdquo;. The canonical example is a rule prohibiting vehicles in a park: a car is unambiguously within the rule&rsquo;s core; a toy pedal car is in the penumbra. The penumbral question cannot be resolved by logic alone &mdash; it requires a judgment about the rule&rsquo;s purpose and the case&rsquo;s particulars. Hart called this irreducible property &ldquo;open texture&rdquo;: the meaning of legal terms cannot be fully determined in advance, and no formalisation can eliminate the need for human judgment at the boundary.</p>
+
+    <p>Prior legal knowledge representation systems treat open texture as a limitation imposed from outside: the formalisation goes as far as it can, and the rest is left to the practitioner. LegalLean treats it as a property to be represented inside the system.</p>
+
+    <h3 class="subsection-heading" id="s2-2">Default Logic and Defeasibility</h3>
+
+    <p>Legal reasoning is non-monotonic (defeasible): adding new rules or evidence can retract previously valid conclusions. Lawsky&rsquo;s &ldquo;A Logic for Statutes&rdquo; <sup class="cite"><a href="#ref13">[13]</a></sup> provides a careful analysis of how Reiter&rsquo;s default logic <sup class="cite"><a href="#ref17">[17]</a></sup> applies to statutory interpretation, demonstrating that statutes encode default rules of the form: &ldquo;if conditions hold and no exception applies, the conclusion follows.&rdquo; The exceptions are themselves defeasible, creating chains of defeat.</p>
+
+    <p>LegalLean represents defeasibility through the <code>Defeats</code> structure and <code>DefeasiblyHolds</code> proposition type. Priority ordering (lex posterior, lex specialis) is encoded in the <code>Priority</code> field of each <code>LegalRule</code>. The key departure from prior work is that defeat relations are typed: the <code>Defeats</code> structure carries a <code>reason</code> field distinguishing lex posterior from lex specialis, and its <code>strict</code> field distinguishes hard from soft defeat.</p>
+
+    <h3 class="subsection-heading" id="s2-3">Curry-Howard and Lean 4</h3>
+
+    <p>The Curry-Howard correspondence <sup class="cite"><a href="#ref5">[5]</a><a href="#ref6">, 6</a></sup> establishes an isomorphism between propositions and types: a proposition <code>P</code> is inhabited (has a term of that type) if and only if it is provable. In Lean&nbsp;4 <sup class="cite"><a href="#ref7">[7]</a></sup>, this means that constructing a value of type <code>EvidenceFor P</code> is literally the same operation as proving <code>P</code>. Lean&nbsp;4&rsquo;s kernel verifier checks all proof terms, making the guarantee machine-checkable in a stronger sense than SMT: the checker is a small, auditable kernel, not an opaque solver.</p>
+
+    <p>Lean&nbsp;4&rsquo;s dependent type system allows the type of a term to depend on its value. This is essential for legal formalisation: the type of evidence required for &ldquo;meets 3 of 8 criteria&rdquo; depends on which specific criteria are claimed, and <code>MeetsThreeCriteria</code> encodes this directly via an <code>AllDistinct</code> list of <code>Criterion</code> values with a <code>cardinal</code> proof that <code>satisfied.length &ge; 3</code>.</p>
+
+    <hr class="section-rule">
+
+    <!-- ===== SECTION 3: THE LEGALLEAN FRAMEWORK ===== -->
+    <h2 class="section-heading" id="s3">The LegalLean Framework</h2>
+
+    <h3 class="subsection-heading" id="s3-1">Core Types</h3>
+
+    <p>The framework begins with three foundational types defined in <code>LegalLean.Core</code>:</p>
+
+<pre><code><span class="kw">inductive</span> <span class="ty">Deontic</span> <span class="kw">where</span>
+  | <span class="ct">permitted</span>    : <span class="ty">Deontic</span>
+  | <span class="ct">prohibited</span>   : <span class="ty">Deontic</span>
+  | <span class="ct">obligatory</span>   : <span class="ty">Deontic</span>
+  <span class="kw">deriving</span> <span class="ty">Repr</span>, <span class="ty">BEq</span>, <span class="ty">Inhabited</span>, <span class="ty">DecidableEq</span></code></pre>
+
+    <p>The deontic modalities cover the three fundamental normative positions. Lean&nbsp;4&rsquo;s <code>DecidableEq</code> derivation means that equality of modalities is decidable, enabling automated conflict detection in theorems (for instance, <code>R1_BaseDeduction.modality &ne; R2_TCJAProhibition.modality</code> is proved by <code>simp</code>).</p>
+
+<pre><code><span class="kw">structure</span> <span class="ty">LegalRule</span> (<span class="nm">&#945;</span> : <span class="ty">Type</span>) <span class="kw">where</span>
+  <span class="nm">id</span>          : <span class="ty">String</span>
+  <span class="nm">description</span> : <span class="ty">String</span>
+  <span class="nm">modality</span>    : <span class="ty">Deontic</span>
+  <span class="nm">priority</span>    : <span class="ty">Priority</span>
+  <span class="nm">conclusion</span>  : <span class="nm">&#945;</span> <span class="op">&rarr;</span> <span class="ty">Prop</span>
+  <span class="nm">defeatedBy</span>  : <span class="ty">List</span> <span class="ty">String</span></code></pre>
+
+    <p><code>LegalRule</code> is parameterised by the type <code>&#945;</code> of the entity it governs: <code>LegalRule InterestPayment</code> for IRC&nbsp;&sect;163(h) rules, <code>LegalRule Provider</code> for TCP Code rules. The <code>conclusion</code> field is a function from <code>&#945;</code> to <code>Prop</code>, encoding the rule&rsquo;s conclusion as a dependent proposition. This is more expressive than DDL&rsquo;s flat first-order signature.</p>
+
+<pre><code><span class="kw">structure</span> <span class="ty">EvidenceFor</span> (<span class="nm">P</span> : <span class="ty">Prop</span>) <span class="kw">where</span>
+  <span class="nm">source</span>   : <span class="ty">String</span>
+  <span class="nm">artifact</span> : <span class="ty">Option</span> <span class="ty">String</span>
+  <span class="nm">witness</span>  : <span class="nm">P</span></code></pre>
+
+    <p><code>EvidenceFor P</code> is the propositions-as-types materialisation of legal evidence: the <code>witness</code> field literally contains the proof of <code>P</code>. Constructing an <code>EvidenceFor P</code> value is constructing a proof. The <code>source</code> and <code>artifact</code> fields provide provenance that survives code evolution &mdash; they are not erased at compile time.</p>
+
+    <h3 class="subsection-heading" id="s3-2">The FormalisationBoundary Type</h3>
+
+    <p><code>FormalisationBoundary</code> is the novel contribution of this framework:</p>
+
+<pre><code><span class="kw">inductive</span> <span class="ty">FormalisationBoundary</span> (<span class="nm">P</span> : <span class="ty">Sort</span> _) <span class="kw">where</span>
+  | <span class="ct">formal</span>   (<span class="nm">proof</span> : <span class="nm">P</span>)                                  : <span class="ty">FormalisationBoundary</span> <span class="nm">P</span>
+  | <span class="ct">boundary</span> (<span class="nm">reason</span> : <span class="ty">String</span>) (<span class="nm">authority</span> : <span class="ty">String</span>)       : <span class="ty">FormalisationBoundary</span> <span class="nm">P</span>
+  | <span class="ct">mixed</span>    (<span class="nm">formalPart</span> : <span class="ty">String</span>) (<span class="nm">humanPart</span> : <span class="ty">String</span>)   : <span class="ty">FormalisationBoundary</span> <span class="nm">P</span></code></pre>
+
+    <p>The three constructors correspond to three epistemic positions about a legal proposition <code>P</code>:</p>
+
+    <ul>
+      <li><code>formal proof</code>: the type checker alone can verify <code>P</code>. No human determination is required. The <code>proof</code> term is a machine-checked certificate.</li>
+      <li><code>boundary reason authority</code>: <code>P</code> requires human determination. The <code>reason</code> string names the specific open-texture condition; <code>authority</code> names the institution responsible.</li>
+      <li><code>mixed formalPart humanPart</code>: <code>P</code> is partially formal and partially boundary. Part&nbsp;1 of the Kazarian two-part test is <code>formal</code> (Lean verified the criteria count); Part&nbsp;2 is <code>boundary</code> (USCIS holistic determination).</li>
+    </ul>
+
+    <h3 class="subsection-heading" id="s3-3">The RequiresHumanDetermination Typeclass</h3>
+
+    <p>The <code>FormalisationBoundary</code> type marks where the boundary falls. The <code>RequiresHumanDetermination</code> typeclass marks which propositions are intrinsically at the boundary:</p>
+
+<pre><code><span class="kw">class</span> <span class="ty">RequiresHumanDetermination</span> (<span class="nm">P</span> : <span class="ty">Prop</span>) <span class="kw">where</span>
+  <span class="nm">reason</span>    : <span class="ty">String</span>
+  <span class="nm">authority</span> : <span class="ty">String</span>
+
+<span class="kw">class</span> <span class="ty">Vague</span> (<span class="nm">P</span> : <span class="ty">Prop</span>) <span class="kw">extends</span> <span class="ty">RequiresHumanDetermination</span> <span class="nm">P</span> <span class="kw">where</span>
+  <span class="nm">core</span>      : <span class="ty">String</span>
+  <span class="nm">penumbra</span>  : <span class="ty">String</span>
+
+<span class="kw">class</span> <span class="ty">Discretionary</span> (<span class="nm">P</span> : <span class="ty">Prop</span>) <span class="kw">extends</span> <span class="ty">RequiresHumanDetermination</span> <span class="nm">P</span> <span class="kw">where</span>
+  <span class="nm">scope</span>       : <span class="ty">String</span>
+  <span class="nm">constraints</span> : <span class="ty">List</span> <span class="ty">String</span></code></pre>
+
+    <p><code>Vague</code> captures Hart&rsquo;s core/penumbra distinction directly. <code>core</code> describes settled cases; <code>penumbra</code> describes the contested region. <code>Discretionary</code> captures a different phenomenon: not conceptual vagueness but institutional authority. A USCIS adjudicator&rsquo;s determination of &ldquo;extraordinary ability&rdquo; is not vague in Hart&rsquo;s sense &mdash; the adjudicator has the power to decide. The typeclass distinguishes these two sources of non-formalisability.</p>
+
+    <p>Both typeclasses constrain proof search: any proposition with a <code>Vague</code> or <code>Discretionary</code> instance cannot be discharged by the type checker without an explicit axiom. In the case studies, open-texture propositions such as <code>HasExtraordinaryAbility</code> and <code>IsQualifiedResidence</code> are introduced as axioms &mdash; honest markers that the type checker cannot verify them. The typeclass instances then carry the auditable metadata explaining why.</p>
+
+    <p>The use of axioms for open-texture propositions requires justification. An axiom in Lean&nbsp;4 is a proposition asserted without proof; it is not verified by the kernel. One might object that this introduces a soundness gap: if the axioms are inconsistent, any theorem built on them is vacuously true. This objection is correct in principle but misdirected in practice. The axioms are not intended to be discharged; they represent propositions that <em>should not</em> be machine-verifiable. A system that could prove <code>HasExtraordinaryAbility a</code> for a given applicant <code>a</code> would be claiming to have automated a determination that the US Congress assigned to USCIS adjudicators. The axiom marks the boundary between what the type checker should certify and what it should defer. The theorems built on these axioms do not depend on their truth &mdash; they depend on their <em>structure</em>. The monotonicity break theorem, for instance, does not use any open-texture axiom; it reasons entirely about the formalisable conditions.</p>
+
+    <p>This is the key architectural difference from all prior systems: the formalisation boundary is not a gap in the encoding but a typed, first-class object.</p>
+
+    <hr class="section-rule">
+
+    <!-- ===== SECTION 4: CASE STUDIES ===== -->
+    <h2 class="section-heading" id="s4">Case Studies</h2>
+
+    <h3 class="subsection-heading" id="s4-1">IRC &sect;163(h): Mortgage Interest Deduction</h3>
+
+    <p>IRC&nbsp;&sect;163(h) (26 U.S.C.&nbsp;&sect;163(h)) is the provision of the US Internal Revenue Code governing the deductibility of qualified residence interest. It was chosen because Lawsky <sup class="cite"><a href="#ref13">[13]</a></sup> used it as the gold standard case study for default logic applied to statutes. The rule structure, discovered and verified through the research pipeline, consists of three rules, four defeat relations forming a three-level chain, and three open-texture terms.</p>
+
+    <p>The three rules in <code>LegalLean.CaseStudies.IRC163h</code> are:</p>
+
+    <ul>
+      <li><strong>R1</strong> (<code>R1_BaseDeduction</code>): Taxpayers are permitted to deduct interest on acquisition indebtedness secured by a qualified residence. Priority level&nbsp;1 (&ldquo;statute&rdquo;).</li>
+      <li><strong>R2</strong> (<code>R2_TCJAProhibition</code>): Home equity interest deduction is prohibited for taxable years beginning after 31&nbsp;December 2017 (the TCJA; note: 15&nbsp;December 2017 is the debt-incurrence cutoff for grandfathering, not the effective date). Priority level&nbsp;2 (&ldquo;statute (TCJA 2017, lex posterior)&rdquo;).</li>
+      <li><strong>R3</strong> (<code>R3_GrandfatherRule</code>): Acquisition indebtedness outstanding on 13&nbsp;October 1987 is grandfathered from current dollar limits. Priority level&nbsp;3 (&ldquo;statute (lex specialis, grandfather clause)&rdquo;).</li>
+    </ul>
+
+    <p>The four defeat relations are: R2 defeats R1 (lex posterior); E1.1 (dollar limit) defeats R1; E1.2 (home equity dollar limit) defeats R1; and R3 defeats E1.1. The third of these creates a three-level defeasibility chain: R3 defeats E1.1, which defeats R1 &mdash; defeat of the limit restores the base permission. This chain cannot be represented by a flat priority ordering; it requires the full defeasibility machinery.</p>
+
+    <p>Open-texture terms are encoded as axioms with <code>Vague</code> instances. <code>IsQualifiedResidence</code> is declared as an axiom, with the instance documenting the core (principal residence plus one other property used as a residence) and the penumbra (mobile homes, timeshares, boats with habitability facilities, fractional ownership). <code>IsSubstantialImprovement</code> receives the same treatment. <code>MixedUseAllocation</code> receives a <code>Discretionary</code> instance referencing IRS tracing rules under Treas. Reg.&nbsp;&sect;1.163-8T.</p>
+
+    <p>The compliance function <code>isDeductible</code> returns a <code>FormalisationBoundary Prop</code>. For unlicensed entities, post-TCJA home equity, and unsecured debt, it returns <code>formal False</code> &mdash; machine-verified rejection. For acquisition indebtedness within limits, it returns <code>boundary</code> with the authority &ldquo;IRS / Tax Court&rdquo;.</p>
+
+    <h4 class="subsubsection-heading" id="s4-1-1">The Monotonicity Break Theorem</h4>
+
+    <p>The headline result of this case study is <code>monotonicity_break_general</code>:</p>
+
+<pre><code><span class="kw">theorem</span> <span class="nm">monotonicity_break_general</span>
+    (<span class="nm">payment</span> : <span class="ty">InterestPayment</span>) (<span class="nm">status</span> : <span class="ty">FilingStatus</span>)
+    (<span class="nm">h_individual</span> : <span class="nm">payment</span>.<span class="nm">paidByIndividual</span> <span class="op">=</span> <span class="kw">true</span>)
+    (<span class="nm">h_secured</span>    : <span class="nm">payment</span>.<span class="nm">indebtedness</span>.<span class="nm">securedByResidence</span> <span class="op">=</span> <span class="kw">true</span>)
+    (<span class="nm">h_purpose</span>    : <span class="nm">payment</span>.<span class="nm">indebtedness</span>.<span class="nm">purpose</span> <span class="op">=</span> <span class="ty">IndebtednessPurpose</span>.<span class="ct">other</span>)
+    (<span class="nm">h_within</span>     : <span class="nm">withinHomeEquityLimit</span> <span class="nm">payment</span>.<span class="nm">indebtedness</span> <span class="nm">status</span> <span class="op">=</span> <span class="kw">true</span>)
+    : (<span class="op">&exist;</span> <span class="nm">r</span> <span class="nm">a</span>, <span class="nm">isDeductible</span> <span class="nm">payment</span> <span class="op">&langle;</span><span class="nm">2017</span><span class="op">&rangle;</span> <span class="nm">status</span> <span class="op">=</span>
+                <span class="ty">FormalisationBoundary</span>.<span class="ct">boundary</span> <span class="nm">r</span> <span class="nm">a</span>) <span class="op">&and;</span>
+      (<span class="nm">isDeductible</span> <span class="nm">payment</span> <span class="op">&langle;</span><span class="nm">2018</span><span class="op">&rangle;</span> <span class="nm">status</span> <span class="op">=</span>
+                <span class="ty">FormalisationBoundary</span>.<span class="ct">formal</span> <span class="ty">False</span>) := <span class="kw">by</span>
+  <span class="tac">constructor</span>
+  <span class="op">&middot;</span> <span class="tac">simp</span> [<span class="nm">isDeductible</span>, <span class="nm">h_individual</span>, <span class="nm">h_secured</span>, <span class="nm">h_purpose</span>, <span class="nm">h_within</span>]
+  <span class="op">&middot;</span> <span class="tac">simp</span> [<span class="nm">isDeductible</span>, <span class="nm">h_individual</span>, <span class="nm">h_secured</span>, <span class="nm">h_purpose</span>]</code></pre>
+
+    <p>This theorem states, for all home equity interest payments by individual taxpayers on secured property within the applicable dollar limits: the pre-TCJA outcome (year&nbsp;= 2017) is <code>boundary</code> (potentially deductible; human determination of &ldquo;qualified residence&rdquo; required), while the post-TCJA outcome (year&nbsp;= 2018) is <code>formal False</code> (automatically rejected; machine-verified). The TCJA added a rule to the legal system that removed a previously available permission. Lean&nbsp;4 verifies this as a structural property of the encoding, not merely a test case.</p>
+
+    <p>A companion corollary <code>pre_tcja_not_auto_rejected</code> confirms the strictness of the break: the pre-TCJA outcome is provably not <code>formal False</code>, making the transition genuinely from &ldquo;possibly permitted&rdquo; to &ldquo;certainly prohibited.&rdquo;</p>
+
+    <p>It is worth being explicit about what this theorem proves and does not prove. It proves a structural property of the formalisation: that the <code>isDeductible</code> function, as encoded, produces these two outcomes for these two inputs. It does not prove that the formalisation is a complete representation of IRC&nbsp;&sect;163(h) &mdash; such a claim would require independent legal audit. The theorem&rsquo;s value is that it is machine-checked: the outcome cannot diverge silently from the encoding.</p>
+
+    <p>A natural question is whether the proof&rsquo;s brevity (two <code>simp</code> calls) indicates that the result is trivially encoded. It does not. The <code>simp</code> tactic unfolds <code>isDeductible</code>, substitutes the hypotheses, and evaluates the <code>if</code> branches. The non-triviality is in the <em>universality</em>: the theorem quantifies over all <code>InterestPayment</code> values and all <code>FilingStatus</code> values satisfying the four preconditions. A test case checks one input; this theorem checks the entire input space. The preconditions are exactly the conditions under which the monotonicity break is legally relevant (individual taxpayer, secured home equity debt within limits), and the universally quantified conclusion is that the legal outcome changes at the 2018 boundary for every such payment. This structural coverage is what distinguishes a verified theorem from a unit test, even when both share the same tactic.</p>
+
+    <h3 class="subsection-heading" id="s4-2">O-1A Visa: &ldquo;3 of 8&rdquo; as Dependent Types</h3>
+
+    <p>The O-1A extraordinary ability visa (8&nbsp;CFR&nbsp;&sect;204.5(h)) requires demonstrating &ldquo;extraordinary ability&rdquo; by meeting at least three of eight evidentiary criteria. This is a natural dependent-type problem: the &ldquo;3 of 8&rdquo; threshold is a cardinality constraint on a set of satisfied criteria, and Lean&nbsp;4 can encode this constraint at the type level.</p>
+
+    <p>The eight criteria are defined as an inductive type <code>Criterion</code> with <code>DecidableEq</code>, allowing duplicate-free lists. Since the case study avoids Mathlib, cardinality is encoded without <code>Finset</code>:</p>
+
+<pre><code><span class="kw">inductive</span> <span class="ty">AllDistinct</span> {<span class="nm">&#945;</span> : <span class="ty">Type</span>} [<span class="ty">DecidableEq</span> <span class="nm">&#945;</span>] : <span class="ty">List</span> <span class="nm">&#945;</span> <span class="op">&rarr;</span> <span class="ty">Prop</span>
+  | <span class="ct">nil</span>  : <span class="ty">AllDistinct</span> []
+  | <span class="ct">cons</span> : <span class="op">&forall;</span> {<span class="nm">x</span> : <span class="nm">&#945;</span>} {<span class="nm">xs</span> : <span class="ty">List</span> <span class="nm">&#945;</span>}, <span class="nm">x</span> <span class="op">&notin;</span> <span class="nm">xs</span> <span class="op">&rarr;</span> <span class="ty">AllDistinct</span> <span class="nm">xs</span>
+               <span class="op">&rarr;</span> <span class="ty">AllDistinct</span> (<span class="nm">x</span> :: <span class="nm">xs</span>)
+
+<span class="kw">structure</span> <span class="ty">MeetsThreeCriteria</span> (<span class="nm">a</span> : <span class="ty">Applicant</span>) <span class="kw">where</span>
+  <span class="nm">satisfied</span> : <span class="ty">List</span> <span class="ty">Criterion</span>
+  <span class="nm">distinct</span>  : <span class="ty">AllDistinct</span> <span class="nm">satisfied</span>
+  <span class="nm">cardinal</span>  : <span class="nm">satisfied</span>.<span class="nm">length</span> <span class="op">&ge;</span> 3
+  <span class="nm">evidence</span>  : <span class="op">&forall;</span> <span class="nm">c</span> <span class="op">&isin;</span> <span class="nm">satisfied</span>, <span class="ty">LegalLean</span>.<span class="ty">EvidenceFor</span> (<span class="nm">criterionProp</span> <span class="nm">a</span> <span class="nm">c</span>)</code></pre>
+
+    <p>A value of type <code>MeetsThreeCriteria a</code> can only be constructed if one provides a duplicate-free list of at least three criteria together with <code>EvidenceFor</code> witnesses for each. The type checker enforces the threshold at compile time. This is precisely the propositions-as-types reading of &ldquo;the applicant meets the threshold&rdquo;: inhabiting the type is proving the claim.</p>
+
+    <p>The <code>criterionProp</code> function maps each <code>Criterion</code> to a <code>Prop</code>. Most criteria are mapped to <code>HasExtraordinaryAbility</code>, which is declared as an axiom with a <code>Vague</code> instance documenting the core (Nobel laureates, Olympic medallists, field-leading researchers with major international awards) and the penumbra (the boundary between &ldquo;very accomplished&rdquo; and &ldquo;extraordinary&rdquo;; field-relative standards; weight given to each criterion in combination). The <code>highSalary</code> criterion is mapped to <code>SalaryIsHigh</code>, which has its own <code>Vague</code> instance, and <code>originalContribs</code> to <code>ContributionsAreMajor</code> with a <code>Discretionary</code> instance.</p>
+
+    <p>The Kazarian two-part test (<em>Kazarian v. USCIS</em>, 596 F.3d 1115, 9th Cir. 2010) is encoded by <code>determineEligibility</code>, which returns <code>FormalisationBoundary.mixed</code>: the <code>formalPart</code> records that Lean verified the criteria count; the <code>humanPart</code> names the USCIS adjudicator and the final merits determination as the non-formalisable component. The theorem <code>eligibility_always_mixed</code> proves that <code>determineEligibility</code> always returns <code>mixed</code> &mdash; never <code>formal</code> or <code>boundary</code> alone &mdash; which is a structural consequence of the Kazarian framework: Part&nbsp;1 is always machine-checkable; Part&nbsp;2 is always not.</p>
+
+    <p>The <code>ComparableEvidenceApplies</code> axiom (8&nbsp;CFR&nbsp;&sect;204.5(h)(4)) receives a <code>Discretionary</code> instance with two constraints: the adjudicator must determine both that standard criteria do not apply to the field and that the comparable evidence meets the same substantive threshold (<em>Rijal v. USCIS</em>).</p>
+
+    <h3 class="subsection-heading" id="s4-3">TCP Code: Deontic Spectrum and DDL Comparison</h3>
+
+    <p>The third case study encodes a kernel of the Australian Telecommunications Consumer Protections Code (C628:2012), chosen for direct comparison with Governatori&rsquo;s DDL encoding of the same regulatory text <sup class="cite"><a href="#ref9">[9]</a><a href="#ref10">, 10</a></sup>. Three provisions are encoded: TCP&nbsp;3.2 (contact details obligation), TCP&nbsp;5.1 (Critical Information Summary obligation), and TCP&nbsp;8.2 (excessive early termination fee prohibition). Each has a lex specialis defeat: small provider exemption, renewal exemption, and device repayment carve-out respectively.</p>
+
+    <p>The three provisions demonstrate the full deontic spectrum: TCP&nbsp;3.2 imposes an obligation (providers must publish contact details); TCP&nbsp;8.2 imposes a prohibition (providers must not charge excessive ETFs); and the defeat rules introduce permissions (small providers may use simplified requirements; device repayment fees are allowed). The theorems <code>contact_obligation_and_exemption_are_deontic_distinct</code> and <code>etf_prohibition_and_carveout_are_deontic_distinct</code> prove that the base rule and its defeating exception always have distinct modalities &mdash; the exception is a permission that suspends an obligation or prohibition, not a counter-obligation.</p>
+
+    <p>The <code>exemption_rules_outrank_base_rules</code> theorem verifies that defeating rules have strictly higher priority levels than the rules they defeat across all three provisions:</p>
+
+<pre><code><span class="kw">theorem</span> <span class="nm">exemption_rules_outrank_base_rules</span> :
+    <span class="nm">R1_SmallProviderExemption</span>.<span class="nm">priority</span>.<span class="nm">level</span> <span class="op">&gt;</span> <span class="nm">R1_ContactObligation</span>.<span class="nm">priority</span>.<span class="nm">level</span> <span class="op">&and;</span>
+    <span class="nm">R2_RenewalExemption</span>.<span class="nm">priority</span>.<span class="nm">level</span> <span class="op">&gt;</span> <span class="nm">R2_CriticalInfoSummary</span>.<span class="nm">priority</span>.<span class="nm">level</span> <span class="op">&and;</span>
+    <span class="nm">R3_DeviceRepaymentCarveout</span>.<span class="nm">priority</span>.<span class="nm">level</span> <span class="op">&gt;</span> <span class="nm">R3_ExcessiveETFProhibited</span>.<span class="nm">priority</span>.<span class="nm">level</span></code></pre>
+
+    <p>This is a structural soundness property: a defeat relation where the defeating rule had lower or equal priority would be incoherent.</p>
+
+    <p>The DDL encoding of the same provisions is documented as comments in the source file. For example, the contact obligation in DDL syntax:</p>
+
+<pre class="ddl"><code>d &otimes; (isLicensed(P)) &rArr; O(publishContactDetails(P))
+r1 :- licensed(P), not small_provider(P).
+r1_exc :- small_provider(P).
+r1_exc &gt; r1</code></pre>
+
+    <p>The LegalLean encoding differs in four respects: (1) <code>FormalisationBoundary</code> distinguishes <code>prominently_published</code> from <code>is_licensed</code> as requiring human determination, rather than treating both as ordinary literals; (2) <code>LegalRule (&#945; : Type)</code> parameterises rules by the entity type, producing a typed rather than flat signature; (3) <code>EvidenceFor P</code> requires a proof witness rather than mere assertion; (4) the <code>Vague</code> and <code>Discretionary</code> instances carry auditable metadata that is machine-readable, not just a comment.</p>
+
+    <hr class="section-rule">
+
+    <!-- ===== SECTION 5: EVALUATION ===== -->
+    <h2 class="section-heading" id="s5">Evaluation</h2>
+
+    <h3 class="subsection-heading" id="s5-1">Theorem Count and Properties</h3>
+
+    <p>The system contains 44 machine-verified theorems with zero <code>sorry</code> placeholders across the three case studies. An honest classification divides these into three tiers:</p>
+
+    <p><strong>Regression tests (~25 theorems):</strong> These verify specific code paths through the case study functions. For example, <code>non_individual_never_deducts</code> confirms that a non-individual triggers the first rejection branch. These are valuable for ensuring the encoding does not regress during refactoring, but they do not constitute independent contributions. They are the equivalent of unit tests expressed in a proof language.</p>
+
+    <p><strong>Structural properties (~12 theorems):</strong> These prove properties of the encoding&rsquo;s architecture. <code>defeat_direct_acyclicity</code> verifies that no rule in IRC&nbsp;&sect;163(h) defeats itself. <code>no_mixed_outcomes</code> proves by exhaustive case analysis that <code>isDeductible</code> never returns a <code>mixed</code> result, establishing the binary formal/boundary structure as a property of the encoding. <code>allDistinct_pair_implies_ne</code> proves the core mechanism of the &ldquo;3&nbsp;of&nbsp;8&rdquo; type: duplicate criteria cannot inflate the count. These are non-trivial in the sense that they quantify over all inputs, but they prove properties of our encoding rather than properties of law itself.</p>
+
+    <p><strong>Legal-structural results (~7 theorems):</strong> These prove properties that a legal scholar would recognise as meaningful. <code>monotonicity_break_general</code> demonstrates that adding the TCJA to the encoding removes a previously available deduction for all qualifying payments. <code>defeat_chain_exists</code> proves that the defeat relation has genuine depth (R3 defeats E1.1 which defeats R1), capturing a legal subtlety about the grandfather clause. <code>comparable_evidence_changes_pathway</code> shows that adding comparable evidence changes the normative modality from obligatory to permitted. These are the theorems that justify the paper&rsquo;s contribution.</p>
+
+    <p>We report all 44 for completeness and reproducibility, but the substantive contribution rests on the third tier.</p>
+
+    <p>A faithfulness audit identified three areas where the encoding simplifies the actual law: (1) date comparisons use ISO&nbsp;8601 string ordering rather than proper date arithmetic; (2) <code>criterionProp</code> maps multiple distinct O-1A criteria to the same axiom (<code>HasExtraordinaryAbility</code>) for pragmatic reasons, losing some per-criterion resolution; (3) the IRC&nbsp;&sect;163(h) encoding does not handle the full debt tracing rules of Treas. Reg.&nbsp;&sect;1.163-8T, which require temporal tracking of how loan proceeds were used.</p>
+
+    <h3 class="subsection-heading" id="s5-2">Comparison with Prior Systems</h3>
+
+    <p>Each prior system addresses a different aspect of the legal formalisation problem. Rather than assigning numerical scores (which would inevitably favour the dimensions we chose to emphasise), we describe the trade-offs qualitatively.</p>
+
+    <p><strong>DDL</strong> <sup class="cite"><a href="#ref9">[9]</a><a href="#ref10">, 10</a></sup> <strong>(Governatori) is better than LegalLean at defeasible inference.</strong> DDL provides a complete proof theory for defeasible reasoning with deontic modalities, team defeat, and ambiguity propagation. It is the most mature system for computing which conclusions follow from a set of legal rules. LegalLean does not compute conclusions; it verifies that a specific encoding is internally consistent. DDL&rsquo;s limitation for LegalLean&rsquo;s purposes is that it treats all conditions as first-order literals: <code>prominently_published(P)</code> is indistinguishable from <code>is_licensed(P)</code> in the DDL signature. There is no mechanism to mark the former as requiring institutional determination and the latter as a formal Boolean check. LegalLean&rsquo;s <code>FormalisationBoundary</code> type addresses this gap, but at the cost of not providing an inference engine. The two systems are complementary: DDL could compute the defeasible conclusions, and LegalLean could verify that the DDL rule set is internally consistent and that open-texture boundaries are correctly annotated.</p>
+
+    <p><strong>Catala</strong> <sup class="cite"><a href="#ref14">[14]</a></sup> <strong>(Merigoux et al.) is better than LegalLean at execution.</strong> Catala is a production-grade DSL used by the French state for computing tax and social benefit outcomes. It compiles to verified OCaml, handles default logic natively, and has a growing library of real-world statutes. LegalLean does not execute; it proves properties. Catala&rsquo;s limitation is that it has no representation of open texture: when a statutory condition is vague, Catala must either encode it as a Boolean input (the user asserts it) or raise a runtime error. In LegalLean, <code>isDeductible</code> returns <code>FormalisationBoundary.boundary</code> with typed metadata about which authority must resolve the vagueness. The two are complementary: Catala for computing outcomes from resolved facts, LegalLean for verifying that the resolution boundaries are correctly identified.</p>
+
+    <p><strong>L4L</strong> <sup class="cite"><a href="#ref12">[12]</a></sup> <strong>(Hou et al.) is the closest prior work in spirit.</strong> L4L uses dependent types and produces machine-checked reasoning about legal texts. The primary technical difference is that L4L&rsquo;s verification layer relies on SMT solvers, while LegalLean&rsquo;s relies on Lean&nbsp;4&rsquo;s kernel verifier. SMT provides more automation (the solver finds proofs); Lean&nbsp;4&rsquo;s kernel provides more auditability (the proof term is inspectable). L4L does not include a typed treatment of open texture: vagueness is handled by the solver&rsquo;s inability to discharge certain goals, not by a typed annotation that records which institution must decide and why.</p>
+
+    <p><strong>LegalRuleML</strong> <sup class="cite"><a href="#ref16">[16]</a></sup> <strong>(Palmirani et al.) is better than LegalLean at knowledge representation.</strong> LegalRuleML is a rich XML ontology with sophisticated modelling of deontic modalities, temporal applicability, and defeasibility annotations. It is the most expressive interchange format for legal rules. Its limitation is that it provides no automated reasoning or proof production. LegalLean and LegalRuleML address different problems: LegalLean verifies reasoning; LegalRuleML represents knowledge for interchange.</p>
+
+    <p><strong>Where LegalLean is genuinely novel:</strong> No prior system encodes the formalisation boundary itself as a typed, auditable object within the proof assistant. DDL, Catala, L4L, and LegalRuleML all treat open texture as an external limitation. LegalLean&rsquo;s <code>FormalisationBoundary</code> type and <code>RequiresHumanDetermination</code> typeclass make this boundary a first-class machine-checkable annotation.</p>
+
+    <h3 class="subsection-heading" id="s5-3">Limitations</h3>
+
+    <p>The principal limitations of LegalLean are:</p>
+
+    <p><strong>Scalability:</strong> the three case studies cover a total of nine provisions and fewer than 300 lines of Lean code each. Scaling to a complete statute (26 U.S.C.&nbsp;&sect;163 alone is thousands of words) would require substantially more proof engineering. Each open-texture term requires a hand-crafted axiom and typeclass instance; this does not automate.</p>
+
+    <p><strong>No LLM-to-Lean pipeline:</strong> the framework does not yet include an automated formalisation pipeline. The transducer half of the architecture &mdash; converting statutory text to Lean&nbsp;4 &mdash; is currently manual. A practical system requires this to be automated with language models, with LegalLean as the verification layer.</p>
+
+    <p><strong>Axiom dependence:</strong> the open-texture axioms are genuine axioms: they cannot be proved by Lean&rsquo;s kernel. The framework is only as sound as the legal judgments behind the <code>Vague</code> and <code>Discretionary</code> instances. If those instances are wrong about what constitutes the core or penumbra of a vague term, the theorems built on them may be formally valid but legally misleading.</p>
+
+    <p><strong>No temporal algebra:</strong> the TCJA cutoff is encoded as a numeric comparison (<code>year.year &ge; 2018</code>), not via a proper temporal type with duration, retroactivity, and sunset provisions. A complete temporal logic layer remains future work.</p>
+
+    <p><strong>Sorry-bypass gap:</strong> the type system does not prevent the construction <code>FormalisationBoundary.formal sorry</code>. A careless or adversarial user could mark a proposition as formally verified by using Lean&rsquo;s <code>sorry</code> axiom, which discharges any proof obligation without evidence. The VERIFICATION.md protocol addresses this by requiring <code>grep -r sorry</code> as part of the verification layer, but the type system itself does not enforce it. A stronger design would use a custom elaboration that rejects <code>sorry</code> inside <code>formal</code> constructors, or a linting pass that flags <code>sorry</code> usage as a build failure. This is an engineering limitation, not a theoretical one: the guarantee of &ldquo;zero sorry&rdquo; is a property of the codebase at a point in time, verified by inspection, not a property enforced by the type system itself.</p>
+
+    <p><strong>Normative risk of formalisation:</strong> by encoding Hart&rsquo;s open texture as a typed object, this work makes the formalisation boundary tractable and auditable. This carries a normative risk that Lessig&rsquo;s &ldquo;code is law&rdquo; tradition identifies: making the boundary typed may create a false sense of completeness. A user who sees <code>FormalisationBoundary.boundary "requires IRS determination" "IRS / Tax Court"</code> might treat the annotation as sufficient engagement with the underlying vagueness, when in fact the core/penumbra analysis in the <code>Vague</code> instance is one interpretation among several. The system does not resolve open texture; it classifies and annotates it. Users must understand that the annotation is a map of the boundary, not a resolution of it. This limitation is intrinsic to any formalisation of vagueness and should be communicated clearly in any deployment context.</p>
+
+    <hr class="section-rule">
+
+    <!-- ===== SECTION 6: RELATED WORK ===== -->
+    <h2 class="section-heading" id="s6">Related Work</h2>
+
+    <p><strong>Defeasible Deontic Logic (DDL):</strong> Governatori&rsquo;s DDL <sup class="cite"><a href="#ref9">[9]</a><a href="#ref10">, 10</a></sup> is the most complete prior work on defeasible reasoning in law. It provides a proof theory for defeasible rules with deontic modalities and has been applied to compliance checking in eHealth, business contracts, and regulatory codes. The TCP Code comparison in Section&nbsp;4.3 is designed to be directly comparable with Governatori&rsquo;s encodings. LegalLean&rsquo;s advance over DDL is not in defeasibility machinery but in (1) machine-checkable proof certificates, (2) the FormalisationBoundary typing of open texture, and (3) dependent types enabling evidence-as-inhabitants.</p>
+
+    <p><strong>Catala</strong> <sup class="cite"><a href="#ref14">[14]</a></sup><strong>:</strong> Merigoux et al.&rsquo;s Catala is the most practical prior system for statutory formalisation, with a growing library of French, US, and Polish tax law. Its design priority is executability: a Catala specification is a runnable program that computes legal outcomes from facts. LegalLean&rsquo;s priority is verifiability: it produces proof terms, not program outputs. The two approaches are complementary rather than competitive.</p>
+
+    <p><strong>L4L</strong> <sup class="cite"><a href="#ref12">[12]</a></sup><strong>:</strong> Hou et al.&rsquo;s Logic for Law (L4L) is the work closest in motivation to LegalLean. It uses dependent types and produces machine-checked reasoning about legal texts. The primary technical difference is that L4L&rsquo;s verification layer relies on SMT, while LegalLean&rsquo;s relies on Lean&nbsp;4&rsquo;s kernel verifier. SMT provides more automation; Lean&nbsp;4&rsquo;s kernel provides more auditability. L4L does not include a typed treatment of open texture.</p>
+
+    <p><strong>LegalRuleML</strong> <sup class="cite"><a href="#ref16">[16]</a></sup><strong>:</strong> Palmirani and Governatori&rsquo;s LegalRuleML extends RuleML with deontic operators, temporal metadata, and defeasibility annotations. It is the most expressive knowledge representation format for legal rules but provides no automated reasoning. LegalLean and LegalRuleML address different problems: LegalLean verifies reasoning; LegalRuleML represents knowledge for interchange.</p>
+
+    <p><strong>Hohfeldian frameworks:</strong> Prior work by McCarty <sup class="cite"><a href="#ref15">[15]</a></sup> and Boella et al. <sup class="cite"><a href="#ref4">[4]</a></sup> applies Hohfeld&rsquo;s fundamental legal relations (rights, duties, powers, immunities) in formal settings. LegalLean&rsquo;s three-modality deontic type (<code>permitted</code>, <code>prohibited</code>, <code>obligatory</code>) is intentionally minimal; a Hohfeldian extension is straightforward but not required for the case studies.</p>
+
+    <p><strong>Logic programming approaches:</strong> Kowalski and Sergot&rsquo;s Event Calculus <sup class="cite"><a href="#ref18">[18]</a></sup>, together with Sergot et al.&rsquo;s British Nationality Act encoding <sup class="cite"><a href="#ref19">[19]</a></sup>, established the research programme of encoding law in logic programming. That tradition addressed defeasibility before DDL but did not handle open texture or produce machine-checked proofs.</p>
+
+    <hr class="section-rule">
+
+    <!-- ===== SECTION 7: CONCLUSION ===== -->
+    <h2 class="section-heading" id="s7">Conclusion and Future Work</h2>
+
+    <p>LegalLean demonstrates that Lean&nbsp;4 dependent types provide a viable verification layer for legal reasoning systems. The key result is not the theorem count but the architecture: a system in which Hart&rsquo;s open texture is a first-class typed object rather than an external limitation, and in which the distinction between &ldquo;machine-verified&rdquo; and &ldquo;requires human determination&rdquo; is enforced by the type checker rather than stated in documentation.</p>
+
+    <p>The <code>monotonicity_break_general</code> theorem illustrates what machine-checked legal reasoning makes possible: a formal, auditable certificate that the TCJA 2017 removed a deduction permission for all home equity interest payments, not merely for specific test cases. This kind of structural certificate &mdash; not an answer, but a proof about the legal system itself &mdash; is what distinguishes a verifier from a transducer.</p>
+
+    <p>Several directions remain open. First, the transducer layer: language models are the natural tool for converting statutory text to Lean&nbsp;4 stubs, with the type checker providing feedback to guide the formalisation. Second, zero-knowledge proofs for compliance: a party wishing to attest compliance without disclosing underlying facts could, in principle, use ZK proofs over the formal structure. Third, temporal algebra: a proper treatment of statutory effective dates, sunset provisions, and retroactivity requires a temporal type extending the current <code>TaxYear</code> structure. Fourth, scaling studies: encoding a complete statute rather than a selected kernel would test whether the proof engineering effort is tractable in practice.</p>
+
+    <p>The verification protocol that emerges from this work has three layers: the type checker verifies structural properties; the <code>FormalisationBoundary</code> annotations identify where institutional determination is required; and legal practitioners review the open-texture instances to ensure the core/penumbra analysis is sound. Only the first layer is automated. The claim is not that legal reasoning can be automated but that the parts that can be verified should be, and the parts that cannot should be typed rather than silently omitted.</p>
+
+    <hr class="section-rule">
+
+    <!-- ===== REFERENCES ===== -->
+    <h2 class="section-heading no-counter" id="references">References</h2>
+
+    <ol class="references-list">
+      <li id="ref1"><span class="ref-num">[1]</span> Aguilar Pelaez, E. (2026). LegalLean source code. Lean&nbsp;4 v4.24.0. Available at <a href="https://github.com/edu-ap/legal-lean" rel="noopener noreferrer">https://github.com/edu-ap/legal-lean</a>.</li>
+
+      <li id="ref2"><span class="ref-num">[2]</span> Baader, F., Calvanese, D., McGuinness, D., Nardi, D., and Patel-Schneider, P., eds. (2003). <em>The Description Logic Handbook</em>. Cambridge University Press.</li>
+
+      <li id="ref3"><span class="ref-num">[3]</span> Bench-Capon, T. and Sartor, G. (2003). A model of legal reasoning with cases incorporating theories and values. <em>Artificial Intelligence</em>, 150(1&ndash;2), 97&ndash;143.</li>
+
+      <li id="ref4"><span class="ref-num">[4]</span> Boella, G., van der Torre, L., and Verhagen, H. (2006). Introduction to normative multiagent systems. <em>Computational and Mathematical Organization Theory</em>, 12(2&ndash;3), 71&ndash;79.</li>
+
+      <li id="ref5"><span class="ref-num">[5]</span> Curry, H.B. (1934). Functionality in combinatory logic. <em>Proceedings of the National Academy of Sciences</em>, 20(11), 584&ndash;590.</li>
+
+      <li id="ref6"><span class="ref-num">[6]</span> Howard, W.A. (1980). The formulae-as-types notion of construction. In J.P. Seldin and J.R. Hindley, eds., <em>To H.B. Curry: Essays on Combinatory Logic, Lambda Calculus and Formalism</em>, 479&ndash;490. Academic Press.</li>
+
+      <li id="ref7"><span class="ref-num">[7]</span> de Moura, L., Selsam, D., Ullrich, S., and Avigad, J. (2021). The Lean&nbsp;4 theorem prover and programming language. <em>Proceedings of CADE-28</em>, Lecture Notes in Computer Science. Springer.</li>
+
+      <li id="ref8"><span class="ref-num">[8]</span> Dworkin, R. (1977). <em>Taking Rights Seriously</em>. Harvard University Press.</li>
+
+      <li id="ref9"><span class="ref-num">[9]</span> Governatori, G. (2005). Representing business contracts in RuleML. <em>International Journal of Cooperative Information Systems</em>, 14(2&ndash;3), 181&ndash;216.</li>
+
+      <li id="ref10"><span class="ref-num">[10]</span> Governatori, G., Rotolo, A., and Sartor, G. (2019). Compliance in eHealth: a defeasible logic approach. <em>Artificial Intelligence in Medicine</em>, 93, 34&ndash;48.</li>
+
+      <li id="ref11"><span class="ref-num">[11]</span> Hart, H.L.A. (1961). <em>The Concept of Law</em>. Oxford University Press.</li>
+
+      <li id="ref12"><span class="ref-num">[12]</span> Hou, Z., Governatori, G., Hashmi, M., and Lam, H.P. (2021). Logic for Law (L4L): a dependent-type-based framework for modelling and reasoning about law. <em>Proceedings of JURIX 2021</em>, Frontiers in Artificial Intelligence and Applications. IOS Press.</li>
+
+      <li id="ref13"><span class="ref-num">[13]</span> Lawsky, S.B. (2017). A logic for statutes. <em>Florida Tax Review</em>, 21(1), 60&ndash;113.</li>
+
+      <li id="ref14"><span class="ref-num">[14]</span> Merigoux, D., Chataing, N., and Protzenko, J. (2021). Catala: a programming language for the law. <em>Proceedings of ICFP 2021</em>. ACM.</li>
+
+      <li id="ref15"><span class="ref-num">[15]</span> McCarty, L.T. (1977). Reflections on TAXMAN: an experiment in artificial intelligence and legal reasoning. <em>Harvard Law Review</em>, 90(5), 837&ndash;893.</li>
+
+      <li id="ref16"><span class="ref-num">[16]</span> Palmirani, M. and Governatori, G. (2018). Modelling legal knowledge for GDPR compliance checking. <em>Proceedings of JURIX 2018</em>, Frontiers in Artificial Intelligence and Applications. IOS Press.</li>
+
+      <li id="ref17"><span class="ref-num">[17]</span> Reiter, R. (1980). A logic for default reasoning. <em>Artificial Intelligence</em>, 13(1&ndash;2), 81&ndash;132.</li>
+
+      <li id="ref18"><span class="ref-num">[18]</span> Shanahan, M. (1999). The event calculus explained. <em>Artificial Intelligence Today</em>, Lecture Notes in Computer Science, vol.&nbsp;1600, 409&ndash;430. Springer.</li>
+
+      <li id="ref19"><span class="ref-num">[19]</span> Sergot, M.J., Sadri, F., Kowalski, R.A., Kriwaczek, F., Hammond, P., and Cory, H.T. (1986). The British Nationality Act as a logic program. <em>Communications of the ACM</em>, 29(5), 370&ndash;386.</li>
+    </ol>
+
+  </article>
+
+</main>
+
+</body>
+</html>

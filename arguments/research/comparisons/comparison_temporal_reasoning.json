@@ -1,0 +1,137 @@
+{
+  "dimension": "temporal reasoning",
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Compare how the following legal formalisation systems handle\ntemporal reasoning. Return a JSON object:\n\n{\n  \"dimension\": \"temporal reasoning\",\n  \"systems\": [\n    {\n      \"name\": \"string — system name\",\n      \"approach\": \"string — how it handles this dimension\",\n      \"strengths\": [\"string\"],\n      \"limitations\": [\"string\"],\n      \"key_paper\": \"string — citation\",\n      \"expressiveness_score\": \"1-5 (1=absent, 5=fully native)\"\n    }\n  ],\n  \"legallean_advantage\": \"string — where dependent types in Lean 4 add value\",\n  \"legallean_limitation\": \"string — honest assessment of gaps\"\n}\n\nSystems to compare: DDL (Governatori), Catala (Merigoux), L4L (Hou et al.),\nLegalRuleML (Palmirani), LegalLean (our system — Lean 4 dependent types with\nFormalisationBoundary for open texture).\n\nDimension: temporal reasoning\nContext: How each system handles time-dependent rules: effective dates, retroactivity, expiry, and temporal defeat."
+  },
+  "results": {
+    "models_queried": [
+      "sonar-pro"
+    ],
+    "responses": [
+      {
+        "model": "sonar-pro",
+        "answer_raw": "{\n  \"dimension\": \"temporal reasoning\",\n  \"systems\": [\n    {\n      \"name\": \"DDL (Governatori)\",\n      \"approach\": \"Defeasible Deontic Logic with explicit temporal operators for effective dates, temporal defeat (repeal, override), expiry via persistence conditions, and retroactivity through time-indexed defeaters and normative lifetimes.\",\n      \"strengths\": [\"Native support for temporal defeat and normative evolution\", \"Handles effective dates and expiry via lifetimes distinct from application intervals\", \"Integrates with Allen's interval relations for precedence/causality\"],\n      \"limitations\": [\"Relies on non-monotonic reasoning which can complicate machine-checkable proofs\", \"Limited expressiveness for vague temporal boundaries without extensions\"],\n      \"key_paper\": \"Governatori, G. (2007). Representing temporal aspects of defeasible rules. In RuleML.\",\n      \"expressiveness_score\": \"4\"\n    },\n    {\n      \"name\": \"Catala (Merigoux)\",\n      \"approach\": \"Structured programming language with explicit date types, time-dependent scopes, and exception handling for effective dates and expiry; retroactivity via parametric computation over time periods; no native defeat but simulates via conditionals.\",\n      \"strengths\": [\"Precise computation of time-dependent obligations with statutory deadlines\", \"Compiles to verifiable code handling explicit temporal cues like 'within 30 days'\"],\n      \"limitations\": [\"Lacks native defeasibility for temporal overrides\", \"Retroactivity requires manual encoding, prone to scoping errors\", \"No built-in interval reasoning beyond basic arithmetic\"],\n      \"key_paper\": \"Merigoux, D., et al. (2022). Catala: A programming language for fiscal rules. PLDI.\",\n      \"expressiveness_score\": \"3\"\n    },\n    {\n      \"name\": \"L4L (Hou et al.)\",\n      \"approach\": \"Lean 4 embeddings of legal rules with custom temporal tactics for event ordering, effective dates via Prop-indexed times, and basic expiry/retroactivity through inductive datatypes; leverages Lean's Prop for temporal modalities.\",\n      \"strengths\": [\"Machine-checkable proofs for temporal precedence\", \"Integrates with Allen-inspired relations for legal event ordering\"],\n      \"limitations\": [\"Temporal reasoning not fully native, requires tactic extensions\", \"Scalability issues for complex normative timelines\", \"Limited handling of open-textured temporal defeat\"],\n      \"key_paper\": \"Hou, Z., et al. (2023). L4L: Formalizing legal reasoning in Lean 4. arXiv.\",\n      \"expressiveness_score\": \"3\"\n    },\n    {\n      \"name\": \"LegalRuleML (Palmirani)\",\n      \"approach\": \"XML-based markup with <effectiveDate>, <expiryDate>, <precedence> tags, and temporal modalities (TPD: Time Phrases in Defeasible logic); supports retroactivity via <retroactive> and defeat through rule hierarchies over time.\",\n      \"strengths\": [\"Standardized XML for interoperability in temporal constraints\", \"Explicit support for lifetimes, defeaters, and statutory deadlines\"],\n      \"limitations\": [\"Declarative only, lacks executable reasoning engine\", \"Vague boundaries and modalities require manual interpretation\", \"No machine-checked guarantees for temporal consistency\"],\n      \"key_paper\": \"Palmirani, M. (2017). LegalRuleML: Design principles and foundations. Springer.\",\n      \"expressiveness_score\": \"4\"\n    },\n    {\n      \"name\": \"LegalLean (Lean 4 dependent types with FormalisationBoundary)\",\n      \"approach\": \"Dependent types over Fin (finite timelines) or Prop-indexed dates for effective/expiry; FormalisationBoundary encodes open-textured vagueness in temporal defeat/retroactivity as typeclass instances; retroactivity via pi-types over time parameters.\",\n      \"strengths\": [\"Machine-checked totality for time-dependent rules\", \"Dependent types prevent invalid temporal scopes\"],\n      \"limitations\": [\"Timelines must be bounded for termination (Fin n)\", \"Open texture formalized but requires human judgment at boundaries\"],\n      \"key_paper\": \"LegalLean Project (2026). Dependent types for legal open texture. Internal.\",\n      \"expressiveness_score\": \"5\"\n    }\n  ],\n  \"legallean_advantage\": \"Dependent types provide machine-checkable guarantees on temporal consistency (e.g., no rule applies outside effective dates), FormalisationBoundary rigorously encodes vagueness/interpretive discretion in expiry/retroactivity without losing decidability, surpassing defeasible logics in proof strength.\",\n  \"legallean_limitation\": \"Requires explicit finite bounding of timelines for termination checking; continuous/vague time (e.g., 'soon after') approximated, losing full real-number expressiveness; heavy reliance on human formalization of open-textured boundaries.\"\n}",
+        "answer_parsed": {
+          "dimension": "temporal reasoning",
+          "systems": [
+            {
+              "name": "DDL (Governatori)",
+              "approach": "Defeasible Deontic Logic with explicit temporal operators for effective dates, temporal defeat (repeal, override), expiry via persistence conditions, and retroactivity through time-indexed defeaters and normative lifetimes.",
+              "strengths": [
+                "Native support for temporal defeat and normative evolution",
+                "Handles effective dates and expiry via lifetimes distinct from application intervals",
+                "Integrates with Allen's interval relations for precedence/causality"
+              ],
+              "limitations": [
+                "Relies on non-monotonic reasoning which can complicate machine-checkable proofs",
+                "Limited expressiveness for vague temporal boundaries without extensions"
+              ],
+              "key_paper": "Governatori, G. (2007). Representing temporal aspects of defeasible rules. In RuleML.",
+              "expressiveness_score": "4"
+            },
+            {
+              "name": "Catala (Merigoux)",
+              "approach": "Structured programming language with explicit date types, time-dependent scopes, and exception handling for effective dates and expiry; retroactivity via parametric computation over time periods; no native defeat but simulates via conditionals.",
+              "strengths": [
+                "Precise computation of time-dependent obligations with statutory deadlines",
+                "Compiles to verifiable code handling explicit temporal cues like 'within 30 days'"
+              ],
+              "limitations": [
+                "Lacks native defeasibility for temporal overrides",
+                "Retroactivity requires manual encoding, prone to scoping errors",
+                "No built-in interval reasoning beyond basic arithmetic"
+              ],
+              "key_paper": "Merigoux, D., et al. (2022). Catala: A programming language for fiscal rules. PLDI.",
+              "expressiveness_score": "3"
+            },
+            {
+              "name": "L4L (Hou et al.)",
+              "approach": "Lean 4 embeddings of legal rules with custom temporal tactics for event ordering, effective dates via Prop-indexed times, and basic expiry/retroactivity through inductive datatypes; leverages Lean's Prop for temporal modalities.",
+              "strengths": [
+                "Machine-checkable proofs for temporal precedence",
+                "Integrates with Allen-inspired relations for legal event ordering"
+              ],
+              "limitations": [
+                "Temporal reasoning not fully native, requires tactic extensions",
+                "Scalability issues for complex normative timelines",
+                "Limited handling of open-textured temporal defeat"
+              ],
+              "key_paper": "Hou, Z., et al. (2023). L4L: Formalizing legal reasoning in Lean 4. arXiv.",
+              "expressiveness_score": "3"
+            },
+            {
+              "name": "LegalRuleML (Palmirani)",
+              "approach": "XML-based markup with <effectiveDate>, <expiryDate>, <precedence> tags, and temporal modalities (TPD: Time Phrases in Defeasible logic); supports retroactivity via <retroactive> and defeat through rule hierarchies over time.",
+              "strengths": [
+                "Standardized XML for interoperability in temporal constraints",
+                "Explicit support for lifetimes, defeaters, and statutory deadlines"
+              ],
+              "limitations": [
+                "Declarative only, lacks executable reasoning engine",
+                "Vague boundaries and modalities require manual interpretation",
+                "No machine-checked guarantees for temporal consistency"
+              ],
+              "key_paper": "Palmirani, M. (2017). LegalRuleML: Design principles and foundations. Springer.",
+              "expressiveness_score": "4"
+            },
+            {
+              "name": "LegalLean (Lean 4 dependent types with FormalisationBoundary)",
+              "approach": "Dependent types over Fin (finite timelines) or Prop-indexed dates for effective/expiry; FormalisationBoundary encodes open-textured vagueness in temporal defeat/retroactivity as typeclass instances; retroactivity via pi-types over time parameters.",
+              "strengths": [
+                "Machine-checked totality for time-dependent rules",
+                "Dependent types prevent invalid temporal scopes"
+              ],
+              "limitations": [
+                "Timelines must be bounded for termination (Fin n)",
+                "Open texture formalized but requires human judgment at boundaries"
+              ],
+              "key_paper": "LegalLean Project (2026). Dependent types for legal open texture. Internal.",
+              "expressiveness_score": "5"
+            }
+          ],
+          "legallean_advantage": "Dependent types provide machine-checkable guarantees on temporal consistency (e.g., no rule applies outside effective dates), FormalisationBoundary rigorously encodes vagueness/interpretive discretion in expiry/retroactivity without losing decidability, surpassing defeasible logics in proof strength.",
+          "legallean_limitation": "Requires explicit finite bounding of timelines for termination checking; continuous/vague time (e.g., 'soon after') approximated, losing full real-number expressiveness; heavy reliance on human formalization of open-textured boundaries."
+        },
+        "citations": [
+          "https://arxiv.org/html/2506.04041v2",
+          "https://arxiv.org/html/2506.04041v1",
+          "https://www.lirmm.fr/~stratula/publi/pdfs/stratulattime01.pdf",
+          "https://ceur-ws.org/Vol-1875/paper2.pdf",
+          "https://escholarship.org/content/qt01w7m67f/qt01w7m67f.pdf",
+          "https://dl.acm.org/doi/10.1145/2018358.2018378",
+          "https://aclanthology.org/2025.findings-acl.887.pdf",
+          "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1785412"
+        ],
+        "usage": {
+          "prompt_tokens": 347,
+          "completion_tokens": 1019,
+          "total_tokens": 1366,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00104,
+            "output_tokens_cost": 0.01528,
+            "request_cost": 0.006,
+            "total_cost": 0.02233
+          }
+        }
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 1,
+      "total_models": 1,
+      "all_citations": [
+        "https://aclanthology.org/2025.findings-acl.887.pdf",
+        "https://escholarship.org/content/qt01w7m67f/qt01w7m67f.pdf",
+        "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1785412",
+        "https://ceur-ws.org/Vol-1875/paper2.pdf",
+        "https://arxiv.org/html/2506.04041v1",
+        "https://dl.acm.org/doi/10.1145/2018358.2018378",
+        "https://www.lirmm.fr/~stratula/publi/pdfs/stratulattime01.pdf",
+        "https://arxiv.org/html/2506.04041v2"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:40:36Z"
+}

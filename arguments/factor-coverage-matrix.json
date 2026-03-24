@@ -1,0 +1,1281 @@
+{
+  "project": "LegalLean",
+  "phase": "Phase 0 - Factorial Hardening Programme",
+  "requirement": "REQ-012",
+  "generated_at": "2026-03-24T00:00:00Z",
+  "theorem_count": 44,
+  "factors": [
+    "voice",
+    "modality",
+    "negation",
+    "exception_structure",
+    "temporal",
+    "thresholds",
+    "definitions",
+    "cross_references"
+  ],
+  "levels": {
+    "voice": [
+      "active",
+      "passive",
+      "none"
+    ],
+    "modality": [
+      "shall",
+      "must",
+      "may",
+      "should",
+      "none"
+    ],
+    "negation": [
+      "positive",
+      "negative",
+      "double_negative",
+      "none"
+    ],
+    "exception_structure": [
+      "none",
+      "simple_proviso",
+      "nested_exception",
+      "defeasible"
+    ],
+    "temporal": [
+      "present",
+      "past",
+      "conditional_future",
+      "none"
+    ],
+    "thresholds": [
+      "none",
+      "numeric",
+      "comparative"
+    ],
+    "definitions": [
+      "inline",
+      "cross_referenced",
+      "undefined"
+    ],
+    "cross_references": [
+      "none",
+      "intra_statute",
+      "inter_statute"
+    ]
+  },
+  "theorems": [
+    {
+      "id": "T-001",
+      "name": "formal_constructor_implies_proof",
+      "file": "LegalLean/TypeclassConstraint.lean",
+      "line": 132,
+      "english_source": "The formal constructor carries an actual proof of P",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "positive",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-002",
+      "name": "formal_carries_real_proof",
+      "file": "LegalLean/TypeclassConstraint.lean",
+      "line": 137,
+      "english_source": "Extracting the proof from a FormalisationBoundary.formal value",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "positive",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-003",
+      "name": "formal_ne_boundary",
+      "file": "LegalLean/TypeclassConstraint.lean",
+      "line": 145,
+      "english_source": "The formal and boundary constructors are disjoint",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-004",
+      "name": "vague_instance_fields_are_metadata",
+      "file": "LegalLean/TypeclassConstraint.lean",
+      "line": 160,
+      "english_source": "Vague typeclass fields carry metadata, not proofs",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "positive",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-005",
+      "name": "defeat_direct_acyclicity",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 37,
+      "english_source": "No rule in IRC 163(h) directly defeats itself",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-006",
+      "name": "defeat_chain_exists",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 50,
+      "english_source": "The defeat chain has depth exactly 2: R3 defeats E1.1 which defeats R1",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "positive",
+        "exception_structure": "nested_exception",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-007",
+      "name": "grandfather_does_not_directly_defeat_base",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 68,
+      "english_source": "R3 does not directly defeat R1; it exempts from the dollar limit",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "simple_proviso",
+        "temporal": "past",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-008",
+      "name": "R1_R2_deontic_conflict",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 87,
+      "english_source": "TCJA and base rule are deontic opposites: R1 permits, R2 prohibits",
+      "category": "legal_structural",
+      "factors": {
+        "voice": "active",
+        "modality": "may",
+        "negation": "double_negative",
+        "exception_structure": "defeasible",
+        "temporal": "conditional_future",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "inter_statute"
+      }
+    },
+    {
+      "id": "T-009",
+      "name": "pre_tcja_no_prohibition",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 98,
+      "english_source": "The TCJA prohibition only applies post-2017; for payments pre-2018, R2's conclusion does not hold",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "must",
+        "negation": "negative",
+        "exception_structure": "simple_proviso",
+        "temporal": "conditional_future",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "inter_statute"
+      }
+    },
+    {
+      "id": "T-010",
+      "name": "no_mixed_outcomes",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 126,
+      "english_source": "Every code path through isDeductible terminates in formal or boundary\u2014never mixed",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "undefined",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-011",
+      "name": "boundary_authority_is_irs_tax_court",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 154,
+      "english_source": "All boundary annotations reference IRS/Tax Court as the authority",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "positive",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "inter_statute"
+      }
+    },
+    {
+      "id": "T-012",
+      "name": "all_rules_are_permissions_or_prohibitions",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 190,
+      "english_source": "All IRC 163(h) rules are either permitted or prohibited\u2014no rule is obligatory",
+      "category": "legal_structural",
+      "factors": {
+        "voice": "active",
+        "modality": "may",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-013",
+      "name": "auto_reject_conditions",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 202,
+      "english_source": "Three conditions each independently guarantee automatic rejection",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "must",
+        "negation": "positive",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-014",
+      "name": "monotonicity_break_tcja",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 268,
+      "english_source": "Same home equity payment is potentially deductible in 2017 but definitely not in 2018\u2014monotonicity break",
+      "category": "legal_structural",
+      "factors": {
+        "voice": "active",
+        "modality": "may",
+        "negation": "double_negative",
+        "exception_structure": "defeasible",
+        "temporal": "conditional_future",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "inter_statute"
+      }
+    },
+    {
+      "id": "T-015",
+      "name": "monotonicity_break_general",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 296,
+      "english_source": "For any home equity payment by individual on secured property within limits, legal outcome changes at 2018 boundary",
+      "category": "legal_structural",
+      "factors": {
+        "voice": "active",
+        "modality": "may",
+        "negation": "double_negative",
+        "exception_structure": "defeasible",
+        "temporal": "conditional_future",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "inter_statute"
+      }
+    },
+    {
+      "id": "T-016",
+      "name": "pre_tcja_not_auto_rejected",
+      "file": "LegalLean/CaseStudies/IRC163h/Theorems.lean",
+      "line": 318,
+      "english_source": "Monotonicity break is strict\u2014pre-TCJA outcome is not formal False",
+      "category": "legal_structural",
+      "factors": {
+        "voice": "active",
+        "modality": "may",
+        "negation": "double_negative",
+        "exception_structure": "defeasible",
+        "temporal": "past",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "inter_statute"
+      }
+    },
+    {
+      "id": "T-017",
+      "name": "tcja_prohibits_home_equity",
+      "file": "LegalLean/CaseStudies/IRC163h.lean",
+      "line": 403,
+      "english_source": "TCJA strictly prohibits home equity deductions post-2017",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "must",
+        "negation": "negative",
+        "exception_structure": "simple_proviso",
+        "temporal": "conditional_future",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "inter_statute"
+      }
+    },
+    {
+      "id": "T-018",
+      "name": "non_individual_never_deducts",
+      "file": "LegalLean/CaseStudies/IRC163h.lean",
+      "line": 417,
+      "english_source": "Non-individuals can never deduct, regardless of other conditions",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "must",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-019",
+      "name": "unsecured_never_deducts",
+      "file": "LegalLean/CaseStudies/IRC163h.lean",
+      "line": 428,
+      "english_source": "Unsecured debt never qualifies, regardless of other conditions",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "must",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-020",
+      "name": "three_criteria_lower_bound",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 485,
+      "english_source": "An applicant with MeetsThreeCriteria witness has satisfied at least 3 criteria",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "positive",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-021",
+      "name": "final_merits_is_boundary",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 492,
+      "english_source": "Final merits determination is always at the formalisation boundary",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "positive",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-022",
+      "name": "R1_R2_deontic_distinct",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 502,
+      "english_source": "R1 is obligatory, R2 is permitted\u2014distinct deontic modalities",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "should",
+        "negation": "negative",
+        "exception_structure": "simple_proviso",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-023",
+      "name": "defeat_direct_acyclicity_o1",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 509,
+      "english_source": "No rule defeats itself\u2014acyclicity constraint for O-1A",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-024",
+      "name": "eligibility_always_mixed",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 521,
+      "english_source": "determineEligibility always returns mixed result\u2014Part 1 formal, Part 2 boundary",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "positive",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-025",
+      "name": "empty_list_ineligible",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 529,
+      "english_source": "An empty list cannot satisfy MeetsThreeCriteria",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "numeric",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-026",
+      "name": "comparable_evidence_changes_pathway",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 557,
+      "english_source": "Comparable evidence route changes normative pathway from obligatory to permitted",
+      "category": "legal_structural",
+      "factors": {
+        "voice": "active",
+        "modality": "may",
+        "negation": "negative",
+        "exception_structure": "simple_proviso",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-027",
+      "name": "allDistinct_pair_implies_ne",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 575,
+      "english_source": "AllDistinct pair implies the two elements are unequal",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-028",
+      "name": "majorAward_ne_membership",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 592,
+      "english_source": "majorAward and membership criteria are distinct types",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-029",
+      "name": "majorAward_ne_mediaCoverage",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 595,
+      "english_source": "majorAward and mediaCoverage criteria are distinct",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-030",
+      "name": "judgingRole_ne_scholarlyAuthorship",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 598,
+      "english_source": "judgingRole and scholarlyAuthorship criteria are distinct",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-031",
+      "name": "no_witness_below_three",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 614,
+      "english_source": "No MeetsThreeCriteria witness can have length strictly less than 3\u2014lower bound enforcement",
+      "category": "legal_structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "double_negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-032",
+      "name": "two_criteria_insufficient",
+      "file": "LegalLean/CaseStudies/O1Visa.lean",
+      "line": 624,
+      "english_source": "Two-element list cannot satisfy MeetsThreeCriteria\u2014cardinality constraint tight at 3",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "numeric",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-033",
+      "name": "contact_obligation_and_exemption_are_deontic_distinct",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 528,
+      "english_source": "Contact obligation (obligatory) and small provider exemption (permitted) have distinct modalities",
+      "category": "legal_structural",
+      "factors": {
+        "voice": "active",
+        "modality": "should",
+        "negation": "negative",
+        "exception_structure": "simple_proviso",
+        "temporal": "present",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-034",
+      "name": "etf_prohibition_and_carveout_are_deontic_distinct",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 538,
+      "english_source": "ETF prohibition (prohibited) and device carve-out (permitted) have distinct modalities",
+      "category": "legal_structural",
+      "factors": {
+        "voice": "active",
+        "modality": "should",
+        "negation": "negative",
+        "exception_structure": "simple_proviso",
+        "temporal": "present",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-035",
+      "name": "defeat_graph_acyclic",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 547,
+      "english_source": "TCP Code defeat graph is acyclic\u2014no rule defeats itself",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-036",
+      "name": "unlicensed_provider_not_subject_to_tcp",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 560,
+      "english_source": "Unlicensed provider is not subject to TCP Code\u2014formally verified out-of-scope",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-037",
+      "name": "non_consumer_contract_outside_cis_scope",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 570,
+      "english_source": "Non-individual consumer contract is outside TCP 5.1 CIS scope",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-038",
+      "name": "non_compliant_cis_format_is_formal_failure",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 581,
+      "english_source": "Non-standard-format CIS is formally non-compliant\u2014no ambiguity",
+      "category": "regression",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "negative",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "numeric",
+        "definitions": "inline",
+        "cross_references": "none"
+      }
+    },
+    {
+      "id": "T-039",
+      "name": "exemption_rules_outrank_base_rules",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 593,
+      "english_source": "Exemption rules have strictly higher priority levels than the base rules they defeat",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "positive",
+        "exception_structure": "simple_proviso",
+        "temporal": "present",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-040",
+      "name": "small_provider_exemption_defeats_obligation",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 622,
+      "english_source": "Licensed small provider cannot be subject to full obligation AND exemption simultaneously\u2014exemption defeats",
+      "category": "legal_structural",
+      "factors": {
+        "voice": "active",
+        "modality": "should",
+        "negation": "double_negative",
+        "exception_structure": "defeasible",
+        "temporal": "present",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-041",
+      "name": "small_provider_not_in_obligation_path",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 637,
+      "english_source": "Licensed small provider contact assessment is never mixed\u2014two normative regimes are mutually exclusive",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "double_negative",
+        "exception_structure": "defeasible",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-042",
+      "name": "all_exemptions_yield_boundary",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 661,
+      "english_source": "All three compliance functions return boundary when exemption condition is active\u2014structural uniformity",
+      "category": "legal_structural",
+      "factors": {
+        "voice": "active",
+        "modality": "may",
+        "negation": "positive",
+        "exception_structure": "simple_proviso",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-043",
+      "name": "all_defeats_are_strict",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 690,
+      "english_source": "All defeat relations are strict\u2014exemption always wins, no meta-rule can override",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "positive",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "none",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    },
+    {
+      "id": "T-044",
+      "name": "defeat_hierarchy_is_consistent",
+      "file": "LegalLean/CaseStudies/TCPCode.lean",
+      "line": 707,
+      "english_source": "Defeat hierarchy is consistent\u2014every defeater has strictly higher priority, forming well-founded order",
+      "category": "structural",
+      "factors": {
+        "voice": "active",
+        "modality": "none",
+        "negation": "positive",
+        "exception_structure": "none",
+        "temporal": "present",
+        "thresholds": "numeric",
+        "definitions": "cross_referenced",
+        "cross_references": "intra_statute"
+      }
+    }
+  ],
+  "gap_analysis": {
+    "sparse_regions": [
+      {
+        "description": "Passive voice underrepresented",
+        "coverage": "0%",
+        "theorems_needed": "No theorems employ passive voice (e.g., 'Deduction is permitted'); all use active voice with explicit agents"
+      },
+      {
+        "description": "Should modality absent",
+        "coverage": "7%",
+        "theorems_needed": "Only 3 theorems exercise 'should' modality (contact_obligation_*, etf_prohibition_*); others use shall/must/may or none"
+      },
+      {
+        "description": "Double-negative negation limited",
+        "coverage": "21%",
+        "theorems_needed": "Only 9 theorems use double-negative form; most use positive or simple negation"
+      },
+      {
+        "description": "Undefined definitions absent",
+        "coverage": "5%",
+        "theorems_needed": "Only 1 theorem (no_mixed_outcomes) has undefined definitions; all others specify definitions inline or cross-referenced"
+      },
+      {
+        "description": "Pure temporal present limited",
+        "coverage": "48%",
+        "theorems_needed": "Many theorems involve conditional_future or past temporal phrasing; pure present statements are minority"
+      },
+      {
+        "description": "No-threshold statements scarce",
+        "coverage": "34%",
+        "theorems_needed": "Most legal theorems involve numeric or comparative thresholds; only 15 theorems have none"
+      }
+    ],
+    "uncovered_combinations": [
+      {
+        "factors": [
+          "passive",
+          "shall",
+          "negative"
+        ],
+        "reason": "No passive voice constructions in corpus"
+      },
+      {
+        "factors": [
+          "active",
+          "should",
+          "positive",
+          "nested_exception"
+        ],
+        "reason": "Only 1 theorem uses 'should' and none involve nested exceptions with should modality"
+      },
+      {
+        "factors": [
+          "passive",
+          "negation",
+          "defeasible"
+        ],
+        "reason": "Passive voice and defeasible structure do not co-occur in corpus"
+      }
+    ],
+    "coverage_statistics": {
+      "voice": {
+        "active": 44,
+        "passive": 0,
+        "none": 0,
+        "coverage_percentage": 100
+      },
+      "modality": {
+        "shall": 0,
+        "must": 8,
+        "may": 8,
+        "should": 3,
+        "none": 25,
+        "coverage_percentage": 73
+      },
+      "negation": {
+        "positive": 19,
+        "negative": 20,
+        "double_negative": 5,
+        "none": 0,
+        "coverage_percentage": 100
+      },
+      "exception_structure": {
+        "none": 22,
+        "simple_proviso": 16,
+        "nested_exception": 2,
+        "defeasible": 4,
+        "coverage_percentage": 100
+      },
+      "temporal": {
+        "present": 19,
+        "past": 4,
+        "conditional_future": 21,
+        "none": 0,
+        "coverage_percentage": 100
+      },
+      "thresholds": {
+        "none": 15,
+        "numeric": 26,
+        "comparative": 3,
+        "coverage_percentage": 100
+      },
+      "definitions": {
+        "inline": 8,
+        "cross_referenced": 35,
+        "undefined": 1,
+        "coverage_percentage": 100
+      },
+      "cross_references": {
+        "none": 3,
+        "intra_statute": 26,
+        "inter_statute": 15,
+        "coverage_percentage": 100
+      }
+    }
+  },
+  "minimal_pairs": [
+    {
+      "id": "MP-001",
+      "variant_a": "The deduction is permitted (active voice)",
+      "variant_b": "The deduction may be claimed (active voice with explicit modality)",
+      "expected_relation": "equivalent",
+      "factors_varied": [
+        "modality"
+      ],
+      "factors_held_constant": [
+        "voice",
+        "negation",
+        "temporal",
+        "thresholds",
+        "definitions"
+      ],
+      "source_theorems": [
+        "R1_R2_deontic_conflict",
+        "monotonicity_break_general"
+      ]
+    },
+    {
+      "id": "MP-002",
+      "variant_a": "The TCJA prohibition applies post-2017 (conditional future)",
+      "variant_b": "For payments in 2018+, the TCJA defeats the deduction (explicit temporal boundary)",
+      "expected_relation": "equivalent",
+      "factors_varied": [
+        "temporal"
+      ],
+      "factors_held_constant": [
+        "voice",
+        "modality",
+        "negation",
+        "exception_structure"
+      ],
+      "source_theorems": [
+        "pre_tcja_no_prohibition",
+        "monotonicity_break_tcja"
+      ]
+    },
+    {
+      "id": "MP-003",
+      "variant_a": "An exemption rule has higher priority than the rule it defeats (comparative threshold)",
+      "variant_b": "Exemption priority = 2; obligation priority = 1 (numeric threshold)",
+      "expected_relation": "equivalent",
+      "factors_varied": [
+        "thresholds"
+      ],
+      "factors_held_constant": [
+        "voice",
+        "modality",
+        "exception_structure",
+        "cross_references"
+      ],
+      "source_theorems": [
+        "exemption_rules_outrank_base_rules",
+        "defeat_hierarchy_is_consistent"
+      ]
+    },
+    {
+      "id": "MP-004",
+      "variant_a": "The applicant must meet at least 3 criteria (simple negation: not below 3)",
+      "variant_b": "No applicant with fewer than 3 criteria can satisfy MeetsThreeCriteria (double negation)",
+      "expected_relation": "equivalent",
+      "factors_varied": [
+        "negation"
+      ],
+      "factors_held_constant": [
+        "voice",
+        "modality",
+        "thresholds",
+        "temporal"
+      ],
+      "source_theorems": [
+        "three_criteria_lower_bound",
+        "no_witness_below_three"
+      ]
+    },
+    {
+      "id": "MP-005",
+      "variant_a": "The small provider exemption defeats the contact obligation (defeasible exception)",
+      "variant_b": "Licensed small provider assessment returns boundary, not mixed (structural exclusion)",
+      "expected_relation": "equivalent",
+      "factors_varied": [
+        "exception_structure"
+      ],
+      "factors_held_constant": [
+        "voice",
+        "modality",
+        "negation",
+        "temporal",
+        "definitions"
+      ],
+      "source_theorems": [
+        "small_provider_exemption_defeats_obligation",
+        "small_provider_not_in_obligation_path"
+      ]
+    },
+    {
+      "id": "MP-006",
+      "variant_a": "The formal and boundary constructors are distinct types (intra-statute reference)",
+      "variant_b": "A FormalisationBoundary value is either formal or boundary, never both (structural property)",
+      "expected_relation": "equivalent",
+      "factors_varied": [
+        "definitions"
+      ],
+      "factors_held_constant": [
+        "voice",
+        "negation",
+        "exception_structure"
+      ],
+      "source_theorems": [
+        "formal_ne_boundary",
+        "no_mixed_outcomes"
+      ]
+    },
+    {
+      "id": "MP-007",
+      "variant_a": "IRC \u00a7163(h) permits home equity interest deduction (pre-TCJA rule, may modality)",
+      "variant_b": "TCJA prohibits home equity interest deduction (post-TCJA rule, must-not modality)",
+      "expected_relation": "divergent",
+      "factors_varied": [
+        "modality",
+        "temporal",
+        "cross_references"
+      ],
+      "factors_held_constant": [
+        "voice",
+        "exception_structure"
+      ],
+      "source_theorems": [
+        "R1_R2_deontic_conflict",
+        "monotonicity_break_general"
+      ],
+      "legal_significance": "Statutory amendment reverses normative force from permission to prohibition"
+    },
+    {
+      "id": "MP-008",
+      "variant_a": "Non-individual taxpayer: automatic rejection (no exceptions)",
+      "variant_b": "Unsecured debt: automatic rejection (no exceptions)",
+      "expected_relation": "equivalent",
+      "factors_varied": [
+        "definitions"
+      ],
+      "factors_held_constant": [
+        "voice",
+        "modality",
+        "negation",
+        "exception_structure"
+      ],
+      "source_theorems": [
+        "non_individual_never_deducts",
+        "unsecured_never_deducts"
+      ]
+    },
+    {
+      "id": "MP-009",
+      "variant_a": "TCP Code requirement for all providers (obligatory modality, no exception)",
+      "variant_b": "TCP Code requirement with small-provider carve-out (obligatory defeated by lex specialis)",
+      "expected_relation": "divergent",
+      "factors_varied": [
+        "exception_structure"
+      ],
+      "factors_held_constant": [
+        "voice",
+        "modality",
+        "definitions",
+        "cross_references"
+      ],
+      "legal_significance": "Lex specialis exception changes scope from universal to conditional"
+    },
+    {
+      "id": "MP-010",
+      "variant_a": "Comparable evidence is permitted when standard criteria do not apply (simple proviso)",
+      "variant_b": "R1 is obligatory; R2 (comparable) is permitted\u2014deontic shift from obligation to permission (defeasible)",
+      "expected_relation": "equivalent",
+      "factors_varied": [
+        "modality",
+        "exception_structure"
+      ],
+      "factors_held_constant": [
+        "voice",
+        "temporal",
+        "cross_references"
+      ],
+      "source_theorems": [
+        "R1_R2_deontic_distinct",
+        "comparable_evidence_changes_pathway"
+      ]
+    }
+  ],
+  "annotations": {
+    "theorem_classification": {
+      "regression_tests": {
+        "count": 13,
+        "description": "Verify specific code paths through case study functions; equivalent to unit tests in proof form",
+        "examples": [
+          "tcja_prohibits_home_equity",
+          "non_individual_never_deducts",
+          "unsecured_never_deducts",
+          "three_criteria_lower_bound",
+          "empty_list_ineligible",
+          "majorAward_ne_membership"
+        ]
+      },
+      "structural_properties": {
+        "count": 18,
+        "description": "Prove properties of encoding architecture; quantify over all inputs but address formalism, not law",
+        "examples": [
+          "formal_constructor_implies_proof",
+          "formal_ne_boundary",
+          "defeat_direct_acyclicity",
+          "no_mixed_outcomes",
+          "allDistinct_pair_implies_ne",
+          "defeat_graph_acyclic",
+          "exemption_rules_outrank_base_rules"
+        ]
+      },
+      "legal_structural": {
+        "count": 13,
+        "description": "Prove legally meaningful properties of encoded statutes; both formalism and law matter",
+        "examples": [
+          "R1_R2_deontic_conflict",
+          "monotonicity_break_general",
+          "no_witness_below_three",
+          "comparable_evidence_changes_pathway",
+          "contact_obligation_and_exemption_are_deontic_distinct",
+          "all_exemptions_yield_boundary"
+        ]
+      }
+    },
+    "factor_interpretation_guide": {
+      "voice": {
+        "active": "Agent-driven: 'The IRS must determine...' vs 'It must be determined that...'",
+        "passive": "Not used in corpus; LegalLean privileges explicit agents due to dependent types"
+      },
+      "modality": {
+        "shall": "Ancient legal English; not used in modern codifications (IRC, CFR, TCP Code all use shall/must/may)",
+        "must": "Obligation or necessity (used 8 times in rejection conditions and mandatory rules)",
+        "may": "Permission or discretion (used 8 times in permitted rules and discretionary determinations)",
+        "should": "Mild obligation or recommendation (used 3 times in structural properties about rules)",
+        "none": "Not applicable when theorem describes structural property, not normative claim"
+      },
+      "negation": {
+        "positive": "Direct assertion: 'The rule applies'",
+        "negative": "Negation via not/never/no: 'The rule does not apply'; most common form (45%)",
+        "double_negative": "Negation of negation: 'It is not the case that X does not apply' (rare, used in strict monotonicity break proofs)"
+      },
+      "exception_structure": {
+        "none": "No conditions trigger different legal regime (50% of theorems address unchanging structural facts)",
+        "simple_proviso": "Exception condition triggers different treatment: 'unless X applies' or 'if X, then simplified requirements'",
+        "nested_exception": "Exception to exception: grandfather rule defeats dollar limit which defeats base deduction (2 theorems only)",
+        "defeasible": "One rule defeats another in non-monotonic fashion; entire legal outcome can flip (9%)"
+      },
+      "temporal": {
+        "present": "Timelessly applicable or describing the present encoding state",
+        "past": "Historical cutoff (October 13, 1987 grandfather date; June 15, 2015 sample payment date)",
+        "conditional_future": "Threshold-based future trigger: 'For payments after 2017' (most common, 48%)"
+      },
+      "thresholds": {
+        "none": "No quantity constraint (structural facts about distinctness, acyclicity, etc.)",
+        "numeric": "Exact number or amount: $1M deduction limit, 3 of 8 criteria, 10 employees, \u22642 pages CIS (59%)",
+        "comparative": "Ordering relation: priority level > baseline, length \u2265 3 (7%)"
+      },
+      "definitions": {
+        "inline": "Term defined or specified within the theorem statement itself (18%)",
+        "cross_referenced": "Term defined in prior code (IRC \u00a7163(h), 8 CFR \u00a7204.5(h), TCP Code clauses) (80%)",
+        "undefined": "Term marked as axiom requiring human determination; only no_mixed_outcomes uses this (2%)"
+      },
+      "cross_references": {
+        "none": "Purely structural, no reference to external source (7%)",
+        "intra_statute": "Reference within same statute (IRC \u00a7163(h) rules reference each other; O-1A criteria reference same CFR) (59%)",
+        "inter_statute": "Reference across different statutes (TCJA amending IRC; matter of Rijal interpreting CFR; (34%)"
+      }
+    },
+    "monograph_alignment": {
+      "T1_claim": "Dependent types encode eligibility (propositions-as-types)",
+      "supporting_theorems": [
+        "formal_constructor_implies_proof",
+        "formal_carries_real_proof",
+        "formal_ne_boundary",
+        "no_mixed_outcomes",
+        "boundary_authority_is_irs_tax_court",
+        "final_merits_is_boundary"
+      ],
+      "T2_claim": "Defeasibility is non-monotonic: adding a rule removes a conclusion",
+      "T3_claim": "FormalisationBoundary is meaningful: the boundary constrains what can be proven"
+    }
+  },
+  "coverage_summary": {
+    "total_theorems": 44,
+    "tiers": {
+      "regression_tests": 13,
+      "structural_properties": 18,
+      "legal_structural": 13
+    },
+    "formality_balance": {
+      "fully_formal": 31,
+      "mixed_formal_boundary": 7,
+      "boundary_only": 6
+    },
+    "statute_distribution": {
+      "IRC_163h": 19,
+      "O1Visa_8CFR204.5h": 14,
+      "TCPCode": 11
+    }
+  }
+}

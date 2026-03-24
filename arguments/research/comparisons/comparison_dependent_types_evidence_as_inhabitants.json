@@ -1,0 +1,140 @@
+{
+  "dimension": "dependent types (evidence-as-inhabitants)",
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Compare how the following legal formalisation systems handle\ndependent types (evidence-as-inhabitants). Return a JSON object:\n\n{\n  \"dimension\": \"dependent types (evidence-as-inhabitants)\",\n  \"systems\": [\n    {\n      \"name\": \"string — system name\",\n      \"approach\": \"string — how it handles this dimension\",\n      \"strengths\": [\"string\"],\n      \"limitations\": [\"string\"],\n      \"key_paper\": \"string — citation\",\n      \"expressiveness_score\": \"1-5 (1=absent, 5=fully native)\"\n    }\n  ],\n  \"legallean_advantage\": \"string — where dependent types in Lean 4 add value\",\n  \"legallean_limitation\": \"string — honest assessment of gaps\"\n}\n\nSystems to compare: DDL (Governatori), Catala (Merigoux), L4L (Hou et al.),\nLegalRuleML (Palmirani), LegalLean (our system — Lean 4 dependent types with\nFormalisationBoundary for open texture).\n\nDimension: dependent types (evidence-as-inhabitants)\nContext: Whether the system can express that evidence INHABITS a type (propositions-as-types / Curry-Howard). Include: proof witnesses."
+  },
+  "results": {
+    "models_queried": [
+      "sonar-pro"
+    ],
+    "responses": [
+      {
+        "model": "sonar-pro",
+        "answer_raw": "```json\n{\n  \"dimension\": \"dependent types (evidence-as-inhabitants)\",\n  \"systems\": [\n    {\n      \"name\": \"DDL (Governatori)\",\n      \"approach\": \"Defeasible logic with no dependent types or Curry-Howard correspondence; rules are flat horn clauses with priorities for exceptions, evidence handled as rule application traces rather than type inhabitants.\",\n      \"strengths\": [\"Efficient operational semantics for defeasible reasoning\", \"Handles legal exceptions via superiority relations\"],\n      \"limitations\": [\"No propositions-as-types\", \"Evidence not encoded as constructive proofs\", \"Cannot express dependent propositions where evidence refines types\"],\n      \"key_paper\": \"Governatori, G. (2005). Representing business contracts in RuleML. International Symposium on RuleML.\",\n      \"expressiveness_score\": \"1\"\n    },\n    {\n      \"name\": \"Catala (Merigoux)\",\n      \"approach\": \"Rule-based DSL compiled to OCaml with scope/attribute hierarchies for tax law; no dependent types, evidence via computation traces and tests, not type-level proofs.\",\n      \"strengths\": [\"Precise replication of statutory ambiguity\", \"Compiles to executable code\", \"Strong testing framework\"],\n      \"limitations\": [\"Static types are simple ML types\", \"No Curry-Howard\", \"Legal discretion not type-refined\", \"Evidence external to types\"],\n      \"key_paper\": \"Merigoux, D., et al. (2022). Catala: a domain-specific language for tax law. Proceedings of the ACM on Programming Languages.\",\n      \"expressiveness_score\": \"1\"\n    },\n    {\n      \"name\": \"L4L (Hou et al.)\",\n      \"approach\": \"Lean 4 framework translating natural language to Lean theorems; uses Lean's full dependent types and Curry-Howard for legal proofs, with LLM-assisted formalisation.\",\n      \"strengths\": [\"Full Lean 4 dependent types\", \"Native evidence-as-inhabitants\", \"Machine-checkable legal proofs\"],\n      \"limitations\": [\"Relies on LLM accuracy for NL→Lean\", \"Scalability of full formalisation\", \"Limited to what Lean can express\"],\n      \"key_paper\": \"Hou, K., et al. (2024). Large Language Models as Legal Proof Assistants. arXiv:2406.11585.\",\n      \"expressiveness_score\": \"5\"\n    },\n    {\n      \"name\": \"LegalRuleML (Palmirani)\",\n      \"approach\": \"XML-based rule markup with defeasibility and deontic operators; no type system or dependent types, evidence via rule firing traces in compliant engines.\",\n      \"strengths\": [\"Standardized XML interchange\", \"Supports defeasibility\", \"Wide tool ecosystem\"],\n      \"limitations\": [\"No type theory foundation\", \"Evidence not computationally constructive\", \"Semantic variation across engines\", \"No dependent propositions\"],\n      \"key_paper\": \"Palmirani, M., et al. (2011). LegalRuleML: Design principles and foundations. International Conference on Electronic Government and the Information Systems Perspective.\",\n      \"expressiveness_score\": \"1\"\n    },\n    {\n      \"name\": \"LegalLean (Lean 4)\",\n      \"approach\": \"Native Lean 4 dependent types with FormalisationBoundary; full Curry-Howard where legal evidence inhabits proposition types, open texture via boundary predicates between formal/interpretive layers.\",\n      \"strengths\": [\"Machine-checkable legal proofs\", \"Dependent propositions encode case-specific facts\", \"FormalisationBoundary handles vagueness\"],\n      \"limitations\": [\"Steep learning curve\", \"Partial formalisation requires boundary judgment\", \"Lean elaboration can be brittle\"],\n      \"key_paper\": \"LegalLean: Dependent Types for Legal Reasoning (in development)\",\n      \"expressiveness_score\": \"5\"\n    }\n  ],\n  \"legallean_advantage\": \"Lean 4's dependent types enable precise encoding of 'evidence inhabits legal propositions' via Curry-Howard, supporting case-specific refinements (e.g., {proof : is_contract_valid doc} → obligation_holds) and FormalisationBoundary theorems that compose machine-checked cores with interpretive discretion.\",\n  \"legallean_limitation\": \"Full dependent type formalisation scales poorly to complete statutes; FormalisationBoundary decisions remain human judgments requiring legal expertise, creating trusted oracles between formal and interpretive layers.\"\n}\n```",
+        "answer_parsed": {
+          "dimension": "dependent types (evidence-as-inhabitants)",
+          "systems": [
+            {
+              "name": "DDL (Governatori)",
+              "approach": "Defeasible logic with no dependent types or Curry-Howard correspondence; rules are flat horn clauses with priorities for exceptions, evidence handled as rule application traces rather than type inhabitants.",
+              "strengths": [
+                "Efficient operational semantics for defeasible reasoning",
+                "Handles legal exceptions via superiority relations"
+              ],
+              "limitations": [
+                "No propositions-as-types",
+                "Evidence not encoded as constructive proofs",
+                "Cannot express dependent propositions where evidence refines types"
+              ],
+              "key_paper": "Governatori, G. (2005). Representing business contracts in RuleML. International Symposium on RuleML.",
+              "expressiveness_score": "1"
+            },
+            {
+              "name": "Catala (Merigoux)",
+              "approach": "Rule-based DSL compiled to OCaml with scope/attribute hierarchies for tax law; no dependent types, evidence via computation traces and tests, not type-level proofs.",
+              "strengths": [
+                "Precise replication of statutory ambiguity",
+                "Compiles to executable code",
+                "Strong testing framework"
+              ],
+              "limitations": [
+                "Static types are simple ML types",
+                "No Curry-Howard",
+                "Legal discretion not type-refined",
+                "Evidence external to types"
+              ],
+              "key_paper": "Merigoux, D., et al. (2022). Catala: a domain-specific language for tax law. Proceedings of the ACM on Programming Languages.",
+              "expressiveness_score": "1"
+            },
+            {
+              "name": "L4L (Hou et al.)",
+              "approach": "Lean 4 framework translating natural language to Lean theorems; uses Lean's full dependent types and Curry-Howard for legal proofs, with LLM-assisted formalisation.",
+              "strengths": [
+                "Full Lean 4 dependent types",
+                "Native evidence-as-inhabitants",
+                "Machine-checkable legal proofs"
+              ],
+              "limitations": [
+                "Relies on LLM accuracy for NL→Lean",
+                "Scalability of full formalisation",
+                "Limited to what Lean can express"
+              ],
+              "key_paper": "Hou, K., et al. (2024). Large Language Models as Legal Proof Assistants. arXiv:2406.11585.",
+              "expressiveness_score": "5"
+            },
+            {
+              "name": "LegalRuleML (Palmirani)",
+              "approach": "XML-based rule markup with defeasibility and deontic operators; no type system or dependent types, evidence via rule firing traces in compliant engines.",
+              "strengths": [
+                "Standardized XML interchange",
+                "Supports defeasibility",
+                "Wide tool ecosystem"
+              ],
+              "limitations": [
+                "No type theory foundation",
+                "Evidence not computationally constructive",
+                "Semantic variation across engines",
+                "No dependent propositions"
+              ],
+              "key_paper": "Palmirani, M., et al. (2011). LegalRuleML: Design principles and foundations. International Conference on Electronic Government and the Information Systems Perspective.",
+              "expressiveness_score": "1"
+            },
+            {
+              "name": "LegalLean (Lean 4)",
+              "approach": "Native Lean 4 dependent types with FormalisationBoundary; full Curry-Howard where legal evidence inhabits proposition types, open texture via boundary predicates between formal/interpretive layers.",
+              "strengths": [
+                "Machine-checkable legal proofs",
+                "Dependent propositions encode case-specific facts",
+                "FormalisationBoundary handles vagueness"
+              ],
+              "limitations": [
+                "Steep learning curve",
+                "Partial formalisation requires boundary judgment",
+                "Lean elaboration can be brittle"
+              ],
+              "key_paper": "LegalLean: Dependent Types for Legal Reasoning (in development)",
+              "expressiveness_score": "5"
+            }
+          ],
+          "legallean_advantage": "Lean 4's dependent types enable precise encoding of 'evidence inhabits legal propositions' via Curry-Howard, supporting case-specific refinements (e.g., {proof : is_contract_valid doc} → obligation_holds) and FormalisationBoundary theorems that compose machine-checked cores with interpretive discretion.",
+          "legallean_limitation": "Full dependent type formalisation scales poorly to complete statutes; FormalisationBoundary decisions remain human judgments requiring legal expertise, creating trusted oracles between formal and interpretive layers."
+        },
+        "citations": [
+          "https://people.eecs.berkeley.edu/~necula/Papers/deputy-esop07.pdf",
+          "https://www.lesswrong.com/posts/ccbsYSpTcTqXwukH8/basic-building-blocks-of-dependent-type-theory",
+          "http://adam.chlipala.net/papers/CpdtJFR/CpdtJFR.pdf",
+          "https://news.ycombinator.com/item?id=20714137",
+          "https://golem.ph.utexas.edu/category/2010/03/in_praise_of_dependent_types.html",
+          "https://www.cs.uoregon.edu/research/summerschool/summer02/lectures/ts_read.pdf"
+        ],
+        "usage": {
+          "prompt_tokens": 374,
+          "completion_tokens": 911,
+          "total_tokens": 1285,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00112,
+            "output_tokens_cost": 0.01367,
+            "request_cost": 0.006,
+            "total_cost": 0.02079
+          }
+        }
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 1,
+      "total_models": 1,
+      "all_citations": [
+        "https://www.cs.uoregon.edu/research/summerschool/summer02/lectures/ts_read.pdf",
+        "https://golem.ph.utexas.edu/category/2010/03/in_praise_of_dependent_types.html",
+        "https://news.ycombinator.com/item?id=20714137",
+        "https://people.eecs.berkeley.edu/~necula/Papers/deputy-esop07.pdf",
+        "http://adam.chlipala.net/papers/CpdtJFR/CpdtJFR.pdf",
+        "https://www.lesswrong.com/posts/ccbsYSpTcTqXwukH8/basic-building-blocks-of-dependent-type-theory"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:40:06Z"
+}

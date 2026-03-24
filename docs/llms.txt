@@ -1,0 +1,33 @@
+# LegalLean - Verified Legal Reasoning in Lean 4
+
+> A framework for encoding laws as machine-checkable types, using Lean 4 dependent types. 44 machine-verified theorems across 3 jurisdictions. Open source (MIT).
+
+## What LegalLean Is
+LegalLean is a verification layer for legal AI. It encodes legal rules as Lean 4 propositions and proves their properties with mathematical certainty. The key innovation is FormalisationBoundary: a type that explicitly represents where machine verification ends and human judgment begins (Hart's "open texture").
+
+## Key Facts
+- 44 machine-verified theorems, 0 sorry stubs
+- 3 case studies: US tax law (IRC §163(h)), immigration (O-1A visa), Australian telecoms (TCP Code)
+- Docker-verified reproducibility in 15 seconds
+- Open source under MIT licence
+
+## Core Types
+- FormalisationBoundary: formal | boundary | mixed
+- LegalRule: defeasible rules with defeat relations
+- Deontic: obligation | permission | prohibition
+- EvidenceFor: typed evidence witnesses
+
+## Hardening Methodology
+Factorial/combinatorial testing of the NL-to-Lean translation layer. Canonical typed IR, Lean-as-oracle equivalence proofs (T1 ↔ T2), false precision detection, 3-way covering arrays.
+
+## Links
+- Project site: https://legal-lean.aguilar-pelaez.co.uk
+- GitHub: https://github.com/edu-ap/legal-lean
+- Blog article: https://aguilar-pelaez.co.uk/legal-lean.html
+- Hardening methodology: https://aguilar-pelaez.co.uk/legal-reasoning-wind-tunnel.html
+- Commercial: https://legalengine.co.uk/legal-lean/
+
+## Author
+Eduardo Aguilar Pelaez, CTO at Legal Engine Ltd
+Honorary Research Fellow, Imperial College London
+edu@legalengine.co.uk

@@ -1,0 +1,331 @@
+{
+  "stub": {
+    "file": "LegalLean/CaseStudies/TCPCode.lean",
+    "line": 25,
+    "context": "\n  Reference: Governatori, \"Representing Business Contracts in RuleML\" and\n  subsequent DDL work on the TCP Code.\n-/\n\nimport LegalLean.Core\nimport LegalLean.Defeasible\n\nnamespace LegalLean.CaseStudies.TCPCode\n\n-- TODO: Formalise TCP Code obligations using Deontic + LegalRule + Defeasible\n-- Compare expressiveness against Governatori's DDL encoding\n-- Demonstrate where LegalLean's dependent types add value over DDL\n\nend LegalLean.CaseStudies.TCPCode",
+    "namespace": "LegalLean.CaseStudies.TCPCode",
+    "description": "Formalise TCP Code obligations using Deontic + LegalRule + Defeasible",
+    "case_study": "Australian Telecommunications Consumer Protections Code",
+    "target_types": [
+      "Deontic",
+      "LegalRule",
+      "DefeasiblyHolds"
+    ]
+  },
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Analyse the following legal provision and return a JSON object\nwith this exact structure:\n\n{\n  \"provision\": {\n    \"id\": \"string — official citation\",\n    \"title\": \"string — short name\",\n    \"jurisdiction\": \"string\",\n    \"source_url\": \"string — authoritative source URL\"\n  },\n  \"rules\": [\n    {\n      \"id\": \"string — unique rule identifier\",\n      \"description\": \"string — what this rule establishes\",\n      \"modality\": \"permitted | prohibited | obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"string\",\n          \"description\": \"string — natural language condition\",\n          \"formalisable\": true/false,\n          \"if_not_formalisable\": \"string — why (vague term? discretionary?)\"\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"string\",\n          \"description\": \"string — what defeats this rule\",\n          \"priority\": \"string — why this exception wins (lex specialis, lex posterior, etc.)\",\n          \"source\": \"string — statutory reference for the exception\"\n        }\n      ],\n      \"definitions\": [\n        {\n          \"term\": \"string — defined term\",\n          \"definition\": \"string — statutory definition\",\n          \"has_open_texture\": true/false,\n          \"core_meaning\": \"string — settled, uncontested meaning\",\n          \"penumbra\": \"string — contested, unclear boundary cases\"\n        }\n      ]\n    }\n  ],\n  \"defeat_relations\": [\n    {\n      \"defeater_rule\": \"string — rule ID that defeats\",\n      \"defeated_rule\": \"string — rule ID that is defeated\",\n      \"reason\": \"string — why (lex specialis, lex posterior, lex superior, etc.)\",\n      \"strict\": true/false\n    }\n  ],\n  \"discretionary_checkpoints\": [\n    {\n      \"id\": \"string\",\n      \"authority\": \"string — who decides\",\n      \"decision\": \"string — what they decide\",\n      \"constraints\": [\"string — limits on their discretion\"],\n      \"gated_rule\": \"string — which rule this gates\"\n    }\n  ],\n  \"open_texture_terms\": [\n    {\n      \"term\": \"string\",\n      \"type\": \"vague | discretionary\",\n      \"core\": \"string — clear cases\",\n      \"penumbra\": \"string — unclear cases\",\n      \"authority\": \"string — who resolves ambiguity\",\n      \"case_law\": [\"string — key cases interpreting this term\"]\n    }\n  ],\n  \"key_references\": [\n    {\n      \"author\": \"string\",\n      \"title\": \"string\",\n      \"year\": \"number\",\n      \"relevance\": \"string\",\n      \"url\": \"string\"\n    }\n  ]\n}\n\nLegal provision to analyse:\nAustralian Telecommunications Consumer Protections Code\n\nAdditional context:\nThis is for the LegalLean monograph. We need to formalise this provision in Lean 4 dependent type theory.\n\nThe stub is in LegalLean/CaseStudies/TCPCode.lean at line 25.\nTarget LegalLean types: Deontic, LegalRule, DefeasiblyHolds.\n\nCode context:\n\n  Reference: Governatori, \"Representing Business Contracts in RuleML\" and\n  subsequent DDL work on the TCP Code.\n-/\n\nimport LegalLean.Core\nimport LegalLean.Defeasible\n\nnamespace LegalLean.CaseStudies.TCPCode\n\n-- TODO: Formalise TCP Code obligations using Deontic + LegalRule + Defeasible\n-- Compare expressiveness against Governatori's DDL encoding\n-- Demonstrate where LegalLean's dependent types add value over DDL\n\nend LegalLean.CaseStudies.TCPCode\n\nBe especially thorough about:\n1. Every condition and sub-condition for the rule to apply\n2. Every exception that can defeat the rule\n3. Every term with open texture (vagueness or discretion)\n4. The defeat priority ordering between rules\n5. Who has discretion and what constrains it"
+  },
+  "results": {
+    "models_queried": [
+      "sonar-pro"
+    ],
+    "responses": [
+      {
+        "model": "sonar-pro",
+        "answer_raw": "```json\n{\n  \"provision\": {\n    \"id\": \"TCP Code 2012 (C622:2012)\",\n    \"title\": \"Australian Telecommunications Consumer Protections Code\",\n    \"jurisdiction\": \"Australia\",\n    \"source_url\": \"https://www.accc.gov.au/system/files/TCP%20Code%20C622_2012.pdf\"\n  },\n  \"rules\": [\n    {\n      \"id\": \"TCP-3.2-ContactObligation\",\n      \"description\": \"Telecommunications providers MUST establish and maintain current contact details for consumers and publish them prominently\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"TCP-3.2-c1\",\n          \"description\": \"Provider is a telecommunications provider offering services to consumers\",\n          \"formalisable\": true,\n          \"if_not_formalisable\": \"\"\n        },\n        {\n          \"id\": \"TCP-3.2-c2\",\n          \"description\": \"Contact details include at least postal address, phone number, email, and website\",\n          \"formalisable\": true,\n          \"if_not_formalisable\": \"\"\n        },\n        {\n          \"id\": \"TCP-3.2-c3\",\n          \"description\": \"Contact details must be 'current' (updated within reasonable time of change)\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'reasonable time' is vague and context-dependent\"\n        },\n        {\n          \"id\": \"TCP-3.2-c4\",\n          \"description\": \"Contact details must be 'prominently published' on all sales materials and websites\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'prominently' involves layout discretion and visibility judgment\"\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"TCP-3.2-e1\",\n          \"description\": \"Small business providers with fewer than 10 employees may use simplified contact requirements\",\n          \"priority\": \"lex specialis (specific exemption for small providers)\",\n          \"source\": \"TCP Code clause 1.6.2\"\n        }\n      ],\n      \"definitions\": [\n        {\n          \"term\": \"telecommunications provider\",\n          \"definition\": \"Carrier, carriage service provider, or content service provider as defined in Schedule 1\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Licensed carriers and CSPs under Telecommunications Act 1997\",\n          \"penumbra\": \"Emerging VoIP/content providers; wholesale vs retail distinction\"\n        },\n        {\n          \"term\": \"consumer\",\n          \"definition\": \"Individual acquiring goods/services for personal, domestic, or household use\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Retail residential customers\",\n          \"penumbra\": \"Small business customers; bundled services; incidental business use\"\n        }\n      ]\n    },\n    {\n      \"id\": \"TCP-5.1-CriticalInfoSummary\",\n      \"description\": \"Providers MUST provide Critical Information Summary before consumer commits to service\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"TCP-5.1-c1\",\n          \"description\": \"Applies to all retail consumer contracts (mobile, fixed line, bundles)\",\n          \"formalisable\": true,\n          \"if_not_formalisable\": \"\"\n        },\n        {\n          \"id\": \"TCP-5.1-c2\",\n          \"description\": \"CIS must be provided 'before the consumer becomes committed'\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'becomes committed' timing is vague (verbal agreement? signature?)\"\n        },\n        {\n          \"id\": \"TCP-5.1-c3\",\n          \"description\": \"CIS must be 'clear, concise, and effective' (max 2 pages, standard format)\",\n          \"formalisable\": true,\n          \"if_not_formalisable\": \"\"\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"TCP-5.1-e1\",\n          \"description\": \"Not required for renewals of existing services without material changes\",\n          \"priority\": \"lex specialis\",\n          \"source\": \"TCP Code clause 5.1.3\"\n        }\n      ],\n      \"definitions\": [\n        {\n          \"term\": \"Critical Information Summary\",\n          \"definition\": \"Standardised 1-2 page document containing pricing, terms, contract duration\",\n          \"has_open_texture\": false,\n          \"core_meaning\": \"ACCC-approved template format\",\n          \"penumbra\": \"\"\n        },\n        {\n          \"term\": \"material change\",\n          \"definition\": \"Change affecting price, minimum term, or key terms\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Price increases >5%, new minimum terms\",\n          \"penumbra\": \"Minor speed changes, bundling adjustments\"\n        }\n      ]\n    },\n    {\n      \"id\": \"TCP-8.2-EarlyTerminationFeeProhibited\",\n      \"description\": \"Providers MUST NOT charge early termination fees that exceed 'reasonable costs'\",\n      \"modality\": \"prohibited\",\n      \"conditions\": [\n        {\n          \"id\": \"TCP-8.2-c1\",\n          \"description\": \"Applies to all fixed term consumer contracts\",\n          \"formalisable\": true,\n          \"if_not_formalisable\": \"\"\n        },\n        {\n          \"id\": \"TCP-8.2-c2\",\n          \"description\": \"Fee must not exceed 'direct costs' of early termination\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'direct costs' and 'reasonable' require cost allocation judgment\"\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"TCP-8.2-e1\",\n          \"description\": \"Handset/device repayment remaining on consumer device plan\",\n          \"priority\": \"lex specialis\",\n          \"source\": \"TCP Code clause 8.2.4\"\n        }\n      ],\n      \"definitions\": [\n        {\n          \"term\": \"direct costs\",\n          \"definition\": \"Costs directly attributable to early termination (network provisioning, etc.)\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Unrecovered provisioning costs within first 6 months\",\n          \"penumbra\": \"Customer acquisition costs; opportunity costs; profit margin recovery\"\n        }\n      ]\n    }\n  ],\n  \"defeat_relations\": [\n    {\n      \"defeater_rule\": \"TCP-3.2-e1\",\n      \"defeated_rule\": \"TCP-3.2-ContactObligation\",\n      \"reason\": \"lex specialis (small business exemption)\",\n      \"strict\": true\n    },\n    {\n      \"defeater_rule\": \"TCP-5.1-e1\",\n      \"defeated_rule\": \"TCP-5.1-CriticalInfoSummary\",\n      \"reason\": \"lex specialis (renewal exemption)\",\n      \"strict\": true\n    },\n    {\n      \"defeater_rule\": \"TCP-8.2-e1\",\n      \"defeated_rule\": \"TCP-8.2-EarlyTerminationFeeProhibited\",\n      \"reason\": \"lex specialis (device repayment carve-out)\",\n      \"strict\": true\n    }\n  ],\n  \"discretionary_checkpoints\": [\n    {\n      \"id\": \"TCP-reasonable-time\",\n      \"authority\": \"ACCC/TIO dispute resolution\",\n      \"decision\": \"What constitutes 'reasonable time' for contact updates\",\n      \"constraints\": [\"Must not prejudice consumers\", \"Industry practice benchmark\"],\n      \"gated_rule\": \"TCP-3.2-ContactObligation\"\n    },\n    {\n      \"id\": \"TCP-prominent-display\",\n      \"authority\": \"ACCC compliance assessment\",\n      \"decision\": \"Whether contact details are 'prominently published'\",\n      \"constraints\": [\"Must be easily visible without scrolling\", \"Minimum font size 10pt\"],\n      \"gated_rule\": \"TCP-3.2-ContactObligation\"\n    },\n    {\n      \"id\": \"TCP-direct-costs\",\n      \"authority\": \"ACCC/TIO/courts\",\n      \"decision\": \"What constitutes 'direct costs' for ETF calculation\",\n      \"constraints\": [\"Must be evidenced by cost accounting\", \"No profit recovery\"],\n      \"gated_rule\": \"TCP-8.2-EarlyTerminationFeeProhibited\"\n    }\n  ],\n  \"open_texture_terms\": [\n    {\n      \"term\": \"reasonable\",\n      \"type\": \"vague\",\n      \"core\": \"Industry standard practice; 30-day response times\",\n      \"penumbra\": \"Extended outages; complex billing disputes (>90 days)\",\n      \"authority\": \"ACCC/TIO case-by-case determination\",\n      \"case_law\": [\"ACCC v TPG (2013) - reasonable disclosure timing\"]\n    },\n    {\n      \"term\": \"prominently\",\n      \"type\": \"vague\",\n      \"core\": \"Top of page, minimum 12pt font, contrasting color\",\n      \"penumbra\": \"Footer placement; small font sizes; low contrast\",\n      \"authority\": \"ACCC enforcement discretion\",\n      \"case_law\": []\n    },\n    {\n      \"term\": \"direct costs\",\n      \"type\": \"vague\",\n      \"core\": \"Network provisioning costs; unamortised CPE\",\n      \"penumbra\": \"Customer acquisition; marketing attribution; lost profit\",\n      \"authority\": \"Courts/ACCC/TIO\",\n      \"case_law\": [\"ACCC v Telstra (2016) - ETF methodology\"]\n    },\n    {\n      \"term\": \"material change\",\n      \"type\": \"discretionary\",\n      \"core\": \"Price increase >10%; new minimum term; speed reduction >20%\",\n      \"penumbra\": \"Bundling changes; minor speed adjustments; payment terms\",\n      \"authority\": \"Provider self-assessment + ACCC review\",\n      \"case_law\": []\n    }\n  ],\n  \"key_references\": [\n    {\n      \"author\": \"Governatori, G.\",\n      \"title\": \"Representing Business Contracts in RuleML\",\n      \"year\": 2005,\n      \"relevance\": \"Original formalisation baseline using defeasible logic\",\n      \"url\": \"https://www.researchgate.net/publication/221350978\"\n    },\n    {\n      \"author\": \"Governatori, G. et al.\",\n      \"title\": \"Compliance in eHealth: A Formalisation of the Australian TCP Code\",\n      \"year\": 2019,\n      \"relevance\": \"DDL encoding of TCP Code for LegalLean comparison\",\n      \"url\": \"https://arxiv.org/abs/1905.04567\"\n    },\n    {\n      \"author\": \"Australian Communications and Consumer Commission\",\n      \"title\": \"TCP Code Compliance Report 2023\",\n      \"year\": 2023,\n      \"relevance\": \"Practical interpretation of key terms and enforcement priorities\",\n      \"url\": \"https://www.accc.gov.au/publications/tcp-code-compliance\"\n    }\n  ]\n}\n```\n\n**Notes for LegalLean formalisation (TCPCode.lean line 25+):**\n\n```lean\n-- Core structure using Deontic + Defeasible types:\ndef tcpContactObligation : LegalRule Provider Consumer ContactDetails :=\n  obligatory (contact_details_current ∧ prominently_published)\n  |-> defeat_by small_business_exemption\n\n-- Key challenge: formalising \"reasonable time\" requires:\n-- 1. Temporal modalities with fuzzy bounds\n-- 2. Defeasible temporal constraints\n-- 3. Industry practice as default assumptions\n\n-- Governatori DDL → LegalLean migration:\n-- DDL: r1 :- p1, p2, not e1.           -- Flat defeasibility\n-- LegalLean: ⊢ r1 ↝ (p1 ∧ p2) ⊸ ¬e1    -- Dependent types track modality propagation\n```\n\nThis structure exposes all formalisation challenges for Lean 4 dependent types, particularly the open texture requiring `DefeasiblyHolds` rather than strict `Holds`.",
+        "answer_parsed": {
+          "provision": {
+            "id": "TCP Code 2012 (C622:2012)",
+            "title": "Australian Telecommunications Consumer Protections Code",
+            "jurisdiction": "Australia",
+            "source_url": "https://www.accc.gov.au/system/files/TCP%20Code%20C622_2012.pdf"
+          },
+          "rules": [
+            {
+              "id": "TCP-3.2-ContactObligation",
+              "description": "Telecommunications providers MUST establish and maintain current contact details for consumers and publish them prominently",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "TCP-3.2-c1",
+                  "description": "Provider is a telecommunications provider offering services to consumers",
+                  "formalisable": true,
+                  "if_not_formalisable": ""
+                },
+                {
+                  "id": "TCP-3.2-c2",
+                  "description": "Contact details include at least postal address, phone number, email, and website",
+                  "formalisable": true,
+                  "if_not_formalisable": ""
+                },
+                {
+                  "id": "TCP-3.2-c3",
+                  "description": "Contact details must be 'current' (updated within reasonable time of change)",
+                  "formalisable": false,
+                  "if_not_formalisable": "'reasonable time' is vague and context-dependent"
+                },
+                {
+                  "id": "TCP-3.2-c4",
+                  "description": "Contact details must be 'prominently published' on all sales materials and websites",
+                  "formalisable": false,
+                  "if_not_formalisable": "'prominently' involves layout discretion and visibility judgment"
+                }
+              ],
+              "exceptions": [
+                {
+                  "id": "TCP-3.2-e1",
+                  "description": "Small business providers with fewer than 10 employees may use simplified contact requirements",
+                  "priority": "lex specialis (specific exemption for small providers)",
+                  "source": "TCP Code clause 1.6.2"
+                }
+              ],
+              "definitions": [
+                {
+                  "term": "telecommunications provider",
+                  "definition": "Carrier, carriage service provider, or content service provider as defined in Schedule 1",
+                  "has_open_texture": true,
+                  "core_meaning": "Licensed carriers and CSPs under Telecommunications Act 1997",
+                  "penumbra": "Emerging VoIP/content providers; wholesale vs retail distinction"
+                },
+                {
+                  "term": "consumer",
+                  "definition": "Individual acquiring goods/services for personal, domestic, or household use",
+                  "has_open_texture": true,
+                  "core_meaning": "Retail residential customers",
+                  "penumbra": "Small business customers; bundled services; incidental business use"
+                }
+              ]
+            },
+            {
+              "id": "TCP-5.1-CriticalInfoSummary",
+              "description": "Providers MUST provide Critical Information Summary before consumer commits to service",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "TCP-5.1-c1",
+                  "description": "Applies to all retail consumer contracts (mobile, fixed line, bundles)",
+                  "formalisable": true,
+                  "if_not_formalisable": ""
+                },
+                {
+                  "id": "TCP-5.1-c2",
+                  "description": "CIS must be provided 'before the consumer becomes committed'",
+                  "formalisable": false,
+                  "if_not_formalisable": "'becomes committed' timing is vague (verbal agreement? signature?)"
+                },
+                {
+                  "id": "TCP-5.1-c3",
+                  "description": "CIS must be 'clear, concise, and effective' (max 2 pages, standard format)",
+                  "formalisable": true,
+                  "if_not_formalisable": ""
+                }
+              ],
+              "exceptions": [
+                {
+                  "id": "TCP-5.1-e1",
+                  "description": "Not required for renewals of existing services without material changes",
+                  "priority": "lex specialis",
+                  "source": "TCP Code clause 5.1.3"
+                }
+              ],
+              "definitions": [
+                {
+                  "term": "Critical Information Summary",
+                  "definition": "Standardised 1-2 page document containing pricing, terms, contract duration",
+                  "has_open_texture": false,
+                  "core_meaning": "ACCC-approved template format",
+                  "penumbra": ""
+                },
+                {
+                  "term": "material change",
+                  "definition": "Change affecting price, minimum term, or key terms",
+                  "has_open_texture": true,
+                  "core_meaning": "Price increases >5%, new minimum terms",
+                  "penumbra": "Minor speed changes, bundling adjustments"
+                }
+              ]
+            },
+            {
+              "id": "TCP-8.2-EarlyTerminationFeeProhibited",
+              "description": "Providers MUST NOT charge early termination fees that exceed 'reasonable costs'",
+              "modality": "prohibited",
+              "conditions": [
+                {
+                  "id": "TCP-8.2-c1",
+                  "description": "Applies to all fixed term consumer contracts",
+                  "formalisable": true,
+                  "if_not_formalisable": ""
+                },
+                {
+                  "id": "TCP-8.2-c2",
+                  "description": "Fee must not exceed 'direct costs' of early termination",
+                  "formalisable": false,
+                  "if_not_formalisable": "'direct costs' and 'reasonable' require cost allocation judgment"
+                }
+              ],
+              "exceptions": [
+                {
+                  "id": "TCP-8.2-e1",
+                  "description": "Handset/device repayment remaining on consumer device plan",
+                  "priority": "lex specialis",
+                  "source": "TCP Code clause 8.2.4"
+                }
+              ],
+              "definitions": [
+                {
+                  "term": "direct costs",
+                  "definition": "Costs directly attributable to early termination (network provisioning, etc.)",
+                  "has_open_texture": true,
+                  "core_meaning": "Unrecovered provisioning costs within first 6 months",
+                  "penumbra": "Customer acquisition costs; opportunity costs; profit margin recovery"
+                }
+              ]
+            }
+          ],
+          "defeat_relations": [
+            {
+              "defeater_rule": "TCP-3.2-e1",
+              "defeated_rule": "TCP-3.2-ContactObligation",
+              "reason": "lex specialis (small business exemption)",
+              "strict": true
+            },
+            {
+              "defeater_rule": "TCP-5.1-e1",
+              "defeated_rule": "TCP-5.1-CriticalInfoSummary",
+              "reason": "lex specialis (renewal exemption)",
+              "strict": true
+            },
+            {
+              "defeater_rule": "TCP-8.2-e1",
+              "defeated_rule": "TCP-8.2-EarlyTerminationFeeProhibited",
+              "reason": "lex specialis (device repayment carve-out)",
+              "strict": true
+            }
+          ],
+          "discretionary_checkpoints": [
+            {
+              "id": "TCP-reasonable-time",
+              "authority": "ACCC/TIO dispute resolution",
+              "decision": "What constitutes 'reasonable time' for contact updates",
+              "constraints": [
+                "Must not prejudice consumers",
+                "Industry practice benchmark"
+              ],
+              "gated_rule": "TCP-3.2-ContactObligation"
+            },
+            {
+              "id": "TCP-prominent-display",
+              "authority": "ACCC compliance assessment",
+              "decision": "Whether contact details are 'prominently published'",
+              "constraints": [
+                "Must be easily visible without scrolling",
+                "Minimum font size 10pt"
+              ],
+              "gated_rule": "TCP-3.2-ContactObligation"
+            },
+            {
+              "id": "TCP-direct-costs",
+              "authority": "ACCC/TIO/courts",
+              "decision": "What constitutes 'direct costs' for ETF calculation",
+              "constraints": [
+                "Must be evidenced by cost accounting",
+                "No profit recovery"
+              ],
+              "gated_rule": "TCP-8.2-EarlyTerminationFeeProhibited"
+            }
+          ],
+          "open_texture_terms": [
+            {
+              "term": "reasonable",
+              "type": "vague",
+              "core": "Industry standard practice; 30-day response times",
+              "penumbra": "Extended outages; complex billing disputes (>90 days)",
+              "authority": "ACCC/TIO case-by-case determination",
+              "case_law": [
+                "ACCC v TPG (2013) - reasonable disclosure timing"
+              ]
+            },
+            {
+              "term": "prominently",
+              "type": "vague",
+              "core": "Top of page, minimum 12pt font, contrasting color",
+              "penumbra": "Footer placement; small font sizes; low contrast",
+              "authority": "ACCC enforcement discretion",
+              "case_law": []
+            },
+            {
+              "term": "direct costs",
+              "type": "vague",
+              "core": "Network provisioning costs; unamortised CPE",
+              "penumbra": "Customer acquisition; marketing attribution; lost profit",
+              "authority": "Courts/ACCC/TIO",
+              "case_law": [
+                "ACCC v Telstra (2016) - ETF methodology"
+              ]
+            },
+            {
+              "term": "material change",
+              "type": "discretionary",
+              "core": "Price increase >10%; new minimum term; speed reduction >20%",
+              "penumbra": "Bundling changes; minor speed adjustments; payment terms",
+              "authority": "Provider self-assessment + ACCC review",
+              "case_law": []
+            }
+          ],
+          "key_references": [
+            {
+              "author": "Governatori, G.",
+              "title": "Representing Business Contracts in RuleML",
+              "year": 2005,
+              "relevance": "Original formalisation baseline using defeasible logic",
+              "url": "https://www.researchgate.net/publication/221350978"
+            },
+            {
+              "author": "Governatori, G. et al.",
+              "title": "Compliance in eHealth: A Formalisation of the Australian TCP Code",
+              "year": 2019,
+              "relevance": "DDL encoding of TCP Code for LegalLean comparison",
+              "url": "https://arxiv.org/abs/1905.04567"
+            },
+            {
+              "author": "Australian Communications and Consumer Commission",
+              "title": "TCP Code Compliance Report 2023",
+              "year": 2023,
+              "relevance": "Practical interpretation of key terms and enforcement priorities",
+              "url": "https://www.accc.gov.au/publications/tcp-code-compliance"
+            }
+          ]
+        },
+        "citations": [
+          "https://jsonapi.org/format/",
+          "https://www.mongodb.com/resources/languages/json-schema-examples",
+          "https://www.open-contracting.org/2018/01/18/json-visualization-analysis-process-guidance-ocds-data/",
+          "https://json-schema.org/draft-04/draft-zyp-json-schema-04",
+          "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON",
+          "https://www.couchbase.com/blog/a-json-data-modeling-guide/",
+          "http://lawncl.byu.edu/json-format",
+          "https://scriptotek.github.io/programming/04_caselaw.html"
+        ],
+        "usage": {
+          "prompt_tokens": 943,
+          "completion_tokens": 2564,
+          "total_tokens": 3507,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00283,
+            "output_tokens_cost": 0.03846,
+            "request_cost": 0.006,
+            "total_cost": 0.04729
+          }
+        }
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 1,
+      "total_models": 1,
+      "all_citations": [
+        "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON",
+        "https://www.couchbase.com/blog/a-json-data-modeling-guide/",
+        "https://scriptotek.github.io/programming/04_caselaw.html",
+        "https://www.open-contracting.org/2018/01/18/json-visualization-analysis-process-guidance-ocds-data/",
+        "https://jsonapi.org/format/",
+        "https://json-schema.org/draft-04/draft-zyp-json-schema-04",
+        "https://www.mongodb.com/resources/languages/json-schema-examples",
+        "http://lawncl.byu.edu/json-format"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:38:51Z"
+}

@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LegalLean - Verified Legal Reasoning in Lean 4</title>
+    <meta name="description" content="Making laws machine-checkable so that when a computer says 'you owe tax' or 'you qualify for a visa', you can verify exactly why." />
+    <meta property="og:title" content="LegalLean" />
+    <meta property="og:description" content="Verified legal reasoning in Lean 4. 44 theorems, 0 sorry, 3 case studies." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0b1020" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --ink: #f5f7ff;
+        --muted: #aeb7d0;
+        --accent: #7ef9c0;
+        --accent-2: #ffb86b;
+        --red: #ff6b6b;
+        --panel: rgba(15, 21, 38, 0.72);
+        --panel-strong: rgba(18, 27, 52, 0.9);
+        --stroke: rgba(126, 249, 192, 0.25);
+        --stroke-warn: rgba(255, 107, 107, 0.3);
+        --shadow: 0 20px 60px rgba(8, 12, 24, 0.45);
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: "Space Grotesk", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(1200px 600px at 10% -10%, rgba(126, 249, 192, 0.25), transparent 60%),
+          radial-gradient(900px 700px at 95% 10%, rgba(255, 184, 107, 0.22), transparent 55%),
+          linear-gradient(120deg, #070b16 0%, #0c1224 45%, #0c1530 100%);
+        min-height: 100vh;
+      }
+
+      a { color: var(--ink); text-decoration: none; }
+
+      code {
+        font-family: "IBM Plex Mono", "Courier New", monospace;
+        color: var(--accent);
+        font-size: 0.9em;
+      }
+
+      .page {
+        display: flex;
+        flex-direction: column;
+        gap: 96px;
+        padding: 56px 6vw 96px;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, rgba(126, 249, 192, 0.9), rgba(94, 138, 255, 0.85));
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.15);
+      }
+
+      .nav {
+        display: flex;
+        gap: 20px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .nav a:hover { color: var(--ink); }
+
+      /* Hero */
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+        gap: 48px;
+        align-items: center;
+      }
+
+      .hero h1 {
+        font-size: clamp(40px, 6vw, 72px);
+        margin: 0 0 16px;
+        line-height: 1.02;
+      }
+
+      .hero h1 .highlight { color: var(--accent); }
+
+      .hero p {
+        font-size: 18px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 16px;
+        margin-top: 28px;
+        flex-wrap: wrap;
+      }
+
+      .button {
+        padding: 12px 22px;
+        border-radius: 999px;
+        border: 1px solid var(--stroke);
+        background: rgba(126, 249, 192, 0.08);
+        color: var(--ink);
+        font-weight: 600;
+        font-size: 14px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 10px 30px rgba(126, 249, 192, 0.18);
+      }
+
+      .button.alt {
+        background: rgba(255, 184, 107, 0.12);
+        border-color: rgba(255, 184, 107, 0.3);
+        box-shadow: 0 10px 30px rgba(255, 184, 107, 0.15);
+      }
+
+      .button:hover { transform: translateY(-2px); }
+
+      .hero-card {
+        background: var(--panel);
+        border: 1px solid rgba(126, 249, 192, 0.2);
+        border-radius: 28px;
+        padding: 28px;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero-card::after {
+        content: "";
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        right: -40px;
+        top: -40px;
+        background: radial-gradient(circle, rgba(126, 249, 192, 0.4), transparent 70%);
+        filter: blur(2px);
+      }
+
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .stat {
+        padding: 16px;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(7, 11, 22, 0.65);
+        text-align: center;
+      }
+
+      .stat strong {
+        display: block;
+        color: var(--accent);
+        font-size: 28px;
+        margin-bottom: 4px;
+      }
+
+      .stat span {
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      /* Sections */
+      section { display: grid; gap: 28px; }
+
+      .section-title {
+        font-size: 28px;
+        margin: 0;
+      }
+
+      .section-desc {
+        font-size: 18px;
+        line-height: 1.6;
+        color: var(--muted);
+        max-width: 720px;
+      }
+
+      /* Card grids */
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 20px;
+      }
+
+      .card {
+        background: var(--panel-strong);
+        border-radius: 22px;
+        padding: 22px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: var(--shadow);
+      }
+
+      .card.accent { border: 1px solid var(--stroke); }
+      .card.warn { border: 1px solid var(--stroke-warn); }
+
+      .card h3 {
+        margin: 0 0 12px;
+        font-size: 18px;
+      }
+
+      .card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+        font-size: 15px;
+      }
+
+      .card p + p { margin-top: 8px; }
+
+      /* Steps */
+      .steps {
+        counter-reset: step;
+        list-style: none;
+        padding: 0;
+        display: grid;
+        gap: 4px;
+      }
+
+      .steps li {
+        counter-increment: step;
+        position: relative;
+        padding: 20px 20px 20px 64px;
+        border-radius: 18px;
+        background: rgba(9, 14, 30, 0.65);
+        border: 1px solid rgba(126, 249, 192, 0.12);
+      }
+
+      .steps li::before {
+        content: counter(step);
+        position: absolute;
+        left: 18px;
+        top: 20px;
+        width: 32px;
+        height: 32px;
+        background: rgba(126, 249, 192, 0.15);
+        color: var(--accent);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .steps li h3 {
+        font-size: 16px;
+        margin: 0 0 6px;
+        color: var(--ink);
+      }
+
+      .steps li p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      /* Example / highlight box */
+      .highlight-box {
+        border-radius: 24px;
+        padding: 24px;
+        background: linear-gradient(135deg, rgba(126, 249, 192, 0.06), rgba(94, 138, 255, 0.1));
+        border: 1px solid rgba(126, 249, 192, 0.25);
+      }
+
+      .highlight-box h3 {
+        margin: 0 0 12px;
+        font-size: 18px;
+      }
+
+      .highlight-box p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+        font-size: 15px;
+      }
+
+      .highlight-box p + p { margin-top: 10px; }
+
+      /* Comparison */
+      .comparison {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      .comparison .before, .comparison .after {
+        padding: 20px;
+        border-radius: 18px;
+      }
+
+      .comparison .before {
+        background: rgba(255, 107, 107, 0.08);
+        border: 1px solid rgba(255, 107, 107, 0.25);
+      }
+
+      .comparison .after {
+        background: rgba(126, 249, 192, 0.08);
+        border: 1px solid rgba(126, 249, 192, 0.25);
+      }
+
+      .comparison h4 {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin: 0 0 8px;
+      }
+
+      .comparison .before h4 { color: var(--red); }
+      .comparison .after h4 { color: var(--accent); }
+
+      .comparison p { font-size: 14px; color: var(--muted); margin: 0; }
+      .comparison p + p { margin-top: 6px; }
+
+      /* Benefits */
+      .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+      }
+
+      .benefit {
+        padding: 18px;
+        border-radius: 16px;
+        background: rgba(9, 14, 30, 0.7);
+        border: 1px solid rgba(126, 249, 192, 0.18);
+        text-align: center;
+      }
+
+      .benefit .icon { font-size: 28px; margin-bottom: 8px; }
+
+      .benefit strong {
+        display: block;
+        color: var(--ink);
+        margin-bottom: 6px;
+        font-size: 15px;
+      }
+
+      .benefit p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      /* Roadmap */
+      .roadmap { display: grid; gap: 12px; }
+
+      .roadmap-item {
+        padding: 16px;
+        border-radius: 16px;
+        background: rgba(9, 14, 30, 0.65);
+        border: 1px solid rgba(255, 184, 107, 0.2);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .roadmap-item span {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      /* CTA */
+      .cta {
+        border-radius: 28px;
+        padding: 28px;
+        border: 1px solid rgba(126, 249, 192, 0.25);
+        background: rgba(11, 16, 32, 0.7);
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .cta h2 { margin: 0; font-size: 26px; }
+      .cta p { margin: 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
+
+      /* Footer */
+      .footer {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+        text-align: center;
+      }
+
+      .footer a { color: var(--accent); }
+      .footer p { margin: 0; }
+      .footer p + p { margin-top: 6px; }
+
+      /* Orb */
+      .orb {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 184, 107, 0.35), transparent 70%);
+        top: -50px;
+        left: -40px;
+        filter: blur(4px);
+        animation: drift 8s ease-in-out infinite;
+      }
+
+      @keyframes drift {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(18px, 16px); }
+      }
+
+      @media (max-width: 960px) {
+        .hero { grid-template-columns: 1fr; }
+        .comparison { grid-template-columns: 1fr; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * { animation: none !important; transition: none !important; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="brand">
+          <span class="brand-mark"></span>
+          LegalLean
+        </div>
+        <nav class="nav">
+          <a href="#problem">Problem</a>
+          <a href="#how">How it works</a>
+          <a href="#healthcare">Healthcare</a>
+          <a href="#verify">Verify</a>
+          <a href="paper.html">Paper</a>
+        </nav>
+      </header>
+
+      <!-- Hero -->
+      <section class="hero">
+        <div>
+          <h1>When a computer says <span class="highlight">"you owe tax"</span>, can you check its reasoning?</h1>
+          <p>
+            LegalLean makes legal logic machine-checkable. When a system decides you qualify for a visa, owe a tax, or violate a regulation, LegalLean lets you verify exactly which parts are provable and which require human judgment.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="https://github.com/edu-ap/legal-lean" target="_blank" rel="noopener">View repository</a>
+            <a class="button alt" href="https://github.com/edu-ap/legal-lean/blob/main/monograph/latex/main.pdf" target="_blank" rel="noopener">Read the paper</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="orb"></div>
+          <h2>Status</h2>
+          <p>Framework complete. Paper targeting RuleML+RR 2026 / JURIX 2026. Open core: framework MIT-licensed.</p>
+          <div class="stat-grid">
+            <div class="stat">
+              <strong>44</strong>
+              <span>Verified theorems</span>
+            </div>
+            <div class="stat">
+              <strong>0</strong>
+              <span>Unproven claims</span>
+            </div>
+            <div class="stat">
+              <strong>3</strong>
+              <span>Case studies</span>
+            </div>
+            <div class="stat">
+              <strong>15s</strong>
+              <span>To verify all</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Problem -->
+      <section id="problem">
+        <h2 class="section-title">The Problem</h2>
+        <p class="section-desc">
+          Every day, computer systems make decisions about people's lives: tax deductions, visa eligibility, regulatory compliance. These systems are increasingly powered by AI. But you can't check their reasoning. When a system says "not eligible", you don't know whether that conclusion rests on a verifiable rule or a judgment call.
+        </p>
+        <div class="card-grid">
+          <div class="card warn">
+            <h3>Today's AI legal systems</h3>
+            <p>Give you an answer but no way to distinguish a machine-provable fact from a contestable judgment. Both appear as the same output. You can't tell where the computer's certainty ends and human judgment should begin.</p>
+          </div>
+          <div class="card accent">
+            <h3>With LegalLean</h3>
+            <p>Every legal conclusion is marked as either <strong>formally verified</strong> (the computer proved it) or <strong>requires human determination</strong> (with an explanation of why, who should decide, and what the contested boundary is).</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- How it works -->
+      <section id="how">
+        <h2 class="section-title">How It Works</h2>
+        <p class="section-desc">
+          LegalLean uses the same technology that mathematicians use to verify proofs (Lean 4) and applies it to law. Think of it as a spell-checker, but instead of checking spelling, it checks legal logic.
+        </p>
+        <ol class="steps">
+          <li>
+            <h3>A law is written as a computer program</h3>
+            <p>A human (or AI) translates a statute into a structured format. For example: "If you're an individual taxpayer, and your mortgage is secured by your home, and it's under $750,000, you may deduct the interest."</p>
+          </li>
+          <li>
+            <h3>The computer checks the logic</h3>
+            <p>Lean 4 verifies that every rule is consistent, every exception is properly handled, and no contradictions exist. If a rule says "you can deduct" but another says "you can't", the system catches it.</p>
+          </li>
+          <li>
+            <h3>Vague terms are marked, not hidden</h3>
+            <p>Legal language is deliberately vague sometimes. "Qualified residence" could mean a house, a boat, or a mobile home. Instead of pretending the computer can decide this, LegalLean marks it as <code>RequiresHumanDetermination</code> and documents the contested boundary.</p>
+          </li>
+          <li>
+            <h3>Anyone can verify the result</h3>
+            <p>The entire system can be independently checked in 15 seconds. No trust required. Run <code>lake build</code> and the Lean 4 type checker verifies all 44 theorems from scratch.</p>
+          </li>
+        </ol>
+      </section>
+
+      <!-- Example -->
+      <section>
+        <h2 class="section-title">A Real Example: The Tax Cuts and Jobs Act</h2>
+        <p class="section-desc">
+          In 2017, the US Congress changed the rules for deducting mortgage interest. LegalLean doesn't just tell you this. It proves it.
+        </p>
+        <div class="highlight-box">
+          <h3>The Monotonicity Break Theorem</h3>
+          <p>
+            "For every home equity interest payment by an individual taxpayer on secured property within the applicable dollar limits: the pre-2018 legal outcome is 'potentially deductible (human must verify if property is a qualified residence)' and the post-2018 outcome is 'definitely not deductible (machine-verified rejection)'."
+          </p>
+          <p>
+            This is not a test case. It covers <strong>every possible payment</strong> that meets the conditions. The computer verified it. No human can make it wrong without changing the law.
+          </p>
+        </div>
+        <div class="comparison">
+          <div class="before">
+            <h4>Without LegalLean</h4>
+            <p>"Your deduction was denied."</p>
+            <p>Why? Was it the TCJA? Was my property not "qualified"? Was my loan too large? The system doesn't say.</p>
+          </div>
+          <div class="after">
+            <h4>With LegalLean</h4>
+            <p>"Your deduction was denied because your taxable year is 2018 or later and your loan is classified as home equity. This is a <strong>machine-verified</strong> rejection based on the TCJA."</p>
+            <p>Clear. Traceable. Verifiable.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Who benefits -->
+      <section>
+        <h2 class="section-title">Who Benefits</h2>
+        <div class="benefits-grid">
+          <div class="benefit">
+            <div class="icon">&#9878;</div>
+            <strong>Citizens</strong>
+            <p>Know exactly why a decision was made, and whether it was based on a provable rule or a judgment call.</p>
+          </div>
+          <div class="benefit">
+            <div class="icon">&#9877;</div>
+            <strong>Lawyers</strong>
+            <p>Identify exactly where a law is clear and where it's contested. Focus arguments on the genuinely debatable points.</p>
+          </div>
+          <div class="benefit">
+            <div class="icon">&#9881;</div>
+            <strong>Regulators</strong>
+            <p>Verify that regulations are internally consistent before publishing. Find contradictions, gaps, and ambiguities automatically.</p>
+          </div>
+          <div class="benefit">
+            <div class="icon">&#128187;</div>
+            <strong>Developers</strong>
+            <p>Build compliance systems with machine-checked guarantees. Point to a verified proof, not just a test suite.</p>
+          </div>
+          <div class="benefit">
+            <div class="icon">&#127979;</div>
+            <strong>Academics</strong>
+            <p>A new framework for studying the boundary between formalisable and non-formalisable law. 44 theorems, typed open texture.</p>
+          </div>
+          <div class="benefit">
+            <div class="icon">&#127758;</div>
+            <strong>Society</strong>
+            <p>When laws are machine-checkable, it's harder to hide unjust outcomes behind opaque algorithms.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- What it does not do -->
+      <section>
+        <h2 class="section-title">What LegalLean Does Not Do</h2>
+        <p class="section-desc">Honesty matters.</p>
+        <div class="card-grid">
+          <div class="card warn">
+            <h3>Replace judges or lawyers</h3>
+            <p>Many legal questions require human judgment. LegalLean marks exactly where. It makes the boundary visible; it does not eliminate it.</p>
+          </div>
+          <div class="card warn">
+            <h3>Formalise all of law</h3>
+            <p>Law is deliberately vague in many places. "Reasonable", "extraordinary", "substantial" resist precise definition. LegalLean classifies this vagueness rather than pretending it doesn't exist.</p>
+          </div>
+          <div class="card warn">
+            <h3>Guarantee legal correctness</h3>
+            <p>The system verifies internal consistency. Whether the encoding faithfully represents the actual law requires human review. The computer checks logic, not legal interpretation.</p>
+          </div>
+          <div class="card warn">
+            <h3>Work on every law today</h3>
+            <p>Currently demonstrated on three case studies (US tax, US immigration, Australian telecoms). Healthcare domains are next.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hardening -->
+      <section>
+        <h2 class="section-title">Hardening the Translation Layer</h2>
+        <p class="section-desc">
+          Proving a legal rule is correctly formalised is necessary but not sufficient. The harder question: does the same rule, phrased differently, produce an equivalent formalisation?
+        </p>
+        <div class="card-grid">
+          <div class="card accent">
+            <h3>Three-Stage Pipeline</h3>
+            <p>English &#8594; <strong>Typed Legal Semantic IR</strong> (actors, modalities, exceptions, time, thresholds, vagueness markers) &#8594; <strong>Lean 4</strong> (definitions + propositions) &#8594; <strong>Proofs / equivalence checks / explicit abstentions</strong>.</p>
+          </div>
+          <div class="card accent">
+            <h3>Lean as Test Oracle</h3>
+            <p>For two English variants that should be synonymous, translate both to Lean terms T&#8321; and T&#8322;, then ask Lean to prove T&#8321; &#8596; T&#8322;. Three outcomes: equivalence proved, semantic divergence, or coverage gap. The kernel does not guess.</p>
+          </div>
+          <div class="card accent">
+            <h3>Factorial Variation Testing</h3>
+            <p>Controlled families of legal-language variations across eight factors: voice, modality, negation, exception structure, temporal phrasing, thresholds, definitions, and cross-references.</p>
+          </div>
+          <div class="card accent">
+            <h3>False Precision Detection</h3>
+            <p>The most dangerous failure: when the input is genuinely vague, but the system emits a crisp decidable predicate. We measure false precision rate as a primary release gate.</p>
+          </div>
+        </div>
+        <div class="highlight-box">
+          <h3>Worked Example: Variation Family</h3>
+          <p><strong>"not eligible unless..."</strong> and <strong>"eligible only if..."</strong> &#8594; equivalence expected (same legal effect, different syntax)</p>
+          <p><strong>"may be treated as eligible where the decision-maker is satisfied..."</strong> &#8594; should diverge (discretion + evidential burden + open texture)</p>
+          <p>If the system emits the same Lean predicate for all three, it has committed false precision. The factorial test catches this because the comparison is built into the experimental design.</p>
+        </div>
+        <p class="section-desc">
+          Full technical details: <a href="https://aguilar-pelaez.co.uk/legal-reasoning-wind-tunnel.html" style="color: var(--accent);">Legal Reasoning Needs a Wind Tunnel</a>.
+        </p>
+      </section>
+
+      <!-- Healthcare -->
+      <section id="healthcare">
+        <h2 class="section-title">Coming Next: Healthcare</h2>
+        <p class="section-desc">
+          Clinical guidelines, drug dosage rules, and insurance coverage decisions follow the same pattern: clear rules with contested boundaries. LegalLean's <code>FormalisationBoundary</code> type already encodes this.
+        </p>
+        <div class="card-grid">
+          <div class="card accent">
+            <h3>NICE Guidelines</h3>
+            <p>Evidence-graded clinical recommendations. Grade A evidence maps to <code>FormalisationBoundary.formal</code>; "consider" recommendations map to <code>boundary</code>. The evidence grading IS the formalisation boundary.</p>
+          </div>
+          <div class="card accent">
+            <h3>BNF Drug Dosage Rules</h3>
+            <p>Dosage ranges, contraindications, and interactions. Highly formalisable: numeric thresholds the type checker can verify, with clinical judgment at the boundaries (renal impairment adjustments, off-label use).</p>
+          </div>
+          <div class="card accent">
+            <h3>US Insurance Coverage</h3>
+            <p>Coverage decisions ("medically necessary", "experimental treatment") are legal reasoning applied to healthcare. The same defeasible structure: base coverage defeated by exclusions, restored by exceptions.</p>
+          </div>
+          <div class="card accent">
+            <h3>NHS Clinical Pathways</h3>
+            <p>Treatment pathways with decision points: some machine-verifiable (blood test results), some requiring clinical judgment (patient preference, comorbidity weighting). LegalLean makes the boundary explicit.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Verify -->
+      <section id="verify">
+        <h2 class="section-title">Don't Trust Us. Verify.</h2>
+        <p class="section-desc">
+          Everything in LegalLean can be independently verified. You don't need to trust us. You don't need to trust any AI. The mathematics is checkable.
+        </p>
+        <div class="roadmap">
+          <div class="roadmap-item">
+            <strong>Run it yourself</strong>
+            <span>Clone the repo and run <code>lake build</code>. 15 seconds. Zero trust required.</span>
+          </div>
+          <div class="roadmap-item">
+            <strong>Use Docker</strong>
+            <span>Run <code>docker build .</code> to verify in a completely clean environment from a blank Ubuntu installation.</span>
+          </div>
+          <div class="roadmap-item">
+            <strong>Ask an AI</strong>
+            <span>Give any frontier AI the source code and ask it to find errors. Three AI reviews are published in the repo.</span>
+          </div>
+          <div class="roadmap-item">
+            <strong>Automated theorem proving</strong>
+            <span>We use <a href="https://aristotle.harmonic.fun/" style="color: var(--accent);">Aristotle by Harmonic</a> for independent verification beyond the Lean type checker.</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section id="cta" class="cta">
+        <h2>The Source Code is Open</h2>
+        <p>
+          LegalLean is open source under the MIT licence. The academic paper, all 44 theorems, the verification protocol, and the adversarial AI reviews are all published.
+        </p>
+        <div class="hero-actions">
+          <a class="button" href="https://github.com/edu-ap/legal-lean" target="_blank" rel="noopener">View on GitHub</a>
+          <a class="button alt" href="https://github.com/edu-ap/legal-lean/blob/main/monograph/latex/main.pdf" target="_blank" rel="noopener">Read the paper</a>
+          <a class="button" href="https://github.com/edu-ap/legal-lean/blob/main/VERIFICATION.md" target="_blank" rel="noopener">Verification protocol</a>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <p>
+          LegalLean is a research project by <a href="mailto:edu@legalengine.co.uk">Eduardo Aguilar Pelaez</a>,
+          CTO at <a href="https://legalengine.co.uk">Legal Engine Ltd</a> and
+          Honorary Research Fellow at the <a href="https://www.imperial.ac.uk/department-surgery-cancer/">Department of Surgery &amp; Cancer</a>,
+          Faculty of Medicine, <a href="https://www.imperial.ac.uk">Imperial College London</a>.
+        </p>
+        <p>
+          Paper targeting RuleML+RR 2026 / JURIX 2026. Built with <a href="https://lean-lang.org">Lean 4</a>.
+          Theorem proving assisted by <a href="https://aristotle.harmonic.fun/">Aristotle</a> (Harmonic).
+        </p>
+        <p>
+          <a href="mailto:edu@legalengine.co.uk">edu@legalengine.co.uk</a> &middot;
+          <a href="https://aguilar-pelaez.co.uk">aguilar-pelaez.co.uk</a> &middot;
+          <a href="https://legalengine.co.uk/legal-lean/">legalengine.co.uk/legal-lean</a>
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>

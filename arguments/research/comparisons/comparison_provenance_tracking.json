@@ -1,0 +1,135 @@
+{
+  "dimension": "provenance tracking",
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Compare how the following legal formalisation systems handle\nprovenance tracking. Return a JSON object:\n\n{\n  \"dimension\": \"provenance tracking\",\n  \"systems\": [\n    {\n      \"name\": \"string — system name\",\n      \"approach\": \"string — how it handles this dimension\",\n      \"strengths\": [\"string\"],\n      \"limitations\": [\"string\"],\n      \"key_paper\": \"string — citation\",\n      \"expressiveness_score\": \"1-5 (1=absent, 5=fully native)\"\n    }\n  ],\n  \"legallean_advantage\": \"string — where dependent types in Lean 4 add value\",\n  \"legallean_limitation\": \"string — honest assessment of gaps\"\n}\n\nSystems to compare: DDL (Governatori), Catala (Merigoux), L4L (Hou et al.),\nLegalRuleML (Palmirani), LegalLean (our system — Lean 4 dependent types with\nFormalisationBoundary for open texture).\n\nDimension: provenance tracking\nContext: How each system traces conclusions back to source rules and evidence. Include: citation, audit trail, explainability."
+  },
+  "results": {
+    "models_queried": [
+      "sonar-pro"
+    ],
+    "responses": [
+      {
+        "model": "sonar-pro",
+        "answer_raw": "```json\n{\n  \"dimension\": \"provenance tracking\",\n  \"systems\": [\n    {\n      \"name\": \"DDL (Governatori)\",\n      \"approach\": \"Uses defeasible logic with explicit rule labeling and justification trees to trace conclusions back to source rules, supporting audit trails through proof reconstruction in non-monotonic reasoning.\",\n      \"strengths\": [\n        \"Native support for defeasible reasoning preserves full justification paths even with rule exceptions.\",\n        \"Rule labels enable direct citation of legal sources in proof traces.\"\n      ],\n      \"limitations\": [\n        \"Provenance limited to logical derivations; lacks integration with external evidence or factual provenance.\",\n        \"Explainability requires separate tooling beyond core DDL engine.\"\n      ],\n      \"key_paper\": \"Governatori, G. (2005). A computational framework for defeasible logic programming.\",\n      \"expressiveness_score\": \"4\"\n    },\n    {\n      \"name\": \"Catala (Merigoux)\",\n      \"approach\": \"Generates structured proof objects from rule execution with scope tracking and exception propagation; compiles to executable code with embedded source mappings for audit trails.\",\n      \"strengths\": [\n        \"Compiles provenance into runtime traces with precise variable scoping.\",\n        \"Handles French tax code complexity with default rules and exceptions transparently.\"\n      ],\n      \"limitations\": [\n        \"Provenance focused on computational execution rather than legal citation.\",\n        \"Limited support for open-textured interpretation or multi-source evidence integration.\"\n      ],\n      \"key_paper\": \"Merigoux, D., et al. (2022). Catala: A programming language for the legislation.\",\n      \"expressiveness_score\": \"3\"\n    },\n    {\n      \"name\": \"L4L (Hou et al.)\",\n      \"approach\": \"Lean 4 theorem prover with tactic-based proof construction; tracks provenance through tactic scripts, hypothesis dependencies, and machine-checked proof terms linking back to formalized rules.\",\n      \"strengths\": [\n        \"Machine-checked proof terms provide complete, verifiable audit trails.\",\n        \"Dependent types enable precise tracking of rule preconditions and evidence dependencies.\"\n      ],\n      \"limitations\": [\n        \"Provenance embedded in opaque proof terms; requires Lean expertise for human-readable explanation.\",\n        \"Scalability challenges for large rulebases due to proof complexity.\"\n      ],\n      \"key_paper\": \"Hou, K., et al. (2023). L4L: Formal verification of legal rules in Lean 4.\",\n      \"expressiveness_score\": \"5\"\n    },\n    {\n      \"name\": \"LegalRuleML (Palmirani)\",\n      \"approach\": \"XML-based standard with dedicated provenance elements (prescriptive/defeasible statements, sources, justifications); supports rule citation, defeasibility metadata, and external references for audit trails.\",\n      \"strengths\": [\n        \"Standardized XML structure enables interoperability and machine-readable provenance.\",\n        \"Explicit support for legal sources, authorities, and interpretation contexts.\"\n      ],\n      \"limitations\": [\n        \"Provenance declarative but requires external reasoning engine for proof reconstruction.\",\n        \"Limited native explainability; depends on tooling for visualization.\"\n      ],\n      \"key_paper\": \"Palmirani, M., et al. (2011). LegalRuleML: Design principles and foundations.\",\n      \"expressiveness_score\": \"4\"\n    },\n    {\n      \"name\": \"LegalLean\",\n      \"approach\": \"Lean 4 dependent types with FormalisationBoundary; tracks provenance through type-level dependencies, proof obligations, and scoped interpretations; FormalisationBoundary annotations link formalized conclusions to source text positions and evidence.\",\n      \"strengths\": [\n        \"Type-level provenance ensures machine-checkable traceability from conclusions to rules/evidence.\",\n        \"FormalisationBoundary explicitly models open texture boundaries for audit transparency.\"\n      ],\n      \"limitations\": [\n        \"Steep learning curve for dependent type programming.\",\n        \"Proof term size explosion for complex regulations.\"\n      ],\n      \"key_paper\": \"LegalLean Project (2026). Dependent types for legal formalisation with open texture.\",\n      \"expressiveness_score\": \"5\"\n    }\n  ],\n  \"legallean_advantage\": \"Dependent types provide **type-level provenance** where rule applications and evidence dependencies are statically verified and preserved in proof terms, enabling complete audit trails that survive code evolution. FormalisationBoundary creates explicit **interpretation scopes** linking machine-checked proofs to natural language sources with precise boundary annotations.\",\n  \"legallean_limitation\": \"Lean 4 proof terms remain opaque to non-experts despite rich provenance; human-readable explanation requires separate elaboration or visualization layers. Dependent type complexity hinders rapid prototyping compared to rule-based systems.\"\n}\n```",
+        "answer_parsed": {
+          "dimension": "provenance tracking",
+          "systems": [
+            {
+              "name": "DDL (Governatori)",
+              "approach": "Uses defeasible logic with explicit rule labeling and justification trees to trace conclusions back to source rules, supporting audit trails through proof reconstruction in non-monotonic reasoning.",
+              "strengths": [
+                "Native support for defeasible reasoning preserves full justification paths even with rule exceptions.",
+                "Rule labels enable direct citation of legal sources in proof traces."
+              ],
+              "limitations": [
+                "Provenance limited to logical derivations; lacks integration with external evidence or factual provenance.",
+                "Explainability requires separate tooling beyond core DDL engine."
+              ],
+              "key_paper": "Governatori, G. (2005). A computational framework for defeasible logic programming.",
+              "expressiveness_score": "4"
+            },
+            {
+              "name": "Catala (Merigoux)",
+              "approach": "Generates structured proof objects from rule execution with scope tracking and exception propagation; compiles to executable code with embedded source mappings for audit trails.",
+              "strengths": [
+                "Compiles provenance into runtime traces with precise variable scoping.",
+                "Handles French tax code complexity with default rules and exceptions transparently."
+              ],
+              "limitations": [
+                "Provenance focused on computational execution rather than legal citation.",
+                "Limited support for open-textured interpretation or multi-source evidence integration."
+              ],
+              "key_paper": "Merigoux, D., et al. (2022). Catala: A programming language for the legislation.",
+              "expressiveness_score": "3"
+            },
+            {
+              "name": "L4L (Hou et al.)",
+              "approach": "Lean 4 theorem prover with tactic-based proof construction; tracks provenance through tactic scripts, hypothesis dependencies, and machine-checked proof terms linking back to formalized rules.",
+              "strengths": [
+                "Machine-checked proof terms provide complete, verifiable audit trails.",
+                "Dependent types enable precise tracking of rule preconditions and evidence dependencies."
+              ],
+              "limitations": [
+                "Provenance embedded in opaque proof terms; requires Lean expertise for human-readable explanation.",
+                "Scalability challenges for large rulebases due to proof complexity."
+              ],
+              "key_paper": "Hou, K., et al. (2023). L4L: Formal verification of legal rules in Lean 4.",
+              "expressiveness_score": "5"
+            },
+            {
+              "name": "LegalRuleML (Palmirani)",
+              "approach": "XML-based standard with dedicated provenance elements (prescriptive/defeasible statements, sources, justifications); supports rule citation, defeasibility metadata, and external references for audit trails.",
+              "strengths": [
+                "Standardized XML structure enables interoperability and machine-readable provenance.",
+                "Explicit support for legal sources, authorities, and interpretation contexts."
+              ],
+              "limitations": [
+                "Provenance declarative but requires external reasoning engine for proof reconstruction.",
+                "Limited native explainability; depends on tooling for visualization."
+              ],
+              "key_paper": "Palmirani, M., et al. (2011). LegalRuleML: Design principles and foundations.",
+              "expressiveness_score": "4"
+            },
+            {
+              "name": "LegalLean",
+              "approach": "Lean 4 dependent types with FormalisationBoundary; tracks provenance through type-level dependencies, proof obligations, and scoped interpretations; FormalisationBoundary annotations link formalized conclusions to source text positions and evidence.",
+              "strengths": [
+                "Type-level provenance ensures machine-checkable traceability from conclusions to rules/evidence.",
+                "FormalisationBoundary explicitly models open texture boundaries for audit transparency."
+              ],
+              "limitations": [
+                "Steep learning curve for dependent type programming.",
+                "Proof term size explosion for complex regulations."
+              ],
+              "key_paper": "LegalLean Project (2026). Dependent types for legal formalisation with open texture.",
+              "expressiveness_score": "5"
+            }
+          ],
+          "legallean_advantage": "Dependent types provide **type-level provenance** where rule applications and evidence dependencies are statically verified and preserved in proof terms, enabling complete audit trails that survive code evolution. FormalisationBoundary creates explicit **interpretation scopes** linking machine-checked proofs to natural language sources with precise boundary annotations.",
+          "legallean_limitation": "Lean 4 proof terms remain opaque to non-experts despite rich provenance; human-readable explanation requires separate elaboration or visualization layers. Dependent type complexity hinders rapid prototyping compared to rule-based systems."
+        },
+        "citations": [
+          "https://pmc.ncbi.nlm.nih.gov/articles/PMC11931605/",
+          "https://www.acceldata.io/blog/data-provenance",
+          "https://orbilu.uni.lu/bitstream/10993/53302/1/Extraamas_2022.pdf",
+          "https://www.usenix.org/event/tapp09/tech/full_papers/souilah/souilah.pdf",
+          "https://arxiv.org/pdf/2511.10925",
+          "https://www.streamline.ai/tips/best-ai-tools-legal-metrics-tracking",
+          "https://elevateconsult.com/insights/ai-data-governance-provenance-quality-and-model-lineage/",
+          "https://dl.acm.org/doi/full/10.1145/3750720.3757295",
+          "https://people.seas.harvard.edu/~chong/abstracts/altman2019formalizing.html"
+        ],
+        "usage": {
+          "prompt_tokens": 352,
+          "completion_tokens": 986,
+          "total_tokens": 1338,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00106,
+            "output_tokens_cost": 0.01479,
+            "request_cost": 0.006,
+            "total_cost": 0.02185
+          }
+        }
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 1,
+      "total_models": 1,
+      "all_citations": [
+        "https://orbilu.uni.lu/bitstream/10993/53302/1/Extraamas_2022.pdf",
+        "https://elevateconsult.com/insights/ai-data-governance-provenance-quality-and-model-lineage/",
+        "https://dl.acm.org/doi/full/10.1145/3750720.3757295",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC11931605/",
+        "https://www.acceldata.io/blog/data-provenance",
+        "https://www.usenix.org/event/tapp09/tech/full_papers/souilah/souilah.pdf",
+        "https://people.seas.harvard.edu/~chong/abstracts/altman2019formalizing.html",
+        "https://www.streamline.ai/tips/best-ai-tools-legal-metrics-tracking",
+        "https://arxiv.org/pdf/2511.10925"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:40:48Z"
+}

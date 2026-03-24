@@ -1,0 +1,79 @@
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\providecommand{\doi}[1]{https://doi.org/#1}
+
+\bibitem{boella2006introduction}
+Boella, G., van~der Torre, L., Verhagen, H.: Introduction to normative
+  multiagent systems. Computational and Mathematical Organization Theory
+  \textbf{12}(2--3),  71--79 (2006)
+
+\bibitem{curry1934functionality}
+Curry, H.B.: Functionality in combinatory logic. Proceedings of the National
+  Academy of Sciences  \textbf{20}(11),  584--590 (1934)
+
+\bibitem{governatori2005representing}
+Governatori, G.: Representing business contracts in {RuleML}. International
+  Journal of Cooperative Information Systems  \textbf{14}(2--3),  181--216
+  (2005)
+
+\bibitem{governatori2019compliance}
+Governatori, G., Rotolo, A., Sartor, G.: Compliance in {eHealth}: a defeasible
+  logic approach. Artificial Intelligence in Medicine  \textbf{93},  34--48
+  (2019)
+
+\bibitem{hart1961concept}
+Hart, H.L.: The Concept of Law. Oxford University Press (1961)
+
+\bibitem{hou2021l4l}
+Hou, Z., Governatori, G., Hashmi, M., Lam, H.P.: Logic for law ({L4L}): a
+  dependent-type-based framework for modelling and reasoning about law. In:
+  Proceedings of the 34th International Conference on Legal Knowledge and
+  Information Systems (JURIX 2021). Frontiers in Artificial Intelligence and
+  Applications, IOS Press (2021)
+
+\bibitem{howard1980formulae}
+Howard, W.A.: The formulae-as-types notion of construction. In: Seldin, J.P.,
+  Hindley, J.R. (eds.) To {H.B.} Curry: Essays on Combinatory Logic, Lambda
+  Calculus and Formalism, pp. 479--490. Academic Press (1980)
+
+\bibitem{lawsky2017logic}
+Lawsky, S.B.: A logic for statutes. Florida Tax Review  \textbf{21}(1),
+  60--113 (2017)
+
+\bibitem{mccarty1977reflections}
+McCarty, L.T.: Reflections on {TAXMAN}: an experiment in artificial
+  intelligence and legal reasoning. Harvard Law Review  \textbf{90}(5),
+  837--893 (1977)
+
+\bibitem{merigoux2021catala}
+M{\'e}rigoux, D., Chataing, N., Protzenko, J.: Catala: a programming language
+  for the law. In: Proceedings of the ACM on Programming Languages (ICFP 2021).
+  ACM (2021)
+
+\bibitem{demoura2021lean4}
+de~Moura, L., Selsam, D., Ullrich, S., Avigad, J.: The {Lean}~4 theorem prover
+  and programming language. In: Proceedings of the 28th International
+  Conference on Automated Deduction (CADE-28). Lecture Notes in Computer
+  Science, Springer (2021)
+
+\bibitem{palmirani2018modelling}
+Palmirani, M., Governatori, G.: Modelling legal knowledge for {GDPR} compliance
+  checking. In: Proceedings of the 31st International Conference on Legal
+  Knowledge and Information Systems (JURIX 2018). Frontiers in Artificial
+  Intelligence and Applications, IOS Press (2018)
+
+\bibitem{reiter1980logic}
+Reiter, R.: A logic for default reasoning. Artificial Intelligence
+  \textbf{13}(1--2),  81--132 (1980)
+
+\bibitem{sergot1986british}
+Sergot, M.J., Sadri, F., Kowalski, R.A., Kriwaczek, F., Hammond, P., Cory,
+  H.T.: The {British Nationality Act} as a logic program. Communications of the
+  ACM  \textbf{29}(5),  370--386 (1986)
+
+\bibitem{shanahan1999event}
+Shanahan, M.: The event calculus explained. In: Artificial Intelligence Today,
+  Lecture Notes in Computer Science, vol.~1600, pp. 409--430. Springer (1999)
+
+\end{thebibliography}

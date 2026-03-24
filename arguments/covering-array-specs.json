@@ -1,0 +1,536 @@
+{
+  "project": "LegalLean",
+  "phase": "Phase 2 - Factorial Hardening Programme",
+  "requirement": "REQ-014",
+  "generated_at": "2026-03-24T00:00:00Z",
+  "description": "Covering array test specification for the 8-factor legal IR design space. Targets sparse interaction regions identified in Phase 0 (REQ-012) gap analysis. Strength-2 (pairwise) coverage for all uncovered factor combinations.",
+  "source_matrix": "arguments/factor-coverage-matrix.json",
+  "lean_implementation": {
+    "covering_array_file": "LegalLean/IR/CoveringArray.lean",
+    "variation_test_file": "LegalLean/IR/VariationTest.lean"
+  },
+
+  "factor_level_table": {
+    "description": "Canonical factor/level table for the 8 IR factors. Derived from LegalLean.IR.Legal types.",
+    "factors": [
+      {
+        "id": "F1",
+        "name": "voice",
+        "lean_type": "Voice",
+        "levels": [
+          { "id": "F1-L1", "value": "active",     "count_phase0": 44, "coverage_pct": 100 },
+          { "id": "F1-L2", "value": "passive",     "count_phase0": 0,  "coverage_pct": 0, "sparse": true },
+          { "id": "F1-L3", "value": "impersonal",  "count_phase0": 0,  "coverage_pct": 0, "sparse": true }
+        ]
+      },
+      {
+        "id": "F2",
+        "name": "modality",
+        "lean_type": "Modality",
+        "levels": [
+          { "id": "F2-L1", "value": "shall",    "count_phase0": 0,  "coverage_pct": 0,  "sparse": true },
+          { "id": "F2-L2", "value": "must",     "count_phase0": 8,  "coverage_pct": 18 },
+          { "id": "F2-L3", "value": "may",      "count_phase0": 8,  "coverage_pct": 18 },
+          { "id": "F2-L4", "value": "should",   "count_phase0": 3,  "coverage_pct": 7,  "sparse": true },
+          { "id": "F2-L5", "value": "mustNot",  "count_phase0": 0,  "coverage_pct": 0,  "note": "absorbed into prohibited" },
+          { "id": "F2-L6", "value": "prohibited","count_phase0": 0, "coverage_pct": 0,  "note": "absorbed into must coverage" },
+          { "id": "F2-L7", "value": "none",     "count_phase0": 25, "coverage_pct": 57 }
+        ]
+      },
+      {
+        "id": "F3",
+        "name": "negation",
+        "lean_type": "Negation",
+        "levels": [
+          { "id": "F3-L1", "value": "positive",        "count_phase0": 19, "coverage_pct": 43 },
+          { "id": "F3-L2", "value": "negative",        "count_phase0": 20, "coverage_pct": 45 },
+          { "id": "F3-L3", "value": "double_negative", "count_phase0": 5,  "coverage_pct": 11, "sparse": true },
+          { "id": "F3-L4", "value": "none",            "count_phase0": 0,  "coverage_pct": 0,  "sparse": true }
+        ]
+      },
+      {
+        "id": "F4",
+        "name": "exception_structure",
+        "lean_type": "ExceptionStructure",
+        "levels": [
+          { "id": "F4-L1", "value": "none",           "count_phase0": 22, "coverage_pct": 50 },
+          { "id": "F4-L2", "value": "simple_proviso", "count_phase0": 16, "coverage_pct": 36 },
+          { "id": "F4-L3", "value": "nested",         "count_phase0": 2,  "coverage_pct": 5,  "sparse": true },
+          { "id": "F4-L4", "value": "defeasible",     "count_phase0": 4,  "coverage_pct": 9  }
+        ]
+      },
+      {
+        "id": "F5",
+        "name": "temporal",
+        "lean_type": "TemporalTense",
+        "levels": [
+          { "id": "F5-L1", "value": "present",            "count_phase0": 19, "coverage_pct": 43 },
+          { "id": "F5-L2", "value": "past",               "count_phase0": 4,  "coverage_pct": 9  },
+          { "id": "F5-L3", "value": "conditional_future", "count_phase0": 21, "coverage_pct": 48 },
+          { "id": "F5-L4", "value": "none",               "count_phase0": 0,  "coverage_pct": 0, "sparse": true }
+        ]
+      },
+      {
+        "id": "F6",
+        "name": "thresholds",
+        "lean_type": "ThresholdKind",
+        "levels": [
+          { "id": "F6-L1", "value": "none",        "count_phase0": 15, "coverage_pct": 34, "sparse": true, "note": "scarce relative to numeric" },
+          { "id": "F6-L2", "value": "numeric",     "count_phase0": 26, "coverage_pct": 59 },
+          { "id": "F6-L3", "value": "comparative", "count_phase0": 3,  "coverage_pct": 7,  "sparse": true }
+        ]
+      },
+      {
+        "id": "F7",
+        "name": "definitions",
+        "lean_type": "DefinitionKind",
+        "levels": [
+          { "id": "F7-L1", "value": "inline",           "count_phase0": 8,  "coverage_pct": 18 },
+          { "id": "F7-L2", "value": "cross_referenced", "count_phase0": 35, "coverage_pct": 80 },
+          { "id": "F7-L3", "value": "undefined",        "count_phase0": 1,  "coverage_pct": 2,  "sparse": true }
+        ]
+      },
+      {
+        "id": "F8",
+        "name": "cross_references",
+        "lean_type": "CrossRefScope",
+        "levels": [
+          { "id": "F8-L1", "value": "none",          "count_phase0": 3,  "coverage_pct": 7,  "sparse": true },
+          { "id": "F8-L2", "value": "intra_statute", "count_phase0": 26, "coverage_pct": 59 },
+          { "id": "F8-L3", "value": "inter_statute", "count_phase0": 15, "coverage_pct": 34 }
+        ]
+      }
+    ]
+  },
+
+  "sparse_region_summary": {
+    "description": "Regions from Phase 0 gap_analysis.sparse_regions, with coverage gap priority.",
+    "regions": [
+      {
+        "id": "SR-001",
+        "factor": "voice",
+        "level": "passive",
+        "phase0_coverage": "0%",
+        "priority": "high",
+        "addressed_by": ["CA-001", "CA-002", "CA-008"]
+      },
+      {
+        "id": "SR-002",
+        "factor": "voice",
+        "level": "impersonal",
+        "phase0_coverage": "0%",
+        "priority": "high",
+        "addressed_by": ["CA-007"]
+      },
+      {
+        "id": "SR-003",
+        "factor": "modality",
+        "level": "should",
+        "phase0_coverage": "7%",
+        "priority": "medium",
+        "addressed_by": ["CA-003", "CA-008"]
+      },
+      {
+        "id": "SR-004",
+        "factor": "modality",
+        "level": "shall",
+        "phase0_coverage": "0%",
+        "note": "shall appears in IR.Examples but was not exercised in theorems. CA-001 and CA-004 cover this.",
+        "priority": "medium",
+        "addressed_by": ["CA-001", "CA-004"]
+      },
+      {
+        "id": "SR-005",
+        "factor": "negation",
+        "level": "double_negative",
+        "phase0_coverage": "21%",
+        "priority": "medium",
+        "addressed_by": ["CA-004", "CA-006", "CA-008"]
+      },
+      {
+        "id": "SR-006",
+        "factor": "definitions",
+        "level": "undefined",
+        "phase0_coverage": "5%",
+        "priority": "medium",
+        "addressed_by": ["CA-005", "CA-008"]
+      },
+      {
+        "id": "SR-007",
+        "factor": "temporal",
+        "level": "none",
+        "phase0_coverage": "0%",
+        "priority": "low",
+        "note": "Temporal none means the clause has no operative time window.",
+        "addressed_by": ["CA-005"]
+      },
+      {
+        "id": "SR-008",
+        "factor": "exception_structure",
+        "level": "nested",
+        "phase0_coverage": "5%",
+        "priority": "low",
+        "addressed_by": ["CA-003"]
+      },
+      {
+        "id": "SR-009",
+        "factor": "thresholds",
+        "level": "comparative",
+        "phase0_coverage": "7%",
+        "priority": "low",
+        "addressed_by": ["CA-007"]
+      },
+      {
+        "id": "SR-010",
+        "description": "Uncovered combination: passive + shall + negative",
+        "factors": ["passive", "shall", "negative"],
+        "phase0_coverage": "0%",
+        "priority": "high",
+        "addressed_by": ["CA-001"]
+      },
+      {
+        "id": "SR-011",
+        "description": "Uncovered combination: passive + defeasible",
+        "factors": ["passive", "defeasible"],
+        "phase0_coverage": "0%",
+        "priority": "high",
+        "addressed_by": ["CA-002"]
+      },
+      {
+        "id": "SR-012",
+        "description": "Uncovered combination: active + should + positive + nested_exception",
+        "factors": ["active", "should", "positive", "nested_exception"],
+        "phase0_coverage": "0%",
+        "priority": "medium",
+        "addressed_by": ["CA-003"]
+      }
+    ]
+  },
+
+  "covering_array": {
+    "description": "8-entry covering array. Strength 2 (pairwise). Targets sparse regions SR-001 through SR-012.",
+    "entry_count": 8,
+    "entries": [
+      {
+        "id": "CA-001",
+        "lean_def": "ca_passiveShallNegativeProviso",
+        "combo": {
+          "F1_voice": "passive",
+          "F2_modality": "shall",
+          "F3_negation": "negative",
+          "F4_exception": "simple_proviso",
+          "F5_temporal": "present",
+          "F6_threshold": "none",
+          "F7_definition": "cross_referenced",
+          "F8_crossref": "intra_statute"
+        },
+        "english_variant": "Interest shall not be deducted in respect of home equity indebtedness, except as provided in subsection (h)(3).",
+        "expected_outcome": "rule",
+        "expected_deontic": "obligatory",
+        "sparse_regions": ["SR-001", "SR-004", "SR-010"],
+        "normalisation_effects": ["N1: voice passive → active"],
+        "notes": "Primary entry for passive voice coverage. After N1, voice becomes active. Tests that N1 does not affect modality or negation."
+      },
+      {
+        "id": "CA-002",
+        "lean_def": "ca_passiveProhibitedDefeasible",
+        "combo": {
+          "F1_voice": "passive",
+          "F2_modality": "prohibited",
+          "F3_negation": "positive",
+          "F4_exception": "defeasible",
+          "F5_temporal": "conditional_future",
+          "F6_threshold": "none",
+          "F7_definition": "inline",
+          "F8_crossref": "inter_statute"
+        },
+        "english_variant": "No deduction is allowed for home equity interest post-2017, subject to defeat by the grandfathering rule in §163(h)(3)(D).",
+        "expected_outcome": "rule",
+        "expected_deontic": "prohibited",
+        "sparse_regions": ["SR-001", "SR-011"],
+        "normalisation_effects": ["N1: voice passive → active", "N3: defeasible sorted"],
+        "notes": "Covers the uncovered combination [passive, defeasible]. Passive prohibition with a defeasible exception."
+      },
+      {
+        "id": "CA-003",
+        "lean_def": "ca_activeShouldNestedPositive",
+        "combo": {
+          "F1_voice": "active",
+          "F2_modality": "should",
+          "F3_negation": "positive",
+          "F4_exception": "nested",
+          "F5_temporal": "present",
+          "F6_threshold": "none",
+          "F7_definition": "cross_referenced",
+          "F8_crossref": "intra_statute"
+        },
+        "english_variant": "A licensed provider should disclose CIS information to consumers, except as required by Regulation Y, and further except in emergency circumstances.",
+        "expected_outcome": "rule",
+        "expected_deontic": "permitted",
+        "sparse_regions": ["SR-003", "SR-008", "SR-012"],
+        "normalisation_effects": ["N3: nested → defeasible flat"],
+        "notes": "Covers [active, should, positive, nested_exception]. Should → permitted. Nested exception flattens to defeasible list."
+      },
+      {
+        "id": "CA-004",
+        "lean_def": "ca_activeShallDoubleNegativeProviso",
+        "combo": {
+          "F1_voice": "active",
+          "F2_modality": "shall",
+          "F3_negation": "double_negative",
+          "F4_exception": "simple_proviso",
+          "F5_temporal": "present",
+          "F6_threshold": "numeric",
+          "F7_definition": "inline",
+          "F8_crossref": "none"
+        },
+        "english_variant": "No deduction shall be disallowed for interest on acquisition indebtedness not exceeding $750,000, except as provided for married-filing-separately taxpayers.",
+        "expected_outcome": "rule",
+        "expected_deontic": "obligatory",
+        "sparse_regions": ["SR-005", "SR-004"],
+        "normalisation_effects": ["N2: double_negative → positive"],
+        "notes": "Double-negative 'shall not be disallowed' normalises via N2 to positive. Also exercises shall (previously unrepresented in theorems)."
+      },
+      {
+        "id": "CA-005",
+        "lean_def": "ca_activeNoneUndefinedNoneTemporal",
+        "combo": {
+          "F1_voice": "active",
+          "F2_modality": "none",
+          "F3_negation": "positive",
+          "F4_exception": "none",
+          "F5_temporal": "none",
+          "F6_threshold": "none",
+          "F7_definition": "undefined",
+          "F8_crossref": "none"
+        },
+        "english_variant": "The term 'substantially improves' is not defined in this section.",
+        "expected_outcome": "boundary",
+        "expected_deontic": null,
+        "sparse_regions": ["SR-006", "SR-007"],
+        "normalisation_effects": [],
+        "notes": "Definitional clause with undefined term and no temporal constraint. The undefined definition triggers a vague vaguenessMarker which produces a boundary result."
+      },
+      {
+        "id": "CA-006",
+        "lean_def": "ca_activeMayDoubleNegDefeasiblePast",
+        "combo": {
+          "F1_voice": "active",
+          "F2_modality": "may",
+          "F3_negation": "double_negative",
+          "F4_exception": "defeasible",
+          "F5_temporal": "past",
+          "F6_threshold": "numeric",
+          "F7_definition": "cross_referenced",
+          "F8_crossref": "inter_statute"
+        },
+        "english_variant": "No taxpayer may not deduct pre-1987 grandfathered indebtedness exceeding prior amounts, subject to defeat by post-TCJA rules cross-referencing Treas. Reg.",
+        "expected_outcome": "rule",
+        "expected_deontic": "permitted",
+        "sparse_regions": ["SR-005"],
+        "normalisation_effects": ["N2: double_negative → positive", "N3: defeasible sorted"],
+        "notes": "Tests N2 + N3 interaction. Double-negative at past temporal with defeasible exception. May + double-negative → permitted after normalisation."
+      },
+      {
+        "id": "CA-007",
+        "lean_def": "ca_impersonalMustNegativeNoneFuture",
+        "combo": {
+          "F1_voice": "impersonal",
+          "F2_modality": "must",
+          "F3_negation": "negative",
+          "F4_exception": "none",
+          "F5_temporal": "conditional_future",
+          "F6_threshold": "comparative",
+          "F7_definition": "cross_referenced",
+          "F8_crossref": "intra_statute"
+        },
+        "english_variant": "No deduction is permitted for home equity interest in any taxable year beginning after the cutoff date where acquisition debt exceeds the applicable limit.",
+        "expected_outcome": "rule",
+        "expected_deontic": "obligatory",
+        "sparse_regions": ["SR-002", "SR-009"],
+        "normalisation_effects": ["N1: voice impersonal → active"],
+        "notes": "Impersonal voice with comparative threshold. Tests N1 for impersonal. Must → obligatory (prohibition context). Comparative threshold path."
+      },
+      {
+        "id": "CA-008",
+        "lean_def": "ca_shouldDoubleNegPassivePast",
+        "combo": {
+          "F1_voice": "passive",
+          "F2_modality": "should",
+          "F3_negation": "double_negative",
+          "F4_exception": "none",
+          "F5_temporal": "past",
+          "F6_threshold": "none",
+          "F7_definition": "undefined",
+          "F8_crossref": "none"
+        },
+        "english_variant": "The deduction should not be disallowed for pre-2018 grandfathered payments under circumstances not explicitly defined.",
+        "expected_outcome": "mixed",
+        "expected_deontic": "permitted",
+        "sparse_regions": ["SR-001", "SR-003", "SR-005", "SR-006"],
+        "normalisation_effects": ["N1: voice passive → active", "N2: double_negative → positive"],
+        "notes": "Maximum sparse-region density: passive + should + double_negative + undefined all in one entry. Undefined definitions produce a vague vaguenessMarker → mixed result. Expected deontic is permitted (should → permitted)."
+      }
+    ]
+  },
+
+  "variation_families": {
+    "description": "Minimal pairs from Phase 0 factor-coverage-matrix.json, implemented as end-to-end pipeline tests in LegalLean.IR.VariationTest.",
+    "entry_count": 5,
+    "pairs": [
+      {
+        "id": "MP-001-VT",
+        "phase0_id": "MP-001",
+        "lean_def": "mp1",
+        "factors_varied": ["modality"],
+        "variant_a": {
+          "id": "VT1-A",
+          "modality": "none",
+          "english": "The deduction is permitted for qualified residence interest."
+        },
+        "variant_b": {
+          "id": "VT1-B",
+          "modality": "may",
+          "english": "The taxpayer may claim the deduction for qualified residence interest."
+        },
+        "expected_relation": "equivalent",
+        "pipeline_check": "both_lower_to_permitted_rule",
+        "rationale": "Modality.none and Modality.may both lower to Deontic.permitted. Equivalence is confirmed by comparing lowerResultDeontic."
+      },
+      {
+        "id": "MP-004-VT",
+        "phase0_id": "MP-004",
+        "lean_def": "mp2",
+        "factors_varied": ["negation"],
+        "variant_a": {
+          "id": "VT2-A",
+          "negation": "negative",
+          "english": "The applicant must meet at least three criteria."
+        },
+        "variant_b": {
+          "id": "VT2-B",
+          "negation": "double_negative",
+          "english": "No applicant with fewer than three criteria shall not be denied extraordinary ability status."
+        },
+        "expected_relation": "equivalent",
+        "pipeline_check": "double_negative_normalises_to_positive",
+        "rationale": "N2 normalises doubleNegative → positive. After normalisation VT2-B has shall → obligatory, same as VT2-A (must → obligatory). Both produce rules with obligatory modality."
+      },
+      {
+        "id": "MP-007-VT",
+        "phase0_id": "MP-007",
+        "lean_def": "mp3",
+        "factors_varied": ["modality", "temporal", "voice"],
+        "variant_a": {
+          "id": "VT3-A",
+          "modality": "may",
+          "temporal": "on_or_before_2017-12-31",
+          "english": "The taxpayer may deduct interest on home equity indebtedness (pre-2018)."
+        },
+        "variant_b": {
+          "id": "VT3-B",
+          "modality": "prohibited",
+          "temporal": "on_or_after_2018-01-01",
+          "english": "No deduction shall be allowed for interest on home equity indebtedness for any taxable year beginning after December 31, 2017."
+        },
+        "expected_relation": "divergent",
+        "pipeline_check": "permitted_vs_prohibited_deontic",
+        "rationale": "TCJA monotonicity break: may → permitted (pre-2017), prohibited → prohibited (post-2017). Divergent because Deontic values differ."
+      },
+      {
+        "id": "MP-003-VT",
+        "phase0_id": "MP-003",
+        "lean_def": "mp4",
+        "factors_varied": ["thresholds"],
+        "variant_a": {
+          "id": "VT4-A",
+          "threshold": "comparative",
+          "english": "An exemption rule has higher priority than the rule it defeats."
+        },
+        "variant_b": {
+          "id": "VT4-B",
+          "threshold": "numeric",
+          "english": "The exemption priority level is 2; the base rule priority level is 1."
+        },
+        "expected_relation": "equivalent",
+        "pipeline_check": "both_lower_to_obligatory_rule",
+        "rationale": "ThresholdKind affects rule description only, not deontic direction. Both variants lower to rules with shall → obligatory."
+      },
+      {
+        "id": "MP-005-VT",
+        "phase0_id": "MP-005",
+        "lean_def": "mp5",
+        "factors_varied": ["exception_structure", "definitions"],
+        "variant_a": {
+          "id": "VT5-A",
+          "exception": "defeasible",
+          "vagueness": "precise",
+          "english": "The licensed small provider shall provide contact information, except as exempted by the small provider carve-out which defeats this obligation."
+        },
+        "variant_b": {
+          "id": "VT5-B",
+          "exception": "simple_proviso",
+          "vagueness": "discretionary",
+          "english": "A licensed small provider assessment for contact obligations returns a boundary, not a mixed result."
+        },
+        "expected_relation": "divergent",
+        "pipeline_check": "rule_vs_boundary_kind",
+        "rationale": "VT5-A precise vaguenessMarker → LowerResult.rule. VT5-B discretionary → LowerResult.boundary. ResultKind differs → divergent."
+      }
+    ]
+  },
+
+  "expected_coverage_after_phase2": {
+    "voice": {
+      "active":     { "phase0": 44, "phase2_added": 0, "note": "baseline" },
+      "passive":    { "phase0": 0,  "phase2_added": 3, "entries": ["CA-001", "CA-002", "CA-008"] },
+      "impersonal": { "phase0": 0,  "phase2_added": 1, "entries": ["CA-007"] }
+    },
+    "modality": {
+      "shall":    { "phase0": 0, "phase2_added": 2, "entries": ["CA-001", "CA-004"] },
+      "should":   { "phase0": 3, "phase2_added": 2, "entries": ["CA-003", "CA-008"] },
+      "may":      { "phase0": 8, "phase2_added": 1, "entries": ["CA-006"] },
+      "must":     { "phase0": 8, "phase2_added": 1, "entries": ["CA-007"] },
+      "prohibited":{ "phase0": 0, "phase2_added": 1, "entries": ["CA-002"] }
+    },
+    "negation": {
+      "double_negative": { "phase0": 5, "phase2_added": 3, "entries": ["CA-004", "CA-006", "CA-008"] }
+    },
+    "definitions": {
+      "undefined": { "phase0": 1, "phase2_added": 2, "entries": ["CA-005", "CA-008"] }
+    },
+    "temporal": {
+      "none": { "phase0": 0, "phase2_added": 1, "entries": ["CA-005"] }
+    },
+    "exception_structure": {
+      "nested": { "phase0": 2, "phase2_added": 1, "entries": ["CA-003"] }
+    },
+    "thresholds": {
+      "comparative": { "phase0": 3, "phase2_added": 1, "entries": ["CA-007"] }
+    }
+  },
+
+  "uncovered_combinations_status": [
+    {
+      "id": "UC-001",
+      "factors": ["passive", "shall", "negative"],
+      "phase0_status": "uncovered",
+      "phase2_status": "covered",
+      "covered_by": "CA-001"
+    },
+    {
+      "id": "UC-002",
+      "factors": ["active", "should", "positive", "nested_exception"],
+      "phase0_status": "uncovered",
+      "phase2_status": "covered",
+      "covered_by": "CA-003"
+    },
+    {
+      "id": "UC-003",
+      "factors": ["passive", "defeasible"],
+      "phase0_status": "uncovered",
+      "phase2_status": "covered",
+      "covered_by": "CA-002"
+    }
+  ]
+}

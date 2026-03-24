@@ -1,0 +1,53 @@
+{
+  "dimension": "defeasibility (non-monotonic reasoning)",
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Compare how the following legal formalisation systems handle\ndefeasibility (non-monotonic reasoning). Return a JSON object:\n\n{\n  \"dimension\": \"defeasibility (non-monotonic reasoning)\",\n  \"systems\": [\n    {\n      \"name\": \"string — system name\",\n      \"approach\": \"string — how it handles this dimension\",\n      \"strengths\": [\"string\"],\n      \"limitations\": [\"string\"],\n      \"key_paper\": \"string — citation\",\n      \"expressiveness_score\": \"1-5 (1=absent, 5=fully native)\"\n    }\n  ],\n  \"legallean_advantage\": \"string — where dependent types in Lean 4 add value\",\n  \"legallean_limitation\": \"string — honest assessment of gaps\"\n}\n\nSystems to compare: DDL (Governatori), Catala (Merigoux), L4L (Hou et al.),\nLegalRuleML (Palmirani), LegalLean (our system — Lean 4 dependent types with\nFormalisationBoundary for open texture).\n\nDimension: defeasibility (non-monotonic reasoning)\nContext: How each system handles rules that can be defeated by exceptions or higher-priority rules. Include: default logic, priorities, burden of proof."
+  },
+  "results": {
+    "models_queried": [
+      "sonar-pro"
+    ],
+    "responses": [
+      {
+        "model": "sonar-pro",
+        "answer_raw": "I cannot provide the requested JSON comparison because the search results do not contain sufficient information about most of the systems you've specified.\n\n**What the search results cover:**\n\nThe results discuss **Defeasible Deontic Logic (DDL)** in general terms[1][2][3], noting that it is used for formalizing legal texts and can represent non-monotonic reasoning. However, the results do not provide detailed technical specifications of how DDL (or Governatori's specific approach) handles defeasibility mechanisms like default logic, priorities, or burden of proof.\n\nThe results mention **ASPIC+, ABA+, Answer Set Programming, and Defeasible Logic** as logic-based approaches to defeasible reasoning[4], but offer no substantive detail about their individual mechanisms or expressiveness.\n\n**Critical gaps:**\n\nThe search results contain **no information** about:\n- **Catala** (Merigoux) — not mentioned\n- **L4L** (Hou et al.) — not mentioned\n- **LegalRuleML** (Palmirani) — not mentioned\n- **LegalLean** — not mentioned (beyond the context that you are building it)\n\nThe results do discuss the theoretical landscape of legal defeasibility[1], distinguishing between formalist and anti-formalist interpretation models, and identifying three types of defeasibility (recognition criteria, external applicability, normative content)[1]. They also address challenges in formalizing legal texts using LLMs[2], but this does not constitute a comparative analysis of specific formalization systems.\n\n**To complete this analysis, you would need:**\n\n- Technical documentation or peer-reviewed papers for each system detailing their defeasibility mechanisms\n- Comparative case studies showing how each system handles identical legal scenarios with exceptions and priorities\n- Specifications of their logical foundations and expressiveness limitations\n\nI recommend searching for system-specific papers or technical reports for Catala, L4L, LegalRuleML, and your own LegalLean documentation to enable this comparison.",
+        "answer_parsed": null,
+        "citations": [
+          "https://journals.openedition.org/revus/2341?lang=sl",
+          "https://arxiv.org/html/2506.08899v3",
+          "https://ceur-ws.org/Vol-4174/paper7.pdf",
+          "https://www.semanticscholar.org/paper/Defeasible-Systems-in-Legal-Reasoning:-A-Assessment-Calegari-Contissa/61935411ef61ad03555dca7592be9bf1cfb6b9e6",
+          "https://dl.acm.org/doi/10.1007/978-3-031-15565-9_12",
+          "http://www.horty.umiacs.io/courses/readings/schauer-defeasibility.pdf"
+        ],
+        "usage": {
+          "prompt_tokens": 376,
+          "completion_tokens": 410,
+          "total_tokens": 786,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00113,
+            "output_tokens_cost": 0.00615,
+            "request_cost": 0.006,
+            "total_cost": 0.01328
+          }
+        }
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 0,
+      "total_models": 1,
+      "all_citations": [
+        "http://www.horty.umiacs.io/courses/readings/schauer-defeasibility.pdf",
+        "https://journals.openedition.org/revus/2341?lang=sl",
+        "https://dl.acm.org/doi/10.1007/978-3-031-15565-9_12",
+        "https://arxiv.org/html/2506.08899v3",
+        "https://www.semanticscholar.org/paper/Defeasible-Systems-in-Legal-Reasoning:-A-Assessment-Calegari-Contissa/61935411ef61ad03555dca7592be9bf1cfb6b9e6",
+        "https://ceur-ws.org/Vol-4174/paper7.pdf"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:39:41Z"
+}

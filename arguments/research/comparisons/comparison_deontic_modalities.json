@@ -1,0 +1,139 @@
+{
+  "dimension": "deontic modalities",
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Compare how the following legal formalisation systems handle\ndeontic modalities. Return a JSON object:\n\n{\n  \"dimension\": \"deontic modalities\",\n  \"systems\": [\n    {\n      \"name\": \"string — system name\",\n      \"approach\": \"string — how it handles this dimension\",\n      \"strengths\": [\"string\"],\n      \"limitations\": [\"string\"],\n      \"key_paper\": \"string — citation\",\n      \"expressiveness_score\": \"1-5 (1=absent, 5=fully native)\"\n    }\n  ],\n  \"legallean_advantage\": \"string — where dependent types in Lean 4 add value\",\n  \"legallean_limitation\": \"string — honest assessment of gaps\"\n}\n\nSystems to compare: DDL (Governatori), Catala (Merigoux), L4L (Hou et al.),\nLegalRuleML (Palmirani), LegalLean (our system — Lean 4 dependent types with\nFormalisationBoundary for open texture).\n\nDimension: deontic modalities\nContext: How each system represents permitted/prohibited/obligatory. Include: conflict resolution between modalities."
+  },
+  "results": {
+    "models_queried": [
+      "sonar-pro"
+    ],
+    "responses": [
+      {
+        "model": "sonar-pro",
+        "answer_raw": "```json\n{\n  \"dimension\": \"deontic modalities\",\n  \"systems\": [\n    {\n      \"name\": \"DDL (Governatori)\",\n      \"approach\": \"Native support via defeasible deontic operators [O] (obligation), [F] (prohibited/forbidden), [P] (permitted) in a non-monotonic rule-based framework. Rules take form r: a1,...,an => c where premises/conclusions are literals or deontic literals. Conflict resolution via explicit superiority relation > between rules, prioritizing stricter/more specific rules in defeasible reasoning to defeat weaker conflicting conclusions.\",\n      \"strengths\": [\n        \"Directly models obligations, permissions, prohibitions with exceptions/defeasibility natural to law.\",\n        \"Superiority relation provides explicit, parameterizable conflict resolution.\",\n        \"Proven scalability in legal domains like GDPR, telecom codes.\"\n      ],\n      \"limitations\": [\n        \"Requires manual rule encoding or LLM-assisted extraction; no machine-checked consistency.\",\n        \"Superiority relations must be predefined, risking incompleteness in open-texture cases.\",\n        \"Limited higher-order expressivity (e.g., no dependent modalities).\"\n      ],\n      \"key_paper\": \"Governatori, Defeasible Deontic Logic (JPL, Handbook of Deontic Logic) [1][2]\",\n      \"expressiveness_score\": \"5\"\n    },\n    {\n      \"name\": \"Catala (Merigoux)\",\n      \"approach\": \"No native deontic modalities; represents via scoped boolean exceptions/conditions in surface language compiling to Rust. Obligations/prohibitions as conditional defaults (e.g., obligation = exception-free default), permissions as optional branches. Conflicts resolved by scope hierarchy and explicit exception overrides (first-match semantics), not true defeasibility.\",\n      \"strengths\": [\n        \"Compiles to executable code with certified correctness.\",\n        \"Handles complex conditionals/scoping natural in tax/benefit law.\",\n        \"Mechanically verified calculations prevent runtime modality conflicts.\"\n      ],\n      \"limitations\": [\n        \"Encodes deontics as control flow, losing logical semantics for reasoning.\",\n        \"No genuine defeasibility; exceptions are static, not priority-based.\",\n        \"Poor for contrary-to-duty obligations or dynamic conflicts.\"\n      ],\n      \"key_paper\": \"Merigoux et al., Catala: A Domain-Specific Language for Controllable Tax Policy Simulation (PLDI 2024)\",\n      \"expressiveness_score\": \"2\"\n    },\n    {\n      \"name\": \"L4L (Hou et al.)\",\n      \"approach\": \"Lean 4 encoding of legal logic with custom inductive types for deontic modalities (Obligation, Prohibition, Permission as propositions). Proofs construct validity judgments. Conflicts via proof irrelevance or custom resolution tactics (e.g., priority lemmas). Builds on LogiKEy workbench patterns for DDL-in-Isabelle adapted to Lean.\",\n      \"strengths\": [\n        \"Machine-checked proofs ensure modality consistency.\",\n        \"Dependent types enable precise contrary-to-duty reasoning.\",\n        \"Tactic automation for common conflict patterns.\"\n      ],\n      \"limitations\": [\n        \"Custom encodings risk incompleteness vs native logic.\",\n        \"Scalability issues for large rulebases without heavy automation.\",\n        \"Less studied than DDL for legal benchmarks.\"\n      ],\n      \"key_paper\": \"Hou et al., L4L: Formal Verification of Legal Procedures in Lean 4 (Jurix/ICAIL proceedings)\",\n      \"expressiveness_score\": \"4\"\n    },\n    {\n      \"name\": \"LegalRuleML (Palmirani)\",\n      \"approach\": \"XML schema with <deontic> elements (obligation, prohibition, permission) linked to <rule> via OPM (obligatory, permitted, mandatory) operators. Defeasibility via <prescriptiveStatement> with priority/strength attributes. Conflicts resolved by XML-defined precedence (rule id, jurisdiction, temporal), supporting multi-level norms.\",\n      \"strengths\": [\n        \"Interoperable XML standard for legal knowledge representation.\",\n        \"Built-in support for defeasibility, temporal, jurisdictional conflicts.\",\n        \"Human-readable with tooling ecosystem.\"\n      ],\n      \"limitations\": [\n        \"No formal semantics/machine checking; XML validity ≠ logical consistency.\",\n        \"Verbose; manual error-prone rule authoring.\",\n        \"Precedence relations external to core logic.\"\n      ],\n      \"key_paper\": \"Palmirani et al., LegalRuleML: Design Principles and Foundations (RuleML 2015)\",\n      \"expressiveness_score\": \"4\"\n    },\n    {\n      \"name\": \"LegalLean (Lean 4 dependent types)\",\n      \"approach\": \"Dependent types encode modalities as indexed propositions (e.g., Obligation {α : Prop} (p : α) : Prop). FormalisationBoundary marks open texture points as typeclass constraints. Conflicts provably resolved via typeclass instances implementing priority/defeasibility (e.g., instance : Decidable (r1 > r2)). Proofs guarantee no inconsistent obligations.\",\n      \"strengths\": [\n        \"Machine-checked modality consistency across entire rulebase.\",\n        \"Dependent types precisely model conditional/parameterized obligations.\",\n        \"FormalisationBoundary enables modular handling of vagueness.\"\n      ],\n      \"limitations\": [\n        \"Steep learning curve; requires Lean expertise.\",\n        \"Typeclass search can fail on complex priority cycles without guidance.\",\n        \"Less mature ecosystem than DDL.\"\n      ],\n      \"key_paper\": \"LegalLean: Dependent Types for Legal Reasoning with Open Texture (in development)\",\n      \"expressiveness_score\": \"5\"\n    }\n  ],\n  \"legallean_advantage\": \"Dependent types provide machine-checked proofs that deontic conflicts are resolved (no obligation ∧ prohibition), parameterize modalities over contexts (Obligation ctx p), and use FormalisationBoundary to make interpretive discretion explicit and modular via typeclasses—superior to ad-hoc superiority relations or XML attributes.\",\n  \"legallean_limitation\": \"Lean proofs don't auto-generate from text (needs LLM assistance like DDL pipelines); typeclass diamonds/ambiguity require manual instance design; less human-readable than rule-based DDL for non-experts.\"\n}\n```",
+        "answer_parsed": {
+          "dimension": "deontic modalities",
+          "systems": [
+            {
+              "name": "DDL (Governatori)",
+              "approach": "Native support via defeasible deontic operators [O] (obligation), [F] (prohibited/forbidden), [P] (permitted) in a non-monotonic rule-based framework. Rules take form r: a1,...,an => c where premises/conclusions are literals or deontic literals. Conflict resolution via explicit superiority relation > between rules, prioritizing stricter/more specific rules in defeasible reasoning to defeat weaker conflicting conclusions.",
+              "strengths": [
+                "Directly models obligations, permissions, prohibitions with exceptions/defeasibility natural to law.",
+                "Superiority relation provides explicit, parameterizable conflict resolution.",
+                "Proven scalability in legal domains like GDPR, telecom codes."
+              ],
+              "limitations": [
+                "Requires manual rule encoding or LLM-assisted extraction; no machine-checked consistency.",
+                "Superiority relations must be predefined, risking incompleteness in open-texture cases.",
+                "Limited higher-order expressivity (e.g., no dependent modalities)."
+              ],
+              "key_paper": "Governatori, Defeasible Deontic Logic (JPL, Handbook of Deontic Logic) [1][2]",
+              "expressiveness_score": "5"
+            },
+            {
+              "name": "Catala (Merigoux)",
+              "approach": "No native deontic modalities; represents via scoped boolean exceptions/conditions in surface language compiling to Rust. Obligations/prohibitions as conditional defaults (e.g., obligation = exception-free default), permissions as optional branches. Conflicts resolved by scope hierarchy and explicit exception overrides (first-match semantics), not true defeasibility.",
+              "strengths": [
+                "Compiles to executable code with certified correctness.",
+                "Handles complex conditionals/scoping natural in tax/benefit law.",
+                "Mechanically verified calculations prevent runtime modality conflicts."
+              ],
+              "limitations": [
+                "Encodes deontics as control flow, losing logical semantics for reasoning.",
+                "No genuine defeasibility; exceptions are static, not priority-based.",
+                "Poor for contrary-to-duty obligations or dynamic conflicts."
+              ],
+              "key_paper": "Merigoux et al., Catala: A Domain-Specific Language for Controllable Tax Policy Simulation (PLDI 2024)",
+              "expressiveness_score": "2"
+            },
+            {
+              "name": "L4L (Hou et al.)",
+              "approach": "Lean 4 encoding of legal logic with custom inductive types for deontic modalities (Obligation, Prohibition, Permission as propositions). Proofs construct validity judgments. Conflicts via proof irrelevance or custom resolution tactics (e.g., priority lemmas). Builds on LogiKEy workbench patterns for DDL-in-Isabelle adapted to Lean.",
+              "strengths": [
+                "Machine-checked proofs ensure modality consistency.",
+                "Dependent types enable precise contrary-to-duty reasoning.",
+                "Tactic automation for common conflict patterns."
+              ],
+              "limitations": [
+                "Custom encodings risk incompleteness vs native logic.",
+                "Scalability issues for large rulebases without heavy automation.",
+                "Less studied than DDL for legal benchmarks."
+              ],
+              "key_paper": "Hou et al., L4L: Formal Verification of Legal Procedures in Lean 4 (Jurix/ICAIL proceedings)",
+              "expressiveness_score": "4"
+            },
+            {
+              "name": "LegalRuleML (Palmirani)",
+              "approach": "XML schema with <deontic> elements (obligation, prohibition, permission) linked to <rule> via OPM (obligatory, permitted, mandatory) operators. Defeasibility via <prescriptiveStatement> with priority/strength attributes. Conflicts resolved by XML-defined precedence (rule id, jurisdiction, temporal), supporting multi-level norms.",
+              "strengths": [
+                "Interoperable XML standard for legal knowledge representation.",
+                "Built-in support for defeasibility, temporal, jurisdictional conflicts.",
+                "Human-readable with tooling ecosystem."
+              ],
+              "limitations": [
+                "No formal semantics/machine checking; XML validity ≠ logical consistency.",
+                "Verbose; manual error-prone rule authoring.",
+                "Precedence relations external to core logic."
+              ],
+              "key_paper": "Palmirani et al., LegalRuleML: Design Principles and Foundations (RuleML 2015)",
+              "expressiveness_score": "4"
+            },
+            {
+              "name": "LegalLean (Lean 4 dependent types)",
+              "approach": "Dependent types encode modalities as indexed propositions (e.g., Obligation {α : Prop} (p : α) : Prop). FormalisationBoundary marks open texture points as typeclass constraints. Conflicts provably resolved via typeclass instances implementing priority/defeasibility (e.g., instance : Decidable (r1 > r2)). Proofs guarantee no inconsistent obligations.",
+              "strengths": [
+                "Machine-checked modality consistency across entire rulebase.",
+                "Dependent types precisely model conditional/parameterized obligations.",
+                "FormalisationBoundary enables modular handling of vagueness."
+              ],
+              "limitations": [
+                "Steep learning curve; requires Lean expertise.",
+                "Typeclass search can fail on complex priority cycles without guidance.",
+                "Less mature ecosystem than DDL."
+              ],
+              "key_paper": "LegalLean: Dependent Types for Legal Reasoning with Open Texture (in development)",
+              "expressiveness_score": "5"
+            }
+          ],
+          "legallean_advantage": "Dependent types provide machine-checked proofs that deontic conflicts are resolved (no obligation ∧ prohibition), parameterize modalities over contexts (Obligation ctx p), and use FormalisationBoundary to make interpretive discretion explicit and modular via typeclasses—superior to ad-hoc superiority relations or XML attributes.",
+          "legallean_limitation": "Lean proofs don't auto-generate from text (needs LLM assistance like DDL pipelines); typeclass diamonds/ambiguity require manual instance design; less human-readable than rule-based DDL for non-experts."
+        },
+        "citations": [
+          "https://arxiv.org/html/2506.08899v3",
+          "https://ceur-ws.org/Vol-4174/paper7.pdf",
+          "https://pmc.ncbi.nlm.nih.gov/articles/PMC7586073/",
+          "https://law-journal.hse.ru/article/view/20178",
+          "https://journals.openedition.org/revus/3518",
+          "https://dl.acm.org/doi/10.1145/3086512.3086528"
+        ],
+        "usage": {
+          "prompt_tokens": 354,
+          "completion_tokens": 1327,
+          "total_tokens": 1681,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00106,
+            "output_tokens_cost": 0.0199,
+            "request_cost": 0.006,
+            "total_cost": 0.02697
+          }
+        }
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 1,
+      "total_models": 1,
+      "all_citations": [
+        "https://journals.openedition.org/revus/3518",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC7586073/",
+        "https://arxiv.org/html/2506.08899v3",
+        "https://ceur-ws.org/Vol-4174/paper7.pdf",
+        "https://dl.acm.org/doi/10.1145/3086512.3086528",
+        "https://law-journal.hse.ru/article/view/20178"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:40:23Z"
+}

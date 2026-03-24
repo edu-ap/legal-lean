@@ -1,0 +1,179 @@
+{
+  "$comment": "Top-level argument graph for 'Verified Legal Reasoning: From Natural Language to Formal Proof'. Every claim either points to a lean4_ref (verified) or is marked with confidence < 1.0 (needs verification).",
+  "title": "Verified Legal Reasoning: From Natural Language to Formal Proof",
+  "authors": ["Eduardo Aguilar Pelaez"],
+  "targetVenue": "JURIX 2026 or ICAIL 2027",
+  "affiliation": "Imperial College London (visiting/associated)",
+
+  "thesis": {
+    "claim": "Legal reasoning can be partially formalised in dependent type theory, and the boundary between formalisable and non-formalisable elements can itself be encoded within the type system.",
+    "type": "conjunction",
+    "confidence": 0.85,
+    "components": [
+      {
+        "id": "T1",
+        "claim": "Dependent types (Lean 4) can encode legal eligibility criteria as propositions, where evidence inhabits the type.",
+        "status": "partially_verified",
+        "lean4_ref": "LegalLean.Core:EvidenceFor",
+        "confidence": 0.90,
+        "support": [
+          {
+            "type": "analogy",
+            "from": "Curry-Howard correspondence: proofs are programs, propositions are types",
+            "to": "Legal evidence is a program (construction), legal eligibility is a type (specification)",
+            "strength": "strong"
+          },
+          {
+            "type": "precedent",
+            "source": "Lawsky 2017 - default logic for statutes demonstrates feasibility of logical encoding",
+            "url": "https://scholarship.law.ufl.edu/ftr/vol21/iss1/2/"
+          }
+        ]
+      },
+      {
+        "id": "T2",
+        "claim": "Legal reasoning is non-monotonic (defeasible): new evidence or higher-priority rules can retract conclusions. This must be first-class in any formalisation.",
+        "status": "partially_verified",
+        "lean4_ref": "LegalLean.Defeasible:DefeasiblyHolds",
+        "confidence": 0.95,
+        "support": [
+          {
+            "type": "authority",
+            "source": "Lawsky - default logic for statutes",
+            "url": "https://scholarship.law.ufl.edu/ftr/vol21/iss1/2/"
+          },
+          {
+            "type": "authority",
+            "source": "Governatori - Defeasible Deontic Logic",
+            "url": "https://dl.acm.org/doi/10.1145/2746090.2746100"
+          }
+        ],
+        "defeats": []
+      },
+      {
+        "id": "T3",
+        "claim": "Hart's open texture (The Concept of Law, 1961) is not an argument against formalisation but a boundary condition that can be encoded WITHIN the type system as a FormalisationBoundary.",
+        "status": "partially_verified",
+        "lean4_ref": "LegalLean.Core:FormalisationBoundary",
+        "confidence": 0.80,
+        "novelty": "high",
+        "note": "This is the intellectually novel contribution. No prior work (DDL, Catala, L4L, LegalRuleML) treats the formalisation boundary as a first-class type.",
+        "support": [
+          {
+            "type": "reframing",
+            "objection": "Open texture makes full formalisation of law impossible (Hart 1961, Schauer 2011)",
+            "response": "We agree full formalisation is impossible. Our contribution is encoding WHERE and WHY it is impossible as machine-checkable annotations, not external commentary.",
+            "sources": [
+              "https://www.scribd.com/document/802460191/HLA-Hart-s-Theory-of-Open-Texture",
+              "http://www.umiacs.umd.edu/users/horty/courses/readings/schauer-2011-open-texture.pdf"
+            ]
+          }
+        ],
+        "defeats": [
+          {
+            "objection": "Encoding the boundary is trivially adding String annotations, not a genuine formal contribution.",
+            "response": "The RequiresHumanDetermination typeclass constrains the proof search: the type checker REFUSES to discharge obligations marked as Vague or Discretionary without explicit human input. This is a formal guarantee, not a comment.",
+            "lean4_ref": "LegalLean.Core:RequiresHumanDetermination",
+            "response_type": "technical_rebuttal",
+            "confidence": 0.75,
+            "note": "This is the weakest link in the argument. Need to demonstrate that the typeclass actually constrains proof search in a meaningful way, not just annotates."
+          }
+        ]
+      },
+      {
+        "id": "T4",
+        "claim": "A Legal Intermediate Representation (IR) can bridge the gap between natural language legal text and formal Lean 4 types, serving as the structured output of LLM transduction and the input to formal verification.",
+        "status": "partially_verified",
+        "lean4_ref": "LegalLean.IR.Legal:LegalIRDocument",
+        "confidence": 0.85,
+        "support": [
+          {
+            "type": "architecture",
+            "description": "LLMs as heuristic transducers (messy input → structured IR); Lean 4 as invariant verifier (IR → verified conclusions). Clean separation of concerns.",
+            "source": "Gemini 3.1 Pro Thinking synthesis"
+          }
+        ]
+      },
+      {
+        "id": "T5",
+        "claim": "This approach (LegalLean) is strictly more expressive than existing formalisms (DDL, Catala, L4L, LegalRuleML) along at least 3 of 8 expressiveness dimensions.",
+        "status": "unverified",
+        "confidence": 0.60,
+        "note": "Requires the comparison table to be filled in with actual evidence. This is a strong claim that needs careful validation against each system.",
+        "comparisonDimensions": [
+          "Defeasibility (non-monotonic reasoning)",
+          "Open texture encoding (FormalisationBoundary)",
+          "Dependent types (evidence-as-inhabitants)",
+          "Deontic modalities",
+          "Temporal reasoning",
+          "Provenance tracking",
+          "Compositional semantics",
+          "Machine-checkable guarantees"
+        ],
+        "support": [],
+        "defeats": [
+          {
+            "objection": "Catala already handles statutory computation with formal guarantees and has a larger community.",
+            "response": "Catala is a DSL for computing statutory obligations, not for reasoning about them. It cannot express defeasibility, open texture, or dependent evidence. Different tools for different jobs.",
+            "lean4_ref": null,
+            "response_type": "scope_distinction",
+            "confidence": 0.80,
+            "sources": ["https://github.com/CatalaLang/catala"]
+          }
+        ]
+      }
+    ]
+  },
+
+  "draftingOrder": {
+    "source": "GPT-5.4 Thinking",
+    "rationale": "Do NOT start with the literature review. Start with the IR because once the intermediate representation is canonicalised, the rest of the monograph becomes much easier to write.",
+    "sequence": [
+      {"step": 1, "chapter": "Abstract", "status": "not_started"},
+      {"step": 2, "chapter": "Introduction + transducer/verifier framing", "status": "not_started"},
+      {"step": 3, "chapter": "Contributions (explicit list)", "status": "not_started"},
+      {"step": 4, "chapter": "Table of Contents (structural skeleton)", "status": "not_started"},
+      {"step": 5, "chapter": "Case Study 1: IRC §163(h)", "status": "not_started", "lean4_ref": "LegalLean.CaseStudies.IRC163h"},
+      {"step": 6, "chapter": "Legal IR specification", "status": "not_started", "lean4_ref": "LegalLean.IR.Legal"},
+      {"step": 7, "chapter": "Lean 4 formalisation (Core + Defeasible)", "status": "not_started", "lean4_ref": "LegalLean.Core"},
+      {"step": 8, "chapter": "Case Study 2: O-1 Visa", "status": "not_started", "lean4_ref": "LegalLean.CaseStudies.O1Visa"},
+      {"step": 9, "chapter": "Case Study 3: TCP Code", "status": "not_started", "lean4_ref": "LegalLean.CaseStudies.TCPCode"},
+      {"step": 10, "chapter": "Limits and open texture", "status": "not_started"},
+      {"step": 11, "chapter": "Architectural consequences (product implications)", "status": "not_started"},
+      {"step": 12, "chapter": "Related work + comparison table", "status": "not_started"},
+      {"step": 13, "chapter": "Future work (ZKPs, temporal logic, scaling)", "status": "not_started"}
+    ]
+  },
+
+  "targetAudience": {
+    "tier1_must_impress": [
+      {"name": "Sarah Lawsky", "domain": "Default logic & statutes", "reflection": "Sees her default logic for statutes handled rigorously in Lean 4 dependent types"},
+      {"name": "Monica Palmirani", "domain": "LegalRuleML & normative XML", "reflection": "Sees an isomorphic, verifiable encoding of norms with stronger guarantees"},
+      {"name": "Jeremy Avigad", "domain": "Lean 4 & formal methods", "reflection": "Sees Lean used in a new, high-stakes domain beyond mathematics"},
+      {"name": "Leonardo de Moura", "domain": "Creator of Lean", "reflection": "Sees his proof assistant applied to law — reputationally significant"},
+      {"name": "Guido Governatori", "domain": "DDL & Australian TCP Code", "reflection": "Sees DDL's ideas in a dependently typed setting with machine-checkable guarantees"},
+      {"name": "Zhe Hou", "domain": "L4L: LLM agents + formal reasoning", "reflection": "Sees an upgrade path from SMT to Lean 4 for legal reasoning"}
+    ],
+    "tier2_should_engage": [
+      {"name": "Henry Prakken", "domain": "Argumentation & defeasible reasoning"},
+      {"name": "Trevor Bench-Capon", "domain": "AI & law foundations"},
+      {"name": "Daniel Martin Katz", "domain": "Computational law"},
+      {"name": "Scott Shapiro", "domain": "Law + AI pedagogy"}
+    ],
+    "tier3_stretch": [
+      {"name": "Samson Abramsky", "domain": "Categorical semantics"},
+      {"name": "Bob Coecke", "domain": "Category theory for language"},
+      {"name": "Tai-Danae Bradley", "domain": "CT & LLMs"},
+      {"name": "Michael Genesereth", "domain": "Early computational law"}
+    ]
+  },
+
+  "keyReferences": [
+    {"id": "lawsky2017", "author": "Sarah Lawsky", "title": "A Logic for Statutes", "venue": "Florida Tax Review", "year": 2017, "url": "https://scholarship.law.ufl.edu/ftr/vol21/iss1/2/", "relevance": "Gold standard for default logic encoding of statutes. IRC §163(h) case study baseline."},
+    {"id": "hart1961", "author": "H.L.A. Hart", "title": "The Concept of Law", "year": 1961, "relevance": "Open texture doctrine. Our FormalisationBoundary is the formal response to Hart's challenge."},
+    {"id": "governatori2015", "author": "Guido Governatori et al.", "title": "Computing Contracts with Defeasible Deontic Logic", "url": "https://dl.acm.org/doi/10.1145/2746090.2746100", "relevance": "DDL baseline for TCP Code comparison."},
+    {"id": "catala", "author": "Denis Merigoux et al.", "title": "Catala: A Programming Language for the Law", "url": "https://github.com/CatalaLang/catala", "relevance": "Comparison system: DSL for statutory computation (different scope from our reasoning framework)."},
+    {"id": "l4l2024", "author": "Zhe Hou et al.", "title": "L4L: Towards Trustworthy Legal AI through LLM Agents and Formal Reasoning", "url": "https://arxiv.org/abs/2511.21033", "relevance": "Closest competitor: LLMs + SMT. Our upgrade: LLMs + Lean 4 dependent types."},
+    {"id": "legalruleml", "author": "Monica Palmirani et al.", "title": "LegalRuleML Core Specification v1.0", "url": "https://docs.oasis-open.org/legalruleml/legalruleml-core-spec/v1.0/legalruleml-core-spec-v1.0.html", "relevance": "XML standard for normative rules. Our Lean 4 types provide machine-checkable guarantees that XML cannot."}
+  ]
+}

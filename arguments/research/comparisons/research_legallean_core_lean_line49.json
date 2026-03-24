@@ -1,0 +1,322 @@
+{
+  "stub": {
+    "file": "LegalLean/Core.lean",
+    "line": 49,
+    "context": "  /-- Conditions under which this rule is defeated. -/\n  defeatedBy : List String  -- IDs of rules that can defeat this one\n\n/-- Evidence for a legal proposition.\n    Propositions-as-types: if you can construct an `EvidenceFor P`,\n    then P is established (subject to defeasibility). -/\nstructure EvidenceFor (P : Prop) where\n  source : String           -- provenance: \"statute\", \"testimony\", \"document\", etc.\n  confidence : Float        -- Bayesian posterior (1.0 = verified, <1.0 = estimated)\n  artifact : Option String  -- reference to supporting document/record\n  /-- The actual proof witness. sorry'd for now — filling these in IS the research. -/\n  witness : P\n\n/-\n  FormalisationBoundary — The intellectually novel contribution.",
+    "namespace": "LegalLean",
+    "description": "/-- The actual proof witness. sorry'd for now — filling these in IS the research. -/",
+    "case_study": null,
+    "target_types": [
+      "LegalRule",
+      "DefeasiblyHolds",
+      "FormalisationBoundary",
+      "EvidenceFor"
+    ]
+  },
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Analyse the following legal provision and return a JSON object\nwith this exact structure:\n\n{\n  \"provision\": {\n    \"id\": \"string — official citation\",\n    \"title\": \"string — short name\",\n    \"jurisdiction\": \"string\",\n    \"source_url\": \"string — authoritative source URL\"\n  },\n  \"rules\": [\n    {\n      \"id\": \"string — unique rule identifier\",\n      \"description\": \"string — what this rule establishes\",\n      \"modality\": \"permitted | prohibited | obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"string\",\n          \"description\": \"string — natural language condition\",\n          \"formalisable\": true/false,\n          \"if_not_formalisable\": \"string — why (vague term? discretionary?)\"\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"string\",\n          \"description\": \"string — what defeats this rule\",\n          \"priority\": \"string — why this exception wins (lex specialis, lex posterior, etc.)\",\n          \"source\": \"string — statutory reference for the exception\"\n        }\n      ],\n      \"definitions\": [\n        {\n          \"term\": \"string — defined term\",\n          \"definition\": \"string — statutory definition\",\n          \"has_open_texture\": true/false,\n          \"core_meaning\": \"string — settled, uncontested meaning\",\n          \"penumbra\": \"string — contested, unclear boundary cases\"\n        }\n      ]\n    }\n  ],\n  \"defeat_relations\": [\n    {\n      \"defeater_rule\": \"string — rule ID that defeats\",\n      \"defeated_rule\": \"string — rule ID that is defeated\",\n      \"reason\": \"string — why (lex specialis, lex posterior, lex superior, etc.)\",\n      \"strict\": true/false\n    }\n  ],\n  \"discretionary_checkpoints\": [\n    {\n      \"id\": \"string\",\n      \"authority\": \"string — who decides\",\n      \"decision\": \"string — what they decide\",\n      \"constraints\": [\"string — limits on their discretion\"],\n      \"gated_rule\": \"string — which rule this gates\"\n    }\n  ],\n  \"open_texture_terms\": [\n    {\n      \"term\": \"string\",\n      \"type\": \"vague | discretionary\",\n      \"core\": \"string — clear cases\",\n      \"penumbra\": \"string — unclear cases\",\n      \"authority\": \"string — who resolves ambiguity\",\n      \"case_law\": [\"string — key cases interpreting this term\"]\n    }\n  ],\n  \"key_references\": [\n    {\n      \"author\": \"string\",\n      \"title\": \"string\",\n      \"year\": \"number\",\n      \"relevance\": \"string\",\n      \"url\": \"string\"\n    }\n  ]\n}\n\nLegal provision to analyse:\n/-- The actual proof witness. sorry'd for now — filling these in IS the research. -/\n\nAdditional context:\nStub in LegalLean/Core.lean at line 49.\nDescription: /-- The actual proof witness. sorry'd for now — filling these in IS the research. -/\nTarget types: LegalRule, DefeasiblyHolds, FormalisationBoundary, EvidenceFor.\nCode context:\n  /-- Conditions under which this rule is defeated. -/\n  defeatedBy : List String  -- IDs of rules that can defeat this one\n\n/-- Evidence for a legal proposition.\n    Propositions-as-types: if you can construct an `EvidenceFor P`,\n    then P is established (subject to defeasibility). -/\nstructure EvidenceFor (P : Prop) where\n  source : String           -- provenance: \"statute\", \"testimony\", \"document\", etc.\n  confidence : Float        -- Bayesian posterior (1.0 = verified, <1.0 = estimated)\n  artifact : Option String  -- reference to supporting document/record\n  /-- The actual proof witness. sorry'd for now — filling these in IS the research. -/\n  witness : P\n\n/-\n  FormalisationBoundary — The intellectually novel contribution."
+  },
+  "results": {
+    "models_queried": [
+      "sonar-pro"
+    ],
+    "responses": [
+      {
+        "model": "sonar-pro",
+        "answer_raw": "```json\n{\n  \"provision\": {\n    \"id\": \"JSON:API v1.1 § Top Level\",\n    \"title\": \"JSON:API Top Level Document Structure\",\n    \"jurisdiction\": \"JSON:API Specification (v1.1)\",\n    \"source_url\": \"https://jsonapi.org/format/\"\n  },\n  \"rules\": [\n    {\n      \"id\": \"R1\",\n      \"description\": \"Every JSON:API request and response document containing data MUST have a JSON object at the root defining the top level structure\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"C1.1\",\n          \"description\": \"Document contains data\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"R2\",\n      \"description\": \"Top-level JSON object MUST contain at least one of: data, errors, meta, or extension-defined member\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"C2.1\",\n          \"description\": \"Document is a valid JSON:API document with root JSON object\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"R3\",\n      \"description\": \"Primary data (data member) MUST be either: single resource object, single resource identifier object, null (for single resources) OR array of resource objects, array of resource identifier objects, or empty array (for collections)\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"C3.1\",\n          \"description\": \"data member is present at top level\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"C3.2\",\n          \"description\": \"Request targets single resource vs collection\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": [\n        {\n          \"term\": \"resource object\",\n          \"definition\": \"JSON object with type and id members identifying a unique resource\",\n          \"has_open_texture\": false,\n          \"core_meaning\": \"Object containing required type/id pair per spec\",\n          \"penumbra\": \"\"\n        },\n        {\n          \"term\": \"resource identifier object\",\n          \"definition\": \"Object containing type and id members only\",\n          \"has_open_texture\": false,\n          \"core_meaning\": \"Minimal {type: string, id: string}\",\n          \"penumbra\": \"\"\n        }\n      ]\n    },\n    {\n      \"id\": \"R4\",\n      \"description\": \"Values of id, type, and lid members MUST be strings\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"C4.1\",\n          \"description\": \"Member is present in resource object\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"R5\",\n      \"description\": \"Within a given API, each resource object's type and id pair MUST identify a single, unique resource\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"C5.1\",\n          \"description\": \"Multiple resource objects exist in document\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": [\n        {\n          \"term\": \"API\",\n          \"definition\": \"Set of URIs controlled by a server or multiple servers acting as one\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Single server + controlled endpoints\",\n          \"penumbra\": \"Multiple federated servers acting as unified API\"\n        }\n      ]\n    },\n    {\n      \"id\": \"R6\",\n      \"description\": \"Objects defined by specification or extensions MUST NOT contain additional members unless otherwise noted\",\n      \"modality\": \"prohibited\",\n      \"conditions\": [\n        {\n          \"id\": \"C6.1\",\n          \"description\": \"Object follows standard specification objects or applied extensions\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"E6.1\",\n          \"description\": \"Extensions MAY define new members within document structure\",\n          \"priority\": \"extension specification supersedes core spec\",\n          \"source\": \"JSON:API § Extensions\"\n        }\n      ],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"R7\",\n      \"description\": \"Client and server implementations MUST ignore non-compliant members\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"C7.1\",\n          \"description\": \"Non-compliant members detected in objects\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"R8\",\n      \"description\": \"In compound documents, all included resources MUST be represented as array of resource objects in top-level included member\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"C8.1\",\n          \"description\": \"Server includes related resources (compound document)\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": [\n        {\n          \"term\": \"compound document\",\n          \"definition\": \"Response including related resources along with primary resources\",\n          \"has_open_texture\": false,\n          \"core_meaning\": \"Primary data + included related resources with full linkage\",\n          \"penumbra\": \"\"\n        }\n      ]\n    },\n    {\n      \"id\": \"R9\",\n      \"description\": \"Every included resource object MUST be identified via chain of relationships originating in primary data (full linkage requirement)\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"C9.1\",\n          \"description\": \"Compound document with included member\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"E9.1\",\n          \"description\": \"Relationship fields excluded due to sparse fieldsets requested by client\",\n          \"priority\": \"client request takes precedence\",\n          \"source\": \"JSON:API § Compound Documents\"\n        }\n      ],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"R10\",\n      \"description\": \"Compound document MUST NOT include more than one resource object for each type and id pair\",\n      \"modality\": \"prohibited\",\n      \"conditions\": [\n        {\n          \"id\": \"C10.1\",\n          \"description\": \"Compound document processing\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    }\n  ],\n  \"defeat_relations\": [\n    {\n      \"defeater_rule\": \"E6.1\",\n      \"defeated_rule\": \"R6\",\n      \"reason\": \"lex specialis (extension specification)\",\n      \"strict\": true\n    },\n    {\n      \"defeater_rule\": \"E9.1\",\n      \"defeated_rule\": \"R9\",\n      \"reason\": \"client request precedence (sparse fieldsets)\",\n      \"strict\": true\n    }\n  ],\n  \"discretionary_checkpoints\": [\n    {\n      \"id\": \"D1\",\n      \"authority\": \"Server implementation\",\n      \"decision\": \"Whether to provide compound documents with included resources\",\n      \"constraints\": [\"MUST follow full linkage requirement unless sparse fieldsets\", \"MUST NOT duplicate type/id pairs\"],\n      \"gated_rule\": \"R8\"\n    }\n  ],\n  \"open_texture_terms\": [\n    {\n      \"term\": \"API\",\n      \"type\": \"vague\",\n      \"core\": \"Single server controlling set of URIs\",\n      \"penumbra\": \"Multiple federated servers acting as unified API\",\n      \"authority\": \"API implementer\",\n      \"case_law\": []\n    },\n    {\n      \"term\": \"full linkage\",\n      \"type\": \"vague\",\n      \"core\": \"Direct relationship chain from primary data to included resource\",\n      \"penumbra\": \"Multi-hop relationship chains through intermediate resources\",\n      \"authority\": \"JSON:API implementer\",\n      \"case_law\": []\n    }\n  ],\n  \"key_references\": [\n    {\n      \"author\": \"JSON:API Authors\",\n      \"title\": \"JSON:API — Latest Specification (v1.1)\",\n      \"year\": 2020,\n      \"relevance\": \"Authoritative specification source for all rules extracted\",\n      \"url\": \"https://jsonapi.org/format/\"\n    }\n  ]\n}\n```\n\nThis JSON structure formalizes the JSON:API v1.1 Top Level requirements as **LegalRule**s suitable for **LegalLean** encoding. All **obligatory** rules (R1-R5, R7-R10) and the single **prohibited** rule (R6) are machine-checkable. The two **defeat_relations** capture statutory exceptions with **lex specialis** priority. **Open texture** in \"API\" definition represents the key **FormalisationBoundary** requiring implementer judgment.[1]",
+        "answer_parsed": {
+          "provision": {
+            "id": "JSON:API v1.1 § Top Level",
+            "title": "JSON:API Top Level Document Structure",
+            "jurisdiction": "JSON:API Specification (v1.1)",
+            "source_url": "https://jsonapi.org/format/"
+          },
+          "rules": [
+            {
+              "id": "R1",
+              "description": "Every JSON:API request and response document containing data MUST have a JSON object at the root defining the top level structure",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "C1.1",
+                  "description": "Document contains data",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "R2",
+              "description": "Top-level JSON object MUST contain at least one of: data, errors, meta, or extension-defined member",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "C2.1",
+                  "description": "Document is a valid JSON:API document with root JSON object",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "R3",
+              "description": "Primary data (data member) MUST be either: single resource object, single resource identifier object, null (for single resources) OR array of resource objects, array of resource identifier objects, or empty array (for collections)",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "C3.1",
+                  "description": "data member is present at top level",
+                  "formalisable": true
+                },
+                {
+                  "id": "C3.2",
+                  "description": "Request targets single resource vs collection",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [],
+              "definitions": [
+                {
+                  "term": "resource object",
+                  "definition": "JSON object with type and id members identifying a unique resource",
+                  "has_open_texture": false,
+                  "core_meaning": "Object containing required type/id pair per spec",
+                  "penumbra": ""
+                },
+                {
+                  "term": "resource identifier object",
+                  "definition": "Object containing type and id members only",
+                  "has_open_texture": false,
+                  "core_meaning": "Minimal {type: string, id: string}",
+                  "penumbra": ""
+                }
+              ]
+            },
+            {
+              "id": "R4",
+              "description": "Values of id, type, and lid members MUST be strings",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "C4.1",
+                  "description": "Member is present in resource object",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "R5",
+              "description": "Within a given API, each resource object's type and id pair MUST identify a single, unique resource",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "C5.1",
+                  "description": "Multiple resource objects exist in document",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [],
+              "definitions": [
+                {
+                  "term": "API",
+                  "definition": "Set of URIs controlled by a server or multiple servers acting as one",
+                  "has_open_texture": true,
+                  "core_meaning": "Single server + controlled endpoints",
+                  "penumbra": "Multiple federated servers acting as unified API"
+                }
+              ]
+            },
+            {
+              "id": "R6",
+              "description": "Objects defined by specification or extensions MUST NOT contain additional members unless otherwise noted",
+              "modality": "prohibited",
+              "conditions": [
+                {
+                  "id": "C6.1",
+                  "description": "Object follows standard specification objects or applied extensions",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [
+                {
+                  "id": "E6.1",
+                  "description": "Extensions MAY define new members within document structure",
+                  "priority": "extension specification supersedes core spec",
+                  "source": "JSON:API § Extensions"
+                }
+              ],
+              "definitions": []
+            },
+            {
+              "id": "R7",
+              "description": "Client and server implementations MUST ignore non-compliant members",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "C7.1",
+                  "description": "Non-compliant members detected in objects",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "R8",
+              "description": "In compound documents, all included resources MUST be represented as array of resource objects in top-level included member",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "C8.1",
+                  "description": "Server includes related resources (compound document)",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [],
+              "definitions": [
+                {
+                  "term": "compound document",
+                  "definition": "Response including related resources along with primary resources",
+                  "has_open_texture": false,
+                  "core_meaning": "Primary data + included related resources with full linkage",
+                  "penumbra": ""
+                }
+              ]
+            },
+            {
+              "id": "R9",
+              "description": "Every included resource object MUST be identified via chain of relationships originating in primary data (full linkage requirement)",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "C9.1",
+                  "description": "Compound document with included member",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [
+                {
+                  "id": "E9.1",
+                  "description": "Relationship fields excluded due to sparse fieldsets requested by client",
+                  "priority": "client request takes precedence",
+                  "source": "JSON:API § Compound Documents"
+                }
+              ],
+              "definitions": []
+            },
+            {
+              "id": "R10",
+              "description": "Compound document MUST NOT include more than one resource object for each type and id pair",
+              "modality": "prohibited",
+              "conditions": [
+                {
+                  "id": "C10.1",
+                  "description": "Compound document processing",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            }
+          ],
+          "defeat_relations": [
+            {
+              "defeater_rule": "E6.1",
+              "defeated_rule": "R6",
+              "reason": "lex specialis (extension specification)",
+              "strict": true
+            },
+            {
+              "defeater_rule": "E9.1",
+              "defeated_rule": "R9",
+              "reason": "client request precedence (sparse fieldsets)",
+              "strict": true
+            }
+          ],
+          "discretionary_checkpoints": [
+            {
+              "id": "D1",
+              "authority": "Server implementation",
+              "decision": "Whether to provide compound documents with included resources",
+              "constraints": [
+                "MUST follow full linkage requirement unless sparse fieldsets",
+                "MUST NOT duplicate type/id pairs"
+              ],
+              "gated_rule": "R8"
+            }
+          ],
+          "open_texture_terms": [
+            {
+              "term": "API",
+              "type": "vague",
+              "core": "Single server controlling set of URIs",
+              "penumbra": "Multiple federated servers acting as unified API",
+              "authority": "API implementer",
+              "case_law": []
+            },
+            {
+              "term": "full linkage",
+              "type": "vague",
+              "core": "Direct relationship chain from primary data to included resource",
+              "penumbra": "Multi-hop relationship chains through intermediate resources",
+              "authority": "JSON:API implementer",
+              "case_law": []
+            }
+          ],
+          "key_references": [
+            {
+              "author": "JSON:API Authors",
+              "title": "JSON:API — Latest Specification (v1.1)",
+              "year": 2020,
+              "relevance": "Authoritative specification source for all rules extracted",
+              "url": "https://jsonapi.org/format/"
+            }
+          ]
+        },
+        "citations": [
+          "https://jsonapi.org/format/",
+          "https://www.mongodb.com/resources/languages/json-schema-examples",
+          "https://www.open-contracting.org/2018/01/18/json-visualization-analysis-process-guidance-ocds-data/",
+          "https://json-schema.org/draft-04/draft-zyp-json-schema-04",
+          "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON",
+          "https://www.couchbase.com/blog/a-json-data-modeling-guide/",
+          "http://lawncl.byu.edu/json-format",
+          "https://scriptotek.github.io/programming/04_caselaw.html"
+        ],
+        "usage": {
+          "prompt_tokens": 946,
+          "completion_tokens": 1966,
+          "total_tokens": 2912,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00284,
+            "output_tokens_cost": 0.02949,
+            "request_cost": 0.006,
+            "total_cost": 0.03833
+          }
+        }
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 1,
+      "total_models": 1,
+      "all_citations": [
+        "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON",
+        "https://www.couchbase.com/blog/a-json-data-modeling-guide/",
+        "https://scriptotek.github.io/programming/04_caselaw.html",
+        "https://www.open-contracting.org/2018/01/18/json-visualization-analysis-process-guidance-ocds-data/",
+        "https://jsonapi.org/format/",
+        "https://json-schema.org/draft-04/draft-zyp-json-schema-04",
+        "https://www.mongodb.com/resources/languages/json-schema-examples",
+        "http://lawncl.byu.edu/json-format"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:38:32Z"
+}

@@ -1,0 +1,850 @@
+% LegalLean -- Verified Legal Reasoning
+% Springer LNCS format
+\documentclass[runningheads]{llncs}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+
+% ---- Lean 4 listings language definition ----
+\definecolor{lean-keyword}{rgb}{0.13,0.29,0.53}
+\definecolor{lean-comment}{rgb}{0.38,0.62,0.38}
+\definecolor{lean-string}{rgb}{0.58,0.00,0.00}
+\definecolor{lean-type}{rgb}{0.40,0.00,0.60}
+\definecolor{lean-bg}{rgb}{0.97,0.97,0.99}
+
+\lstdefinelanguage{lean4}{
+  morekeywords={
+    theorem, def, lemma, structure, inductive, class, instance,
+    where, deriving, extends, with, by, do, let, fun, match, if, then, else,
+    return, have, show, exact, apply, simp, constructor, intro, cases, induction,
+    rfl, trivial, contradiction, decide, norm_num, ring, linarith,
+    and, or, not, true, false, Type, Prop, Sort,
+    forall, exists, namespace, end, open, section, variable, axiom,
+    noncomputable, private, protected, mutual, partial, unsafe,
+    List, Option, Bool, Nat, Int, String, Unit, Empty
+  },
+  sensitive=true,
+  morecomment=[l]{--},
+  morecomment=[s]{/-}{-/},
+  morestring=[b]",
+  morestring=[b]',
+}
+
+% Literate replacements for Unicode characters used in Lean 4 code
+\lstset{
+  language=lean4,
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{lean-keyword}\bfseries,
+  commentstyle=\color{lean-comment}\itshape,
+  stringstyle=\color{lean-string},
+  backgroundcolor=\color{lean-bg},
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{gray!40},
+  breaklines=true,
+  breakatwhitespace=false,
+  showstringspaces=false,
+  tabsize=2,
+  captionpos=b,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+  literate=
+    {∀}{$\forall$}{1}
+    {∃}{$\exists$}{1}
+    {∧}{$\wedge$}{1}
+    {∨}{$\vee$}{1}
+    {→}{$\rightarrow$}{1}
+    {←}{$\leftarrow$}{1}
+    {↔}{$\leftrightarrow$}{1}
+    {¬}{$\neg$}{1}
+    {≠}{$\ne$}{1}
+    {≥}{$\ge$}{1}
+    {≤}{$\le$}{1}
+    {⟨}{$\langle$}{1}
+    {⟩}{$\rangle$}{1}
+    {∉}{$\notin$}{1}
+    {∈}{$\in$}{1}
+    {·}{$\cdot$}{1}
+    {α}{$\alpha$}{1}
+    {β}{$\beta$}{1}
+    {⊗}{$\otimes$}{1}
+    {⇒}{$\Rightarrow$}{1}
+    {⊢}{$\vdash$}{1}
+    {ℕ}{$\mathbb{N}$}{1},
+}
+
+% Plain listing style for non-Lean code snippets (DDL etc.)
+\lstdefinestyle{plain}{
+  language={},
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{lean-bg},
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{gray!40},
+  breaklines=true,
+  showstringspaces=false,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+  literate=
+    {⊗}{$\otimes$}{1}
+    {⇒}{$\Rightarrow$}{1}
+    {∀}{$\forall$}{1}
+    {∃}{$\exists$}{1}
+    {≥}{$\ge$}{1}
+    {≤}{$\le$}{1},
+}
+
+\begin{document}
+
+\title{Verified Legal Reasoning: From Natural Language to Formal Proof}
+
+\titlerunning{Verified Legal Reasoning}
+
+\author{Eduardo Aguilar Pelaez\inst{1,2}}
+
+\authorrunning{E. Aguilar Pelaez}
+
+\institute{
+  Legal Engine Ltd, London, UK\\
+  \email{edu@legalengine.co.uk}
+  \and
+  Imperial College London, London, UK\\
+  \email{e.aguilar@imperial.ac.uk}
+}
+
+\maketitle
+
+\begin{abstract}
+Legal AI systems increasingly serve as transducers -- converting unstructured
+statutory text into structured representations -- but they lack a verification
+layer capable of distinguishing what the type checker can certify from what
+requires human judgement. This paper presents LegalLean, a framework for
+verified legal reasoning built on Lean~4 dependent types. The central
+contribution is the \texttt{FormalisationBoundary} type and the
+\texttt{RequiresHumanDetermination} typeclass, which together encode Hart's
+``open texture'' distinction as a first-class object in the type system rather
+than an external limitation on formalisation. We demonstrate the framework
+across three case studies: IRC~\S163(h) mortgage interest deduction, the O-1A
+extraordinary ability visa (8~CFR~\S204.5(h)), and the Australian
+Telecommunications Consumer Protections Code (C628:2012). The system produces
+44 machine-verified theorems with zero unresolved \texttt{sorry} placeholders.
+The headline result is \texttt{monotonicity\_break\_general}: a machine-checked
+proof that the Tax Cuts and Jobs Act 2017 removed a previously valid deduction
+permission for all home equity interest payments -- a formally verified instance
+of non-monotonic statutory change. We compare LegalLean against four prior
+systems (DDL, Catala, L4L, LegalRuleML) and discuss honest limitations.
+
+\keywords{Dependent types \and Legal formalisation \and Lean~4 \and Open
+texture \and Formal verification \and Defeasible reasoning}
+\end{abstract}
+
+% ---------------------------------------------------------------
+\section{Introduction}
+% ---------------------------------------------------------------
+
+Google DeepMind's description of its language model as a ``transducer and
+verifier'' articulates a productive division of labour: the language model
+converts messy natural-language input into structured form, while a separate
+verification layer checks the logic. This framing, applied to law, identifies
+exactly what is missing from current legal AI systems. Systems that extract
+rules from statutes, answer legal queries, or assess compliance are, in this
+terminology, transducers. They produce structured representations. None of them
+includes a verifier in the formal sense: a component that provides
+machine-checkable guarantees about the reasoning it performs.
+
+The gap matters because legal reasoning has a well-understood failure mode.
+Hart's analysis in \textit{The Concept of Law}~\cite{hart1961concept} identified
+that legal concepts have a core of settled meaning and a penumbra of
+uncertainty. A formalisation that does not distinguish these zones does not
+merely lack nuance -- it silently misrepresents where its own confidence ends.
+When a compliance system returns ``non-compliant'', the user cannot tell whether
+that verdict rests on a formally verifiable ground (the payment was not made by
+an individual) or a contestable judgement (the property may not qualify as a
+``qualified residence''). Both appear as outputs; only one is machine-checkable.
+
+Existing approaches address parts of this problem but not the whole. Catala~\cite{merigoux2021catala}
+is a functional programming language designed for statutes: it computes legal
+outcomes deterministically but has no mechanism for representing open texture --
+the code either handles a case or raises a runtime error. Governatori's
+Defeasible Deontic Logic (DDL)~\cite{governatori2005representing,governatori2019compliance}
+encodes legal rules as defeasible clauses with priority relations, handling
+non-monotonicity well but providing no machine-checkable proofs and treating
+vague predicates as ordinary literals. L4L (Logic for Law)~\cite{hou2021l4l}
+uses dependent types in a style close to ours and produces SMT-backed proofs,
+but the SMT layer is not fully transparent: the proof obligations are discharged
+by a solver whose output is not an auditable term. LegalRuleML~\cite{palmirani2018modelling}
+is a rich XML vocabulary for regulatory knowledge but provides no automated
+reasoning whatsoever. None of these systems makes the formalisation boundary
+itself a typed, auditable object.
+
+LegalLean takes a different approach. It uses Lean~4~\cite{demoura2021lean4}
+dependent types, where the Curry-Howard
+correspondence~\cite{curry1934functionality,howard1980formulae} establishes that
+propositions are types and proofs are terms. A legal conclusion -- ``this
+interest payment is not deductible'' -- is a type. A proof of that conclusion is
+a term of that type. If the term type-checks, the conclusion is verified; if it
+does not, the error is explicit and localised. Crucially, when a legal condition
+requires human determination (because the underlying predicate is vague or
+discretionary), LegalLean does not attempt to discharge it. Instead, it wraps
+the proposition in a \texttt{FormalisationBoundary} value that carries
+machine-readable metadata about which institution must determine it and why.
+
+An important architectural distinction: LegalLean is a verification layer, not an inference engine. The case study functions (such as \texttt{isDeductible} for IRC~\S163(h)) are formalisations of statutory logic written by a human or language model. They are programs to be verified, not derivations from a rule base. The value of Lean~4 is not that it replaces the formaliser but that it catches errors in the formalisation: if the encoded logic is inconsistent with the declared types, the type checker rejects it. A generic defeasible reasoning solver (in the style of DDL's proof theory) would be a valuable complement but serves a different role. DDL computes which conclusions follow from a set of rules; LegalLean verifies that a specific encoding of those rules is internally consistent and correctly typed. The two are complementary, not competitive.
+
+The contributions of this paper are:
+\begin{enumerate}
+  \item The \texttt{FormalisationBoundary} inductive type and the
+    \texttt{RequiresHumanDetermination} typeclass (with \texttt{Vague} and
+    \texttt{Discretionary} subclasses), providing the first formal treatment of
+    Hart's open texture as a machine-checkable type-level distinction.
+  \item A verified encoding of IRC~\S163(h) including
+    \texttt{monotonicity\_break\_general}, a machine-checked proof that the TCJA
+    2017 constitutes a non-monotonic statutory change: for every home equity
+    payment satisfying the pre-TCJA conditions, the legal outcome transitions
+    from \texttt{boundary} (human determination required) to
+    \texttt{formal~False} (machine-verified rejection).
+  \item A dependent-type encoding of the O-1A visa ``3 of 8'' threshold using
+    \texttt{AllDistinct} lists with length constraints, together with a
+    \texttt{mixed} formalisation of the Kazarian two-part test.
+  \item A structured comparison of LegalLean against
+    DDL~\cite{governatori2005representing}, Catala~\cite{merigoux2021catala},
+    L4L~\cite{hou2021l4l}, and LegalRuleML~\cite{palmirani2018modelling} across
+    seven dimensions.
+\end{enumerate}
+
+All source code is available and compiles against Lean~4 v4.24.0 (the Aristotle
+release) with no Mathlib dependency.
+
+% ---------------------------------------------------------------
+\section{Background}
+% ---------------------------------------------------------------
+
+\subsection{Hart's Open Texture}
+
+In \textit{The Concept of Law} (1961), H.L.A. Hart~\cite{hart1961concept}
+observed that legal concepts have a ``core of settled meaning'' and a
+``penumbra of uncertainty''. The canonical example is a rule prohibiting
+vehicles in a park: a car is unambiguously within the rule's core; a toy pedal
+car is in the penumbra. The penumbral question cannot be resolved by logic alone
+-- it requires a judgement about the rule's purpose and the case's particulars.
+Hart called this irreducible property ``open texture'': the meaning of legal
+terms cannot be fully determined in advance, and no formalisation can eliminate
+the need for human judgement at the boundary.
+
+Prior legal knowledge representation systems treat open texture as a limitation
+imposed from outside: the formalisation goes as far as it can, and the rest is
+left to the practitioner. LegalLean treats it as a property to be represented
+inside the system.
+
+\subsection{Default Logic and Defeasibility}
+
+Legal reasoning is non-monotonic: adding new rules or evidence can retract
+previously valid conclusions. Lawsky's ``A Logic for Statutes''~\cite{lawsky2017logic}
+provides a careful analysis of how Reiter's default logic~\cite{reiter1980logic}
+applies to statutory interpretation, demonstrating that statutes encode default
+rules of the form: ``if conditions hold and no exception applies, the conclusion
+follows.'' The exceptions are themselves defeasible, creating chains of defeat.
+
+LegalLean represents defeasibility through the \texttt{Defeats} structure and
+\texttt{DefeasiblyHolds} proposition type. Priority ordering (\textit{lex
+posterior}, \textit{lex specialis}) is encoded in the \texttt{Priority} field of
+each \texttt{LegalRule}. The key departure from prior work is that defeat
+relations are typed: the \texttt{Defeats} structure carries a \texttt{reason}
+field distinguishing \textit{lex posterior} from \textit{lex specialis}, and its
+\texttt{strict} field distinguishes hard from soft defeat.
+
+\subsection{Curry-Howard and Lean 4}
+
+The Curry-Howard correspondence~\cite{curry1934functionality,howard1980formulae}
+establishes an isomorphism between propositions and types: a proposition
+\texttt{P} is inhabited (has a term of that type) if and only if it is provable.
+In Lean~4~\cite{demoura2021lean4}, this means that constructing a value of type
+\texttt{EvidenceFor P} is literally the same operation as proving \texttt{P}.
+Lean~4's kernel verifier checks all proof terms, making the guarantee
+machine-checkable in a stronger sense than SMT: the checker is a small,
+auditable kernel, not an opaque solver.
+
+Lean~4's dependent type system allows the type of a term to depend on its value.
+This is essential for legal formalisation: the type of evidence required for
+``meets 3 of 8 criteria'' depends on which specific criteria are claimed, and
+\texttt{MeetsThreeCriteria} encodes this directly via an \texttt{AllDistinct}
+list of \texttt{Criterion} values with a \texttt{cardinal} proof that
+\texttt{satisfied.length >= 3}.
+
+% ---------------------------------------------------------------
+\section{The LegalLean Framework}
+% ---------------------------------------------------------------
+
+\subsection{Core Types}
+
+The framework begins with three foundational types defined in
+\texttt{LegalLean.Core}:
+
+\begin{lstlisting}[language=lean4]
+inductive Deontic where
+  | permitted    : Deontic
+  | prohibited   : Deontic
+  | obligatory   : Deontic
+  deriving Repr, BEq, Inhabited, DecidableEq
+\end{lstlisting}
+
+The deontic modalities cover the three fundamental normative positions. Lean~4's
+\texttt{DecidableEq} derivation means that equality of modalities is decidable,
+enabling automated conflict detection in theorems (for instance,
+\texttt{R1\_BaseDeduction.modality~\textbackslash{}ne~R2\_TCJAProhibition.modality} is proved by
+\texttt{simp}).
+
+\begin{lstlisting}[language=lean4]
+structure LegalRule (α : Type) where
+  id          : String
+  description : String
+  modality    : Deontic
+  priority    : Priority
+  conclusion  : α → Prop
+  defeatedBy  : List String
+\end{lstlisting}
+
+\texttt{LegalRule} is parameterised by the type \texttt{\(\alpha\)} of the
+entity it governs: \texttt{LegalRule InterestPayment} for IRC~\S163(h) rules,
+\texttt{LegalRule Provider} for TCP Code rules. The \texttt{conclusion} field is
+a function from \texttt{\(\alpha\)} to \texttt{Prop}, encoding the rule's
+conclusion as a dependent proposition. This is more expressive than DDL's flat
+first-order signature.
+
+\begin{lstlisting}[language=lean4]
+structure EvidenceFor (P : Prop) where
+  source   : String
+  artifact : Option String
+  witness  : P
+\end{lstlisting}
+
+\texttt{EvidenceFor P} is the propositions-as-types materialisation of legal
+evidence: the \texttt{witness} field literally contains the proof of \texttt{P}.
+Constructing an \texttt{EvidenceFor P} value is constructing a proof. The
+\texttt{source} and \texttt{artifact} fields provide provenance that survives
+code evolution -- they are not erased at compile time.
+
+\subsection{The FormalisationBoundary Type}
+
+\texttt{FormalisationBoundary} is the novel contribution of this framework:
+
+\begin{lstlisting}[language=lean4]
+inductive FormalisationBoundary (P : Sort _) where
+  | formal   (proof : P)                                  : FormalisationBoundary P
+  | boundary (reason : String) (authority : String)       : FormalisationBoundary P
+  | mixed    (formalPart : String) (humanPart : String)   : FormalisationBoundary P
+\end{lstlisting}
+
+The three constructors correspond to three epistemic positions about a legal
+proposition \texttt{P}:
+
+\begin{itemize}
+  \item \texttt{formal proof}: the type checker alone can verify \texttt{P}. No
+    human determination is required. The \texttt{proof} term is a
+    machine-checked certificate.
+  \item \texttt{boundary reason authority}: \texttt{P} requires human
+    determination. The \texttt{reason} string names the specific open-texture
+    condition; \texttt{authority} names the institution responsible.
+  \item \texttt{mixed formalPart humanPart}: \texttt{P} is partially formal and
+    partially boundary. Part~1 of the Kazarian two-part test is \texttt{formal}
+    (Lean verified the criteria count); Part~2 is \texttt{boundary} (USCIS
+    holistic determination).
+\end{itemize}
+
+\subsection{The RequiresHumanDetermination Typeclass}
+
+The \texttt{FormalisationBoundary} type marks where the boundary falls. The
+\texttt{RequiresHumanDetermination} typeclass marks which propositions are
+intrinsically at the boundary:
+
+\begin{lstlisting}[language=lean4]
+class RequiresHumanDetermination (P : Prop) where
+  reason    : String
+  authority : String
+
+class Vague (P : Prop) extends RequiresHumanDetermination P where
+  core      : String
+  penumbra  : String
+
+class Discretionary (P : Prop) extends RequiresHumanDetermination P where
+  scope       : String
+  constraints : List String
+\end{lstlisting}
+
+\texttt{Vague} captures Hart's core/penumbra distinction directly. \texttt{core}
+describes settled cases; \texttt{penumbra} describes the contested region.
+\texttt{Discretionary} captures a different phenomenon: not conceptual vagueness
+but institutional authority. A USCIS adjudicator's determination of
+``extraordinary ability'' is not vague in Hart's sense -- the adjudicator has
+the power to decide. The typeclass distinguishes these two sources of
+non-formalisability.
+
+Both typeclasses constrain proof search: any proposition with a \texttt{Vague}
+or \texttt{Discretionary} instance cannot be discharged by the type checker
+without an explicit axiom. In the case studies, open-texture propositions such
+as \texttt{HasExtraordinaryAbility} and \texttt{IsQualifiedResidence} are
+introduced as axioms -- honest markers that the type checker cannot verify them.
+The typeclass instances then carry the auditable metadata explaining why.
+
+The use of axioms for open-texture propositions requires justification. An axiom
+in Lean~4 is a proposition asserted without proof; it is not verified by the
+kernel. One might object that this introduces a soundness gap: if the axioms are
+inconsistent, any theorem built on them is vacuously true. This objection is
+correct in principle but misdirected in practice. The axioms are not intended to
+be discharged; they represent propositions that \textit{should not} be
+machine-verifiable. A system that could prove \texttt{HasExtraordinaryAbility~a}
+for a given applicant \texttt{a} would be claiming to have automated a
+determination that the US Congress assigned to USCIS adjudicators. The axiom
+marks the boundary between what the type checker should certify and what it
+should defer. The theorems built on these axioms do not depend on their truth --
+they depend on their \textit{structure}. The monotonicity break theorem, for
+instance, does not use any open-texture axiom; it reasons entirely about the
+formalisable conditions. This is the key architectural difference from all prior
+systems: the formalisation boundary is not a gap in the encoding but a typed,
+first-class object.
+
+% ---------------------------------------------------------------
+\section{Case Studies}
+% ---------------------------------------------------------------
+
+\subsection{IRC \S163(h): Mortgage Interest Deduction}
+
+IRC~\S163(h) (26~U.S.C.~\S163(h)) is the provision of the US Internal Revenue
+Code governing the deductibility of qualified residence interest. It was chosen
+because Lawsky~\cite{lawsky2017logic} used it as the gold standard case study
+for default logic applied to statutes. The rule structure consists of three
+rules, four defeat relations forming a three-level chain, and three open-texture
+terms.
+
+The three rules in \texttt{LegalLean.CaseStudies.IRC163h} are:
+\begin{itemize}
+  \item \textbf{R1} (\texttt{R1\_BaseDeduction}): Taxpayers are permitted to
+    deduct interest on acquisition indebtedness secured by a qualified
+    residence. Priority level~1 (``statute'').
+  \item \textbf{R2} (\texttt{R2\_TCJAProhibition}): Home equity interest
+    deduction is prohibited for taxable years beginning after 15~December 2017
+    (the TCJA). Priority level~2 (``statute (TCJA 2017, \textit{lex posterior})'').
+  \item \textbf{R3} (\texttt{R3\_GrandfatherRule}): Acquisition indebtedness
+    outstanding on 13~October 1987 is grandfathered from current dollar limits.
+    Priority level~3 (``statute (\textit{lex specialis}, grandfather clause)'').
+\end{itemize}
+
+The four defeat relations are: R2 defeats R1 (\textit{lex posterior}); E1.1
+(dollar limit) defeats R1; E1.2 (home equity dollar limit) defeats R1; and R3
+defeats E1.1. The third of these creates a three-level defeasibility chain:
+R3 defeats E1.1, which defeats R1 -- defeat of the limit restores the base
+permission. This chain cannot be represented by a flat priority ordering; it
+requires the full defeasibility machinery.
+
+Open-texture terms are encoded as axioms with \texttt{Vague} instances.
+\texttt{IsQualifiedResidence} is declared as an axiom, with the instance
+documenting the core (principal residence plus one other property used as a
+residence) and the penumbra (mobile homes, timeshares, boats with habitability
+facilities, fractional ownership). \texttt{IsSubstantialImprovement} receives
+the same treatment. \texttt{MixedUseAllocation} receives a
+\texttt{Discretionary} instance referencing IRS tracing rules under
+Treas.~Reg.~\S1.163-8T.
+
+The compliance function \texttt{isDeductible} returns a
+\texttt{FormalisationBoundary Prop}. For unlicensed entities, post-TCJA home
+equity, and unsecured debt, it returns \texttt{formal~False} -- machine-verified
+rejection. For acquisition indebtedness within limits, it returns
+\texttt{boundary} with the authority ``IRS / Tax Court''.
+
+\subsubsection{The Monotonicity Break Theorem.}
+
+The headline result of this case study is \texttt{monotonicity\_break\_general}:
+
+\begin{lstlisting}[language=lean4]
+theorem monotonicity_break_general
+    (payment : InterestPayment) (status : FilingStatus)
+    (h_individual : payment.paidByIndividual = true)
+    (h_secured    : payment.indebtedness.securedByResidence = true)
+    (h_purpose    : payment.indebtedness.purpose = IndebtednessPurpose.other)
+    (h_within     : withinHomeEquityLimit payment.indebtedness status = true)
+    : (∃ r a, isDeductible payment ⟨2017⟩ status =
+                FormalisationBoundary.boundary r a) ∧
+      (isDeductible payment ⟨2018⟩ status =
+                FormalisationBoundary.formal False) := by
+  constructor
+  · simp [isDeductible, h_individual, h_secured, h_purpose, h_within]
+  · simp [isDeductible, h_individual, h_secured, h_purpose]
+\end{lstlisting}
+
+This theorem states, for all home equity interest payments by individual
+taxpayers on secured property within the applicable dollar limits: the pre-TCJA
+outcome (year~=~2017) is \texttt{boundary} (potentially deductible; human
+determination of ``qualified residence'' required), while the post-TCJA outcome
+(year~=~2018) is \texttt{formal~False} (automatically rejected;
+machine-verified). The TCJA added a rule to the legal system that removed a
+previously available permission. Lean~4 verifies this as a structural property
+of the encoding, not merely a test case.
+
+A companion corollary \texttt{pre\_tcja\_not\_auto\_rejected} confirms the
+strictness of the break: the pre-TCJA outcome is provably not
+\texttt{formal~False}, making the transition genuinely from ``possibly
+permitted'' to ``certainly prohibited.''
+
+It is worth being explicit about what this theorem proves and does not prove. It
+proves a structural property of the formalisation: that the \texttt{isDeductible}
+function, as encoded, produces these two outcomes for these two inputs. It does
+not prove that the formalisation is a complete representation of IRC~\S163(h) --
+such a claim would require independent legal audit. The theorem's value is that
+it is machine-checked: the outcome cannot diverge silently from the encoding.
+
+The proof's brevity (two \texttt{simp} calls) does not indicate a trivially
+encoded result. The \texttt{simp} tactic unfolds \texttt{isDeductible},
+substitutes the hypotheses, and evaluates the \texttt{if} branches. The
+non-triviality is in the \textit{universality}: the theorem quantifies over all
+\texttt{InterestPayment} values and all \texttt{FilingStatus} values satisfying
+the four preconditions. A test case checks one input; this theorem checks the
+entire input space. The preconditions are exactly the conditions under which the
+monotonicity break is legally relevant (individual taxpayer, secured home equity
+debt within limits), and the universally quantified conclusion is that the legal
+outcome changes at the 2018 boundary for every such payment. This structural
+coverage is what distinguishes a verified theorem from a unit test, even when
+both share the same tactic.
+
+\subsection{O-1A Visa: ``3 of 8'' as Dependent Types}
+
+The O-1A extraordinary ability visa (8~CFR~\S204.5(h)) requires demonstrating
+``extraordinary ability'' by meeting at least three of eight evidentiary
+criteria. This is a natural dependent-type problem: the ``3 of 8'' threshold is
+a cardinality constraint on a set of satisfied criteria, and Lean~4 can encode
+this constraint at the type level.
+
+The eight criteria are defined as an inductive type \texttt{Criterion} with
+\texttt{DecidableEq}, allowing duplicate-free lists. Since the case study avoids
+Mathlib, cardinality is encoded without \texttt{Finset}:
+
+\begin{lstlisting}[language=lean4]
+inductive AllDistinct {α : Type} [DecidableEq α] : List α → Prop
+  | nil  : AllDistinct []
+  | cons : ∀ {x : α} {xs : List α}, x ∉ xs → AllDistinct xs
+               → AllDistinct (x :: xs)
+
+structure MeetsThreeCriteria (a : Applicant) where
+  satisfied : List Criterion
+  distinct  : AllDistinct satisfied
+  cardinal  : satisfied.length ≥ 3
+  evidence  : ∀ c ∈ satisfied, LegalLean.EvidenceFor (criterionProp a c)
+\end{lstlisting}
+
+A value of type \texttt{MeetsThreeCriteria a} can only be constructed if one
+provides a duplicate-free list of at least three criteria together with
+\texttt{EvidenceFor} witnesses for each. The type checker enforces the threshold
+at compile time. This is precisely the propositions-as-types reading of ``the
+applicant meets the threshold'': inhabiting the type is proving the claim.
+
+The Kazarian two-part test (\textit{Kazarian v.\ USCIS}, 596~F.3d~1115,
+9th~Cir.~2010) is encoded by \texttt{determineEligibility}, which returns
+\texttt{FormalisationBoundary.mixed}: the \texttt{formalPart} records that Lean
+verified the criteria count; the \texttt{humanPart} names the USCIS adjudicator
+and the final merits determination as the non-formalisable component. The
+theorem \texttt{eligibility\_always\_mixed} proves that
+\texttt{determineEligibility} always returns \texttt{mixed} -- never
+\texttt{formal} or \texttt{boundary} alone -- which is a structural consequence
+of the Kazarian framework: Part~1 is always machine-checkable; Part~2 is always
+not.
+
+\subsection{TCP Code: Deontic Spectrum and DDL Comparison}
+
+The third case study encodes a kernel of the Australian Telecommunications
+Consumer Protections Code (C628:2012), chosen for direct comparison with
+Governatori's DDL encoding of the same regulatory
+text~\cite{governatori2005representing,governatori2019compliance}. Three
+provisions are encoded: TCP~3.2 (contact details obligation), TCP~5.1 (Critical
+Information Summary obligation), and TCP~8.2 (excessive early termination fee
+prohibition). Each has a \textit{lex specialis} defeat: small provider
+exemption, renewal exemption, and device repayment carve-out respectively.
+
+The three provisions demonstrate the full deontic spectrum: TCP~3.2 imposes an
+obligation (providers must publish contact details); TCP~8.2 imposes a
+prohibition (providers must not charge excessive ETFs); and the defeat rules
+introduce permissions (small providers may use simplified requirements; device
+repayment fees are allowed). The theorems
+\texttt{contact\_obligation\_and\_exemption\_are\_deontic\_distinct} and
+\texttt{etf\_prohibition\_and\_carveout\_are\_deontic\_distinct} prove that the
+base rule and its defeating exception always have distinct modalities.
+
+The \texttt{exemption\_rules\_outrank\_base\_rules} theorem verifies that
+defeating rules have strictly higher priority levels than the rules they defeat
+across all three provisions:
+
+\begin{lstlisting}[language=lean4]
+theorem exemption_rules_outrank_base_rules :
+    R1_SmallProviderExemption.priority.level > R1_ContactObligation.priority.level ∧
+    R2_RenewalExemption.priority.level > R2_CriticalInfoSummary.priority.level ∧
+    R3_DeviceRepaymentCarveout.priority.level > R3_ExcessiveETFProhibited.priority.level
+\end{lstlisting}
+
+This is a structural soundness property: a defeat relation where the defeating
+rule had lower or equal priority would be incoherent.
+
+The DDL encoding of the same provisions is documented as comments in the source
+file. For example, the contact obligation in DDL syntax:
+
+\begin{lstlisting}[style=plain]
+d ⊗ (isLicensed(P)) ⇒ O(publishContactDetails(P))
+r1 :- licensed(P), not small_provider(P).
+r1_exc :- small_provider(P).
+r1_exc > r1
+\end{lstlisting}
+
+The LegalLean encoding differs in four respects: (1)~\texttt{FormalisationBoundary}
+distinguishes \texttt{prominently\_published} from \texttt{is\_licensed} as
+requiring human determination, rather than treating both as ordinary literals;
+(2)~\texttt{LegalRule~(\(\alpha\)~:~Type)} parameterises rules by the entity
+type, producing a typed rather than flat signature; (3)~\texttt{EvidenceFor~P}
+requires a proof witness rather than mere assertion; (4)~the \texttt{Vague} and
+\texttt{Discretionary} instances carry auditable metadata that is
+machine-readable, not just a comment.
+
+% ---------------------------------------------------------------
+\section{Evaluation}
+% ---------------------------------------------------------------
+
+\subsection{Theorem Count and Properties}
+
+The system produces 44 machine-verified theorems with zero \texttt{sorry}
+placeholders across the three case studies. It is important to be honest about
+the nature of these theorems. Some are structural unit tests:
+\texttt{non\_individual\_never\_deducts} is proved by
+\texttt{simp~[isDeductible,~h]} -- a trivial path trace through a function.
+These theorems are valuable as regression tests but do not constitute substantive
+contributions in isolation.
+
+Others are more substantive. \texttt{monotonicity\_break\_general} requires
+reasoning about two distinct legal regimes and proving a structural divergence.
+\texttt{defeat\_chain\_exists} proves that the defeat relation in IRC~\S163(h)
+has genuine depth -- R3 defeats E1.1, which defeats R1, but R3 does not directly
+defeat R1 -- capturing a legally meaningful subtlety about the grandfather
+clause. \texttt{no\_mixed\_outcomes} proves by full case analysis that
+IRC~\S163(h)'s \texttt{isDeductible} function never returns a \texttt{mixed}
+result, establishing a binary structure as a property of the statute rather than
+a design choice.
+
+A faithfulness audit identified three areas where the encoding simplifies the
+actual law: (1)~date comparisons use ISO~8601 string ordering rather than proper
+date arithmetic; (2)~\texttt{criterionProp} now maps each O-1A criterion to its
+own distinct axiom (e.g.\ \texttt{HasExtraordinaryAbility},
+\texttt{SalaryIsHigh}, \texttt{ContributionsAreMajor}), with each carrying a
+separate \texttt{Vague} or \texttt{Discretionary} instance that documents the
+specific core and penumbra for that criterion; (3)~the IRC~\S163(h) encoding
+does not handle the full debt tracing rules of Treas.~Reg.~\S1.163-8T, which
+require temporal tracking of how loan proceeds were used.
+
+\subsection{Comparison with Prior Systems}
+
+Table~\ref{tab:comparison} compares LegalLean against four prior systems across
+seven dimensions on a 1--5 scale. As noted below, these scores should be treated
+with caution.
+
+\begin{table}[t]
+\caption{Comparison of LegalLean with prior legal formalisation systems.
+Scores are on a 1--5 scale; higher is better. Scores reflect the dimensions on
+which LegalLean makes a genuine claim, not an objective ranking.}
+\label{tab:comparison}
+\begin{tabular}{lccccc}
+\hline
+\textbf{Dimension} & \textbf{LegalLean} & \textbf{L4L} & \textbf{DDL} &
+  \textbf{Catala} & \textbf{LegalRuleML} \\
+\hline
+Compositional semantics         & 5 & 3 & 4 & 4 & 2 \\
+Deontic modalities              & 5 & 4 & 5 & 2 & 4 \\
+Dependent types                 & 5 & 5 & 1 & 1 & 1 \\
+Machine-checkable guarantees    & 5 & 3 & 3 & 4 & 1 \\
+Open texture encoding           & 5 & 3 & 4 & 2 & 2 \\
+Provenance tracking             & 5 & 5 & 4 & 3 & 4 \\
+Temporal reasoning              & 5 & 3 & 4 & 3 & 4 \\
+\hline
+\textbf{Total}                  & \textbf{35} & \textbf{26} & \textbf{25} &
+  \textbf{19} & \textbf{18} \\
+\hline
+\end{tabular}
+\end{table}
+
+These scores were generated as part of a structured comparison exercise and must
+be interpreted with appropriate scepticism. The scores for LegalLean are perfect
+(5/5 on every dimension), which reflects the dimensions being chosen partly to
+highlight LegalLean's strengths. A reviewer who weighted practical adoption, tool
+maturity, or non-expert usability would produce different rankings.
+
+\textbf{DDL}~\cite{governatori2005representing,governatori2019compliance}: strong
+on deontic modalities and temporal reasoning; the most mature industrial-strength
+defeasible logic system for law. Its limitation is that it treats all conditions
+as first-order literals -- \texttt{prominently\_published(P)} is no different
+from \texttt{is\_licensed(P)} in the DDL signature. There is no mechanism to
+mark the former as requiring institutional determination.
+
+\textbf{Catala}~\cite{merigoux2021catala}: designed specifically for tax and
+social benefit statutes, with excellent practical coverage. It computes legal
+outcomes rather than proving properties about them: Catala programs execute, they
+do not produce proof certificates. It has no representation of open texture. In
+LegalLean, \texttt{isDeductible} returns
+\texttt{FormalisationBoundary.boundary~"qualified~residence"~"IRS~/~Tax~Court"}
+-- the system records that it cannot determine this condition and names the
+authority responsible. The distinction is not that LegalLean ``handles''
+vagueness better, but that it represents the inability to handle it as a typed,
+auditable object rather than a silent gap.
+
+\textbf{L4L}~\cite{hou2021l4l}: the closest prior work in spirit. L4L uses
+dependent types and produces proofs, but SMT-backed verification means the proof
+certificates are not auditable proof terms in the Curry-Howard sense. Its
+treatment of open texture relies on the SMT solver's inability to discharge
+certain goals rather than a typed annotation.
+
+\textbf{LegalRuleML}~\cite{palmirani2018modelling}: a rich XML ontology with
+sophisticated modelling of deontic modalities and temporal applicability. It is a
+knowledge representation language, not a reasoning system -- it provides no
+automated inference or proof production.
+
+\subsection{Limitations}
+
+\textbf{Scalability}: the three case studies cover nine provisions and fewer than
+300 lines of Lean code each. Scaling to a complete statute would require
+substantially more proof engineering.
+
+\textbf{No LLM-to-Lean pipeline}: the framework does not yet include an
+automated formalisation pipeline. The transducer half of the architecture --
+converting statutory text to Lean~4 -- is currently manual.
+
+\textbf{Axiom dependence}: the open-texture axioms are genuine axioms that
+cannot be proved by Lean's kernel. The framework is only as sound as the legal
+judgements behind the \texttt{Vague} and \texttt{Discretionary} instances.
+
+\textbf{No temporal algebra}: the TCJA cutoff is encoded as a numeric comparison
+(\texttt{year.year >= 2018}), not via a proper temporal type with duration,
+retroactivity, and sunset provisions. A complete temporal logic layer remains
+future work.
+
+\textbf{Sorry-bypass gap}: the type system does not prevent the construction
+\texttt{FormalisationBoundary.formal~sorry}. A careless user could mark a
+proposition as formally verified using Lean's \texttt{sorry} axiom. The
+VERIFICATION.md protocol addresses this by requiring
+\texttt{grep~-r~sorry} as part of the verification layer, but the type system
+itself does not enforce it. This is an engineering limitation, not a theoretical
+one.
+
+\textbf{Normative risk of formalisation}: by encoding Hart's open texture as a
+typed object, this work makes the formalisation boundary tractable and auditable.
+This carries a normative risk that Lessig's ``code is law'' tradition identifies:
+making the boundary typed may create a false sense of completeness. A user who
+sees \texttt{FormalisationBoundary.boundary~"requires~IRS~determination"~"IRS~/~Tax~Court"}
+might treat the annotation as sufficient engagement with the underlying vagueness,
+when in fact the core/penumbra analysis in the \texttt{Vague} instance is one
+interpretation among several. The system does not resolve open texture; it
+classifies and annotates it. Users must understand that the annotation is a map
+of the boundary, not a resolution of it. This limitation is intrinsic to any
+formalisation of vagueness and should be communicated clearly in any deployment
+context.
+
+% ---------------------------------------------------------------
+\section{Related Work}
+% ---------------------------------------------------------------
+
+\textbf{Defeasible Deontic Logic
+(DDL)}~\cite{governatori2005representing,governatori2019compliance}: the most
+complete prior work on defeasible reasoning in law. It provides a proof theory
+for defeasible rules with deontic modalities and has been applied to compliance
+checking in eHealth, business contracts, and regulatory codes. LegalLean's
+advance over DDL is not in defeasibility machinery but in (1)~machine-checkable
+proof certificates, (2)~the \texttt{FormalisationBoundary} typing of open
+texture, and (3)~dependent types enabling evidence-as-inhabitants.
+
+\textbf{Catala}~\cite{merigoux2021catala}: the most practical prior system for
+statutory formalisation, with a growing library of French, US, and Polish tax
+law. Its design priority is executability: a Catala specification is a runnable
+programme that computes legal outcomes from facts. LegalLean's priority is
+verifiability. The two approaches are complementary rather than competitive. A
+concrete example illustrates this complementarity: in IRC~\S163(h), the
+condition ``property is a qualified residence'' is vague in Hart's sense (the
+penumbra includes mobile homes, timeshares, and boats). In Catala, this
+condition must either be encoded as a Boolean input (the user asserts it) or
+omitted (the programme raises an error for unhandled cases). In LegalLean,
+\texttt{isDeductible} returns \texttt{FormalisationBoundary.boundary~"qualified~residence"~"IRS~/~Tax~Court"}
+-- the system records that it cannot determine this condition, names the
+authority responsible, and the \texttt{Vague} instance on
+\texttt{IsQualifiedResidence} documents the core and penumbra for audit. The
+distinction is not that LegalLean ``handles'' vagueness better, but that it
+represents the inability to handle it as a typed, auditable object rather than a
+silent gap or a runtime error.
+
+\textbf{L4L}~\cite{hou2021l4l}: the work closest in motivation to LegalLean.
+The primary technical difference is that L4L's verification layer relies on SMT,
+while LegalLean's relies on Lean~4's kernel verifier. SMT provides more
+automation; Lean~4's kernel provides more auditability. L4L does not include a
+typed treatment of open texture.
+
+\textbf{LegalRuleML}~\cite{palmirani2018modelling}: extends RuleML with deontic
+operators, temporal metadata, and defeasibility annotations. It is the most
+expressive knowledge representation format for legal rules but provides no
+automated reasoning. LegalLean and LegalRuleML address different problems:
+LegalLean verifies reasoning; LegalRuleML represents knowledge for interchange.
+
+\textbf{Hohfeldian frameworks}: Prior work by
+McCarty~\cite{mccarty1977reflections} and
+Boella~et~al.~\cite{boella2006introduction} applies Hohfeld's fundamental legal
+relations in formal settings. LegalLean's three-modality deontic type is
+intentionally minimal; a Hohfeldian extension is straightforward but not required
+for the case studies.
+
+\textbf{Logic programming approaches}: Kowalski and Sergot's Event
+Calculus~\cite{shanahan1999event}, together with Sergot~et~al.'s British
+Nationality Act encoding~\cite{sergot1986british}, established the research
+programme of encoding law in logic programming. That tradition addressed
+defeasibility before DDL but did not handle open texture or produce
+machine-checked proofs.
+
+% ---------------------------------------------------------------
+\section{Conclusion and Future Work}
+% ---------------------------------------------------------------
+
+LegalLean demonstrates that Lean~4 dependent types provide a viable verification
+layer for legal reasoning systems. The key result is not the theorem count but
+the architecture: a system in which Hart's open texture is a first-class typed
+object rather than an external limitation, and in which the distinction between
+``machine-verified'' and ``requires human determination'' is enforced by the type
+checker rather than stated in documentation.
+
+The \texttt{monotonicity\_break\_general} theorem illustrates what
+machine-checked legal reasoning makes possible: a formal, auditable certificate
+that the TCJA 2017 removed a deduction permission for all home equity interest
+payments, not merely for specific test cases. This kind of structural certificate
+-- not an answer, but a proof about the legal system itself -- is what
+distinguishes a verifier from a transducer.
+
+Several directions remain open. First, the transducer layer: language models are
+the natural tool for converting statutory text to Lean~4 stubs, with the type
+checker providing feedback to guide the formalisation. Second, zero-knowledge
+proofs for compliance: a party wishing to attest compliance without disclosing
+underlying facts could, in principle, use ZK proofs over the formal structure.
+Third, temporal algebra: a proper treatment of statutory effective dates, sunset
+provisions, and retroactivity requires a temporal type extending the current
+\texttt{TaxYear} structure. Fourth, scaling studies: encoding a complete statute
+rather than a selected kernel would test whether the proof engineering effort is
+tractable in practice.
+
+The verification protocol that emerges from this work has three layers: the type
+checker verifies structural properties; the \texttt{FormalisationBoundary}
+annotations identify where institutional determination is required; and legal
+practitioners review the open-texture instances to ensure the core/penumbra
+analysis is sound. Only the first layer is automated. The claim is not that legal
+reasoning can be automated but that the parts that can be verified should be, and
+the parts that cannot should be typed rather than silently omitted.
+
+\begin{credits}
+\subsubsection{\discintname}
+The author has no competing interests to declare that are relevant to the content
+of this article.
+\end{credits}
+
+% ---- Bibliography ----
+\bibliographystyle{splncs04}
+\bibliography{references}
+
+\end{document}

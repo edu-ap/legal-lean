@@ -1,0 +1,388 @@
+{
+  "stub": {
+    "file": "LegalLean/CaseStudies/O1Visa.lean",
+    "line": 23,
+    "context": "  - Formalisable elements (document counts, membership lists)\n  - Open texture requiring USCIS adjudicator discretion (\"sustained national\n    or international acclaim\", \"extraordinary ability\", \"comparable evidence\")\n-/\n\nimport LegalLean.Core\nimport LegalLean.Defeasible\n\nnamespace LegalLean.CaseStudies.O1Visa\n\n-- TODO: Formalise O-1A eligibility criteria as dependent types\n-- Each criterion: a proposition that can be evidenced\n-- Eligibility: ∃ (s : Finset (Fin 8)), s.card ≥ 3 ∧ ∀ i ∈ s, EvidenceFor (criterion i)\n-- FormalisationBoundary: mark \"extraordinary ability\" and \"comparable evidence\"\n-- as Discretionary (USCIS adjudicator)",
+    "namespace": "LegalLean.CaseStudies.O1Visa",
+    "description": "Formalise O-1A eligibility criteria as dependent types",
+    "case_study": "O-1 Visa Extraordinary Ability Criteria",
+    "target_types": [
+      "DefeasiblyHolds",
+      "FormalisationBoundary",
+      "EvidenceFor"
+    ]
+  },
+  "prompt": {
+    "system": "You are a legal research assistant specialising in formal methods\napplied to law. Your answers must be structured to support formalisation in Lean 4\ndependent type theory. You are helping build a library called LegalLean that encodes\nlegal reasoning with machine-checkable guarantees.\n\nCRITICAL: Structure your response as JSON with the following schema. Do NOT return\nprose — return structured data that maps to type definitions.\n\nBe exhaustive about conditions, exceptions, and vagueness. Legal formalisation\nrequires knowing EVERY rule, exception, and point of interpretive discretion.",
+    "user": "Analyse the following legal provision and return a JSON object\nwith this exact structure:\n\n{\n  \"provision\": {\n    \"id\": \"string — official citation\",\n    \"title\": \"string — short name\",\n    \"jurisdiction\": \"string\",\n    \"source_url\": \"string — authoritative source URL\"\n  },\n  \"rules\": [\n    {\n      \"id\": \"string — unique rule identifier\",\n      \"description\": \"string — what this rule establishes\",\n      \"modality\": \"permitted | prohibited | obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"string\",\n          \"description\": \"string — natural language condition\",\n          \"formalisable\": true/false,\n          \"if_not_formalisable\": \"string — why (vague term? discretionary?)\"\n        }\n      ],\n      \"exceptions\": [\n        {\n          \"id\": \"string\",\n          \"description\": \"string — what defeats this rule\",\n          \"priority\": \"string — why this exception wins (lex specialis, lex posterior, etc.)\",\n          \"source\": \"string — statutory reference for the exception\"\n        }\n      ],\n      \"definitions\": [\n        {\n          \"term\": \"string — defined term\",\n          \"definition\": \"string — statutory definition\",\n          \"has_open_texture\": true/false,\n          \"core_meaning\": \"string — settled, uncontested meaning\",\n          \"penumbra\": \"string — contested, unclear boundary cases\"\n        }\n      ]\n    }\n  ],\n  \"defeat_relations\": [\n    {\n      \"defeater_rule\": \"string — rule ID that defeats\",\n      \"defeated_rule\": \"string — rule ID that is defeated\",\n      \"reason\": \"string — why (lex specialis, lex posterior, lex superior, etc.)\",\n      \"strict\": true/false\n    }\n  ],\n  \"discretionary_checkpoints\": [\n    {\n      \"id\": \"string\",\n      \"authority\": \"string — who decides\",\n      \"decision\": \"string — what they decide\",\n      \"constraints\": [\"string — limits on their discretion\"],\n      \"gated_rule\": \"string — which rule this gates\"\n    }\n  ],\n  \"open_texture_terms\": [\n    {\n      \"term\": \"string\",\n      \"type\": \"vague | discretionary\",\n      \"core\": \"string — clear cases\",\n      \"penumbra\": \"string — unclear cases\",\n      \"authority\": \"string — who resolves ambiguity\",\n      \"case_law\": [\"string — key cases interpreting this term\"]\n    }\n  ],\n  \"key_references\": [\n    {\n      \"author\": \"string\",\n      \"title\": \"string\",\n      \"year\": \"number\",\n      \"relevance\": \"string\",\n      \"url\": \"string\"\n    }\n  ]\n}\n\nLegal provision to analyse:\nO-1 Visa Extraordinary Ability Criteria\n\nAdditional context:\nThis is for the LegalLean monograph. We need to formalise this provision in Lean 4 dependent type theory.\n\nThe stub is in LegalLean/CaseStudies/O1Visa.lean at line 23.\nTarget LegalLean types: DefeasiblyHolds, FormalisationBoundary, EvidenceFor.\n\nCode context:\n  - Formalisable elements (document counts, membership lists)\n  - Open texture requiring USCIS adjudicator discretion (\"sustained national\n    or international acclaim\", \"extraordinary ability\", \"comparable evidence\")\n-/\n\nimport LegalLean.Core\nimport LegalLean.Defeasible\n\nnamespace LegalLean.CaseStudies.O1Visa\n\n-- TODO: Formalise O-1A eligibility criteria as dependent types\n-- Each criterion: a proposition that can be evidenced\n-- Eligibility: ∃ (s : Finset (Fin 8)), s.card ≥ 3 ∧ ∀ i ∈ s, EvidenceFor (criterion i)\n-- FormalisationBoundary: mark \"extraordinary ability\" and \"comparable evidence\"\n-- as Discretionary (USCIS adjudicator)\n\nBe especially thorough about:\n1. Every condition and sub-condition for the rule to apply\n2. Every exception that can defeat the rule\n3. Every term with open texture (vagueness or discretion)\n4. The defeat priority ordering between rules\n5. Who has discretion and what constrains it"
+  },
+  "results": {
+    "models_queried": [
+      "sonar-pro"
+    ],
+    "responses": [
+      {
+        "model": "sonar-pro",
+        "answer_raw": "```json\n{\n  \"provision\": {\n    \"id\": \"8 CFR § 204.5(h)\",\n    \"title\": \"O-1 Visa Extraordinary Ability Criteria\",\n    \"jurisdiction\": \"United States\",\n    \"source_url\": \"https://www.ecfr.gov/current/title-8/chapter-I/subchapter-B/part-204/subpart-A/section-204.5\"\n  },\n  \"rules\": [\n    {\n      \"id\": \"O1A-Eligibility\",\n      \"description\": \"Individual is eligible for O-1A visa if they have extraordinary ability in sciences, education, business, or athletics and meet at least 3 of 8 specific criteria\",\n      \"modality\": \"obligatory\",\n      \"conditions\": [\n        {\n          \"id\": \"C1-ExtraordinaryAbility\",\n          \"description\": \"Has extraordinary ability in sciences, education, business, or athletics (demonstrated by sustained national or international acclaim)\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"Open texture terms 'extraordinary ability' and 'sustained national or international acclaim' require USCIS adjudicator discretion\"\n        },\n        {\n          \"id\": \"C2-AtLeast3Criteria\",\n          \"description\": \"Meets at least 3 of the 8 evidentiary criteria listed in 8 CFR § 204.5(h)(3)\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": [\n        {\n          \"term\": \"extraordinary ability\",\n          \"definition\": \"Degree of expertise significantly above that ordinarily encountered, by sustained national or international acclaim [8 CFR § 204.5(h)(2)]\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Top field experts with major awards, consistent high-level achievements\",\n          \"penumbra\": \"Boundary cases between 'very good' vs 'extraordinary'; relative comparisons\"\n        },\n        {\n          \"term\": \"sustained national or international acclaim\",\n          \"definition\": \"Continued recognition over time at national or international level\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Multi-year recognition through awards, publications, media coverage\",\n          \"penumbra\": \"Duration required? National vs international threshold? Recent vs historical acclaim?\"\n        }\n      ]\n    },\n    {\n      \"id\": \"Criterion1-MajorAward\",\n      \"description\": \"Receipt of nationally or internationally recognized prize or award for excellence in field\",\n      \"modality\": \"permitted\",\n      \"conditions\": [\n        {\n          \"id\": \"C1A1-AwardReceipt\",\n          \"description\": \"Has received a qualifying award\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"C1A1-AwardPrestige\",\n          \"description\": \"Award is nationally or internationally recognized for excellence\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'Recognized' and 'excellence' require adjudicator judgment of prestige level\"\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"Criterion2-Membership\",\n      \"description\": \"Membership in associations requiring outstanding achievement (judged by experts)\",\n      \"modality\": \"permitted\",\n      \"conditions\": [\n        {\n          \"id\": \"C2A1-Membership\",\n          \"description\": \"Is member of qualifying association\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"C2A1-OutstandingJudged\",\n          \"description\": \"Association requires outstanding achievement as judged by recognized experts\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"Discretionary judgment of what constitutes 'outstanding achievement'\"\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"Criterion3-Publication\",\n      \"description\": \"Published material in professional or major media about the person's work\",\n      \"modality\": \"permitted\",\n      \"conditions\": [\n        {\n          \"id\": \"C3A1-PublicationsExist\",\n          \"description\": \"Published material exists about the person's work in field\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"C3A1-MajorMedia\",\n          \"description\": \"Material appears in professional or major trade publications or media\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'Major media' threshold is discretionary\"\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"Criterion4-Judging\",\n      \"description\": \"Participation as judge of others' work individually or on panel\",\n      \"modality\": \"permitted\",\n      \"conditions\": [\n        {\n          \"id\": \"C4A1-JudgingRole\",\n          \"description\": \"Has participated as judge of work of others in field\",\n          \"formalisable\": true\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"Criterion5-OriginalContributions\",\n      \"description\": \"Original scientific, scholarly, or business-related contributions of major significance\",\n      \"modality\": \"permitted\",\n      \"conditions\": [\n        {\n          \"id\": \"C5A1-ContributionsExist\",\n          \"description\": \"Has made original contributions\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"C5A1-MajorSignificance\",\n          \"description\": \"Contributions have major significance in field (evidenced by experts)\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'Major significance' is highly discretionary\"\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"Criterion6-Authorship\",\n      \"description\": \"Authorship of scholarly articles in professional journals or major media\",\n      \"modality\": \"permitted\",\n      \"conditions\": [\n        {\n          \"id\": \"C6A1-Authorship\",\n          \"description\": \"Is author of qualifying articles\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"C6A1-ProfessionalJournals\",\n          \"description\": \"Articles published in professional journals or major media\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'Professional journal' vs minor publication discretionary\"\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"Criterion7-Employment\",\n      \"description\": \"Employment in critical or essential capacity for distinguished organizations\",\n      \"modality\": \"permitted\",\n      \"conditions\": [\n        {\n          \"id\": \"C7A1-Employment\",\n          \"description\": \"Employed by distinguished organization\",\n          \"formalisable\": true\n        },\n        {\n          \"id\": \"C7A1-CriticalRole\",\n          \"description\": \"Held critical or essential capacity\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'Critical/essential capacity' and 'distinguished organization' discretionary\"\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"Criterion8-HighSalary\",\n      \"description\": \"Commanded high salary or other remuneration indicating extraordinary ability\",\n      \"modality\": \"permitted\",\n      \"conditions\": [\n        {\n          \"id\": \"C8A1-HighSalary\",\n          \"description\": \"Has commanded high salary/remuneration\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"'High salary' is relative and field-dependent\"\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": []\n    },\n    {\n      \"id\": \"ComparableEvidence\",\n      \"description\": \"Comparable evidence may be submitted if traditional criteria do not apply\",\n      \"modality\": \"permitted\",\n      \"conditions\": [\n        {\n          \"id\": \"CE1-TraditionalNotApply\",\n          \"description\": \"Traditional evidentiary criteria do not readily apply to field\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"USCIS discretion to determine applicability and sufficiency\"\n        },\n        {\n          \"id\": \"CE2-ComparableSubmitted\",\n          \"description\": \"Comparable evidence demonstrates extraordinary ability\",\n          \"formalisable\": false,\n          \"if_not_formalisable\": \"Complete adjudicator discretion on what constitutes 'comparable'\"\n        }\n      ],\n      \"exceptions\": [],\n      \"definitions\": [\n        {\n          \"term\": \"comparable evidence\",\n          \"definition\": \"Evidence comparable in import, relevance, and weight to listed criteria\",\n          \"has_open_texture\": true,\n          \"core_meaning\": \"Direct substitutes for listed criteria (e.g., patents for publications)\",\n          \"penumbra\": \"Novel evidence types; weight determination entirely discretionary\"\n        }\n      ]\n    }\n  ],\n  \"defeat_relations\": [\n    {\n      \"defeater_rule\": \"ComparableEvidence\",\n      \"defeated_rule\": \"O1A-Eligibility\",\n      \"reason\": \"statutory alternative when traditional criteria do not apply (lex specialis)\",\n      \"strict\": false\n    }\n  ],\n  \"discretionary_checkpoints\": [\n    {\n      \"id\": \"D1-ExtraordinaryAbility\",\n      \"authority\": \"USCIS adjudicator\",\n      \"decision\": \"Whether applicant has 'extraordinary ability' demonstrated by sustained acclaim\",\n      \"constraints\": [\"Must be supported by evidence\", \"Field-specific standards\", \"Precedent decisions\"],\n      \"gated_rule\": \"O1A-Eligibility\"\n    },\n    {\n      \"id\": \"D2-CriteriaSufficiency\",\n      \"authority\": \"USCIS adjudicator\",\n      \"decision\": \"Whether submitted evidence satisfies at least 3 criteria\",\n      \"constraints\": [\"Evidence must match criterion requirements\", \"Weight of evidence determination\"],\n      \"gated_rule\": \"O1A-Eligibility\"\n    },\n    {\n      \"id\": \"D3-ComparableEvidence\",\n      \"authority\": \"USCIS adjudicator\",\n      \"decision\": \"Whether comparable evidence demonstrates extraordinary ability\",\n      \"constraints\": [\"Must be comparable in weight to traditional criteria\"],\n      \"gated_rule\": \"ComparableEvidence\"\n    }\n  ],\n  \"open_texture_terms\": [\n    {\n      \"term\": \"extraordinary ability\",\n      \"type\": \"vague\",\n      \"core\": \"Nobel Prize winners, Olympic medalists, field-leading researchers\",\n      \"penumbra\": \"Very accomplished vs extraordinarily distinguished; field-relative standards\",\n      \"authority\": \"USCIS adjudicator (AAO appealable)\",\n      \"case_law\": [\"Matter of P- [AAO decisions]\", \"Kazarian v. USCIS (9th Cir. 2010)\"]\n    },\n    {\n      \"term\": \"sustained national or international acclaim\",\n      \"type\": \"vague\",\n      \"core\": \"Consistent recognition over 3+ years via multiple channels\",\n      \"penumbra\": \"Short-term fame vs sustained? National vs international threshold?\",\n      \"authority\": \"USCIS adjudicator\",\n      \"case_law\": [\"Kazarian v. USCIS\"]\n    },\n    {\n      \"term\": \"comparable evidence\",\n      \"type\": \"discretionary\",\n      \"core\": \"Direct substitutes: patents for publications, performances for awards\",\n      \"penumbra\": \"Novel evidence types; weight equivalence determination\",\n      \"authority\": \"USCIS adjudicator\",\n      \"case_law\": [\"Rijal v. USCIS\"]\n    },\n    {\n      \"term\": \"major media\",\n      \"type\": \"vague\",\n      \"core\": \"National newspapers, major trade journals\",\n      \"penumbra\": \"Regional vs national? Online vs print? Depth of coverage?\",\n      \"authority\": \"USCIS adjudicator\",\n      \"case_law\": []\n    }\n  ],\n  \"key_references\": [\n    {\n      \"author\": \"USCIS\",\n      \"title\": \"O-1 Visa Individuals with Extraordinary Ability or Achievement\",\n      \"year\": 2024,\n      \"relevance\": \"Official policy manual interpretation of criteria\",\n      \"url\": \"https://www.uscis.gov/working-in-the-united-states/temporary-workers/o-1-visa-individuals-with-extraordinary-ability-or-achievement\"\n    },\n    {\n      \"author\": \"Kazarian v. USCIS\",\n      \"title\": \"Kazarian v. USCIS, 596 F.3d 1115 (9th Cir. 2010)\",\n      \"year\": 2010,\n      \"relevance\": \"Two-part adjudicative framework: meet criteria, then final merits determination\",\n      \"url\": \"\"\n    }\n  ]\n}\n```\n\n**Formalisation Notes for LegalLean/CaseStudies/O1Visa.lean:**\n\n```lean\n-- Formalisable: countable criteria satisfaction\ndef MeetsThreeCriteria (ev : Evidence) : Prop := \n  ∃ (s : Finset (Fin 8)), s.card ≥ 3 ∧ ∀ i ∈ s, EvidenceFor ev (criterion i)\n\n-- FormalisationBoundary: Open texture terms\n@[FormalisationBoundary]\ndef ExtraordinaryAbility (p : Person) : DiscretionaryProp := \n  ⟨\"sustained national/international acclaim\", uscis_adjudicator, evidence_support⟩\n\n-- Defeasible holding structure\ndef O1A_Eligibility (p : Person) : DefeasiblyHolds O1AVisa := \n  ⟨∃ ev, MeetsThreeCriteria ev ∧ ExtraordinaryAbility p ev, \n   [comparable_evidence_defeater]⟩\n```",
+        "answer_parsed": {
+          "provision": {
+            "id": "8 CFR § 204.5(h)",
+            "title": "O-1 Visa Extraordinary Ability Criteria",
+            "jurisdiction": "United States",
+            "source_url": "https://www.ecfr.gov/current/title-8/chapter-I/subchapter-B/part-204/subpart-A/section-204.5"
+          },
+          "rules": [
+            {
+              "id": "O1A-Eligibility",
+              "description": "Individual is eligible for O-1A visa if they have extraordinary ability in sciences, education, business, or athletics and meet at least 3 of 8 specific criteria",
+              "modality": "obligatory",
+              "conditions": [
+                {
+                  "id": "C1-ExtraordinaryAbility",
+                  "description": "Has extraordinary ability in sciences, education, business, or athletics (demonstrated by sustained national or international acclaim)",
+                  "formalisable": false,
+                  "if_not_formalisable": "Open texture terms 'extraordinary ability' and 'sustained national or international acclaim' require USCIS adjudicator discretion"
+                },
+                {
+                  "id": "C2-AtLeast3Criteria",
+                  "description": "Meets at least 3 of the 8 evidentiary criteria listed in 8 CFR § 204.5(h)(3)",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [],
+              "definitions": [
+                {
+                  "term": "extraordinary ability",
+                  "definition": "Degree of expertise significantly above that ordinarily encountered, by sustained national or international acclaim [8 CFR § 204.5(h)(2)]",
+                  "has_open_texture": true,
+                  "core_meaning": "Top field experts with major awards, consistent high-level achievements",
+                  "penumbra": "Boundary cases between 'very good' vs 'extraordinary'; relative comparisons"
+                },
+                {
+                  "term": "sustained national or international acclaim",
+                  "definition": "Continued recognition over time at national or international level",
+                  "has_open_texture": true,
+                  "core_meaning": "Multi-year recognition through awards, publications, media coverage",
+                  "penumbra": "Duration required? National vs international threshold? Recent vs historical acclaim?"
+                }
+              ]
+            },
+            {
+              "id": "Criterion1-MajorAward",
+              "description": "Receipt of nationally or internationally recognized prize or award for excellence in field",
+              "modality": "permitted",
+              "conditions": [
+                {
+                  "id": "C1A1-AwardReceipt",
+                  "description": "Has received a qualifying award",
+                  "formalisable": true
+                },
+                {
+                  "id": "C1A1-AwardPrestige",
+                  "description": "Award is nationally or internationally recognized for excellence",
+                  "formalisable": false,
+                  "if_not_formalisable": "'Recognized' and 'excellence' require adjudicator judgment of prestige level"
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "Criterion2-Membership",
+              "description": "Membership in associations requiring outstanding achievement (judged by experts)",
+              "modality": "permitted",
+              "conditions": [
+                {
+                  "id": "C2A1-Membership",
+                  "description": "Is member of qualifying association",
+                  "formalisable": true
+                },
+                {
+                  "id": "C2A1-OutstandingJudged",
+                  "description": "Association requires outstanding achievement as judged by recognized experts",
+                  "formalisable": false,
+                  "if_not_formalisable": "Discretionary judgment of what constitutes 'outstanding achievement'"
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "Criterion3-Publication",
+              "description": "Published material in professional or major media about the person's work",
+              "modality": "permitted",
+              "conditions": [
+                {
+                  "id": "C3A1-PublicationsExist",
+                  "description": "Published material exists about the person's work in field",
+                  "formalisable": true
+                },
+                {
+                  "id": "C3A1-MajorMedia",
+                  "description": "Material appears in professional or major trade publications or media",
+                  "formalisable": false,
+                  "if_not_formalisable": "'Major media' threshold is discretionary"
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "Criterion4-Judging",
+              "description": "Participation as judge of others' work individually or on panel",
+              "modality": "permitted",
+              "conditions": [
+                {
+                  "id": "C4A1-JudgingRole",
+                  "description": "Has participated as judge of work of others in field",
+                  "formalisable": true
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "Criterion5-OriginalContributions",
+              "description": "Original scientific, scholarly, or business-related contributions of major significance",
+              "modality": "permitted",
+              "conditions": [
+                {
+                  "id": "C5A1-ContributionsExist",
+                  "description": "Has made original contributions",
+                  "formalisable": true
+                },
+                {
+                  "id": "C5A1-MajorSignificance",
+                  "description": "Contributions have major significance in field (evidenced by experts)",
+                  "formalisable": false,
+                  "if_not_formalisable": "'Major significance' is highly discretionary"
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "Criterion6-Authorship",
+              "description": "Authorship of scholarly articles in professional journals or major media",
+              "modality": "permitted",
+              "conditions": [
+                {
+                  "id": "C6A1-Authorship",
+                  "description": "Is author of qualifying articles",
+                  "formalisable": true
+                },
+                {
+                  "id": "C6A1-ProfessionalJournals",
+                  "description": "Articles published in professional journals or major media",
+                  "formalisable": false,
+                  "if_not_formalisable": "'Professional journal' vs minor publication discretionary"
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "Criterion7-Employment",
+              "description": "Employment in critical or essential capacity for distinguished organizations",
+              "modality": "permitted",
+              "conditions": [
+                {
+                  "id": "C7A1-Employment",
+                  "description": "Employed by distinguished organization",
+                  "formalisable": true
+                },
+                {
+                  "id": "C7A1-CriticalRole",
+                  "description": "Held critical or essential capacity",
+                  "formalisable": false,
+                  "if_not_formalisable": "'Critical/essential capacity' and 'distinguished organization' discretionary"
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "Criterion8-HighSalary",
+              "description": "Commanded high salary or other remuneration indicating extraordinary ability",
+              "modality": "permitted",
+              "conditions": [
+                {
+                  "id": "C8A1-HighSalary",
+                  "description": "Has commanded high salary/remuneration",
+                  "formalisable": false,
+                  "if_not_formalisable": "'High salary' is relative and field-dependent"
+                }
+              ],
+              "exceptions": [],
+              "definitions": []
+            },
+            {
+              "id": "ComparableEvidence",
+              "description": "Comparable evidence may be submitted if traditional criteria do not apply",
+              "modality": "permitted",
+              "conditions": [
+                {
+                  "id": "CE1-TraditionalNotApply",
+                  "description": "Traditional evidentiary criteria do not readily apply to field",
+                  "formalisable": false,
+                  "if_not_formalisable": "USCIS discretion to determine applicability and sufficiency"
+                },
+                {
+                  "id": "CE2-ComparableSubmitted",
+                  "description": "Comparable evidence demonstrates extraordinary ability",
+                  "formalisable": false,
+                  "if_not_formalisable": "Complete adjudicator discretion on what constitutes 'comparable'"
+                }
+              ],
+              "exceptions": [],
+              "definitions": [
+                {
+                  "term": "comparable evidence",
+                  "definition": "Evidence comparable in import, relevance, and weight to listed criteria",
+                  "has_open_texture": true,
+                  "core_meaning": "Direct substitutes for listed criteria (e.g., patents for publications)",
+                  "penumbra": "Novel evidence types; weight determination entirely discretionary"
+                }
+              ]
+            }
+          ],
+          "defeat_relations": [
+            {
+              "defeater_rule": "ComparableEvidence",
+              "defeated_rule": "O1A-Eligibility",
+              "reason": "statutory alternative when traditional criteria do not apply (lex specialis)",
+              "strict": false
+            }
+          ],
+          "discretionary_checkpoints": [
+            {
+              "id": "D1-ExtraordinaryAbility",
+              "authority": "USCIS adjudicator",
+              "decision": "Whether applicant has 'extraordinary ability' demonstrated by sustained acclaim",
+              "constraints": [
+                "Must be supported by evidence",
+                "Field-specific standards",
+                "Precedent decisions"
+              ],
+              "gated_rule": "O1A-Eligibility"
+            },
+            {
+              "id": "D2-CriteriaSufficiency",
+              "authority": "USCIS adjudicator",
+              "decision": "Whether submitted evidence satisfies at least 3 criteria",
+              "constraints": [
+                "Evidence must match criterion requirements",
+                "Weight of evidence determination"
+              ],
+              "gated_rule": "O1A-Eligibility"
+            },
+            {
+              "id": "D3-ComparableEvidence",
+              "authority": "USCIS adjudicator",
+              "decision": "Whether comparable evidence demonstrates extraordinary ability",
+              "constraints": [
+                "Must be comparable in weight to traditional criteria"
+              ],
+              "gated_rule": "ComparableEvidence"
+            }
+          ],
+          "open_texture_terms": [
+            {
+              "term": "extraordinary ability",
+              "type": "vague",
+              "core": "Nobel Prize winners, Olympic medalists, field-leading researchers",
+              "penumbra": "Very accomplished vs extraordinarily distinguished; field-relative standards",
+              "authority": "USCIS adjudicator (AAO appealable)",
+              "case_law": [
+                "Matter of P- [AAO decisions]",
+                "Kazarian v. USCIS (9th Cir. 2010)"
+              ]
+            },
+            {
+              "term": "sustained national or international acclaim",
+              "type": "vague",
+              "core": "Consistent recognition over 3+ years via multiple channels",
+              "penumbra": "Short-term fame vs sustained? National vs international threshold?",
+              "authority": "USCIS adjudicator",
+              "case_law": [
+                "Kazarian v. USCIS"
+              ]
+            },
+            {
+              "term": "comparable evidence",
+              "type": "discretionary",
+              "core": "Direct substitutes: patents for publications, performances for awards",
+              "penumbra": "Novel evidence types; weight equivalence determination",
+              "authority": "USCIS adjudicator",
+              "case_law": [
+                "Rijal v. USCIS"
+              ]
+            },
+            {
+              "term": "major media",
+              "type": "vague",
+              "core": "National newspapers, major trade journals",
+              "penumbra": "Regional vs national? Online vs print? Depth of coverage?",
+              "authority": "USCIS adjudicator",
+              "case_law": []
+            }
+          ],
+          "key_references": [
+            {
+              "author": "USCIS",
+              "title": "O-1 Visa Individuals with Extraordinary Ability or Achievement",
+              "year": 2024,
+              "relevance": "Official policy manual interpretation of criteria",
+              "url": "https://www.uscis.gov/working-in-the-united-states/temporary-workers/o-1-visa-individuals-with-extraordinary-ability-or-achievement"
+            },
+            {
+              "author": "Kazarian v. USCIS",
+              "title": "Kazarian v. USCIS, 596 F.3d 1115 (9th Cir. 2010)",
+              "year": 2010,
+              "relevance": "Two-part adjudicative framework: meet criteria, then final merits determination",
+              "url": ""
+            }
+          ]
+        },
+        "citations": [
+          "https://jsonapi.org/format/",
+          "https://www.mongodb.com/resources/languages/json-schema-examples",
+          "https://www.open-contracting.org/2018/01/18/json-visualization-analysis-process-guidance-ocds-data/",
+          "https://json-schema.org/draft-04/draft-zyp-json-schema-04",
+          "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON",
+          "https://www.couchbase.com/blog/a-json-data-modeling-guide/",
+          "http://lawncl.byu.edu/json-format",
+          "https://scriptotek.github.io/programming/04_caselaw.html"
+        ],
+        "usage": {
+          "prompt_tokens": 993,
+          "completion_tokens": 2918,
+          "total_tokens": 3911,
+          "search_context_size": "low",
+          "cost": {
+            "input_tokens_cost": 0.00298,
+            "output_tokens_cost": 0.04377,
+            "request_cost": 0.006,
+            "total_cost": 0.05275
+          }
+        }
+      }
+    ],
+    "consensus": {
+      "models_with_valid_json": 1,
+      "total_models": 1,
+      "all_citations": [
+        "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/JSON",
+        "https://www.couchbase.com/blog/a-json-data-modeling-guide/",
+        "https://scriptotek.github.io/programming/04_caselaw.html",
+        "https://www.open-contracting.org/2018/01/18/json-visualization-analysis-process-guidance-ocds-data/",
+        "https://jsonapi.org/format/",
+        "https://json-schema.org/draft-04/draft-zyp-json-schema-04",
+        "https://www.mongodb.com/resources/languages/json-schema-examples",
+        "http://lawncl.byu.edu/json-format"
+      ],
+      "note": "Manual review needed to synthesise responses into final argument"
+    }
+  },
+  "timestamp": "2026-03-13T22:39:32Z"
+}

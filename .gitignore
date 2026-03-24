@@ -1,0 +1,12 @@
+# Lean 4 build artifacts
+/build/
+/lake-packages/
+/.lake/
+
+# Editor
+.vscode/
+*.olean
+
+# OS
+.DS_Store
+.combined-input.md
