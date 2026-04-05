@@ -154,3 +154,8 @@ Scores from Perplexity research (note: may reflect prompt bias for LegalLean):
 - Merigoux et al., "Catala: A Programming Language for the Law"
 - Hou et al., "L4L: Towards Trustworthy Legal AI through LLM Agents and Formal Reasoning"
 - Palmirani et al., "LegalRuleML Core Specification v1.0"
+
+
+---
+
+> **🤖 Coding Agent?** Read [`AGENT_BOOTSTRAP.md`](https://github.com/edu-ap/stack-audit/blob/main/AGENT_BOOTSTRAP.md) — the single-document entrypoint for the full 10-system stack. It tells you how to build, test, contribute, and file issues. Every agent that uses this stack should contribute back.
