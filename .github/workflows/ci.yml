@@ -1,0 +1,66 @@
+name: LegalLean CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install elan
+        run: |
+          curl https://elan.github.io/elan/elan-init.sh -sSf | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+
+      - name: Cache Lean build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.elan
+            .lake
+          key: lean-${{ runner.os }}-${{ hashFiles('lean-toolchain', 'lakefile.lean') }}
+          restore-keys: lean-${{ runner.os }}-
+
+      - name: Lake build
+        run: lake build
+
+  sorry-count:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Count sorries
+        id: sorry
+        run: |
+          TOTAL=$(grep -r "sorry" --include="*.lean" . | grep -v ".lake" | grep -v "lakefile" | wc -l || echo 0)
+          echo "total=$TOTAL" >> $GITHUB_OUTPUT
+          echo "## Sorry Count: $TOTAL" >> $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Sorries |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|---------|" >> $GITHUB_STEP_SUMMARY
+          grep -r "sorry" --include="*.lean" -l . 2>/dev/null | grep -v ".lake" | grep -v "lakefile" | while read f; do
+            count=$(grep -c "sorry" "$f")
+            if [ "$count" -gt 0 ]; then
+              echo "| \`$f\` | $count |" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+      - name: Sorry regression gate
+        run: |
+          TOTAL=${{ steps.sorry.outputs.total }}
+          THRESHOLD=29
+          echo "Sorry count: $TOTAL (threshold: $THRESHOLD)"
+          if [ "$TOTAL" -gt "$THRESHOLD" ]; then
+            echo "::error::Sorry count ($TOTAL) exceeds threshold ($THRESHOLD)"
+            exit 1
+          fi
