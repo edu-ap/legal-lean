@@ -7,7 +7,7 @@ package «legal-lean» where
   ]
 
 require mathlib from git
-  "https://github.com/leanprover-community/mathlib4" @ "v4.24.0"
+  "https://github.com/leanprover-community/mathlib4" @ "v4.29.1"
 
 @[default_target]
 lean_lib «LegalLean» where
