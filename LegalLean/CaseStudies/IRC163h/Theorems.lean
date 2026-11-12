@@ -129,11 +129,11 @@ theorem no_mixed_outcomes
     (status : FilingStatus)
     : ¬isMixedOutcome (isDeductible payment year status) := by
   simp only [isDeductible, isMixedOutcome]
-  cases payment.paidByIndividual <;> simp
-  cases payment.indebtedness.securedByResidence <;> simp
-  cases payment.indebtedness.purpose <;> simp
+  cases payment.paidByIndividual <;> simp [-String.reduceAppend]
+  cases payment.indebtedness.securedByResidence <;> simp [-String.reduceAppend]
+  cases payment.indebtedness.purpose <;> simp [-String.reduceAppend]
   -- acquire/construct: split on withinAcquisitionLimit
-  all_goals (try (cases withinAcquisitionLimit payment.indebtedness year status <;> simp))
+  all_goals (try (cases withinAcquisitionLimit payment.indebtedness year status <;> simp [-String.reduceAppend]))
   -- other: the remaining goal is ¬(match (if ... then ... else ...) with | mixed => True | _ => False)
   -- We need to reduce the if-then-else first, then match sees formal/boundary
   · -- withinHomeEquityLimit = true case
@@ -160,8 +160,8 @@ theorem boundary_authority_is_irs_tax_court
     (h_secured : payment.indebtedness.securedByResidence = true)
     (h : isDeductible payment year status = FormalisationBoundary.boundary r a)
     : a = LegalLean.Authority.irsTaxCourt := by
-  simp [isDeductible, h_individual, h_secured] at h
-  cases h_purpose : payment.indebtedness.purpose <;> simp [h_purpose] at h
+  simp [isDeductible, h_individual, h_secured, -String.reduceAppend] at h
+  cases h_purpose : payment.indebtedness.purpose <;> simp [h_purpose, -String.reduceAppend] at h
   · -- acquire: split on limit check
     split at h <;> simp_all
   · -- construct: split on limit check
@@ -214,8 +214,7 @@ theorem auto_reject_conditions
         isDeductible payment year status = FormalisationBoundary.formal False) := by
   refine ⟨fun h => ?_, fun h => ?_, fun hp hy hi hs => ?_⟩
   · simp [isDeductible, h]
-  · simp [isDeductible]
-    cases payment.paidByIndividual <;> simp [h]
+  · simp [isDeductible, h]
   · simp [isDeductible, hi, hs, hp, hy]
 
 -- ============================================================

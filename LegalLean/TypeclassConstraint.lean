@@ -145,7 +145,7 @@ theorem formal_carries_real_proof (P : Prop) (b : FormalisationBoundary P)
 theorem formal_ne_boundary (P : Prop) (pf : P) (r : String) (a : Authority)
     : FormalisationBoundary.formal pf ≠ FormalisationBoundary.boundary r a := by
   intro h
-  exact FormalisationBoundary.noConfusion h
+  exact FormalisationBoundary.noConfusion rfl (heq_of_eq h)
 
 -- ============================================================
 -- §6  RequiresHumanDetermination is a MARKER, not a proof supplier
