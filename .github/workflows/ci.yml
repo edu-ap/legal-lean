@@ -81,4 +81,4 @@ jobs:
 
       - name: Lake build
         run: |
-          lake build 2>&1 || echo "::warning::Lake build failed — Mathlib cache may need warming"
+          lake build
